@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#08090d">
-<title>FORGE</title>
+<title>PowerLab</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -337,7 +337,7 @@ body.tg .ov-foot{padding-bottom:calc(22px + var(--safe-b,0px))}
 <body>
 <div class="stage">
 <div class="phone">
-  <div class="statusbar"><span>9:41</span><span class="brand-txt">FORGE</span><span>100%</span></div>
+  <div class="statusbar"><span>9:41</span><span class="brand-txt">POWERLAB</span><span>100%</span></div>
 
   <main id="app">
 
@@ -366,7 +366,7 @@ body.tg .ov-foot{padding-bottom:calc(22px + var(--safe-b,0px))}
 
       <div class="section"><span class="t">История</span></div>
       <div class="card soft" style="padding:0" id="history"></div>
-      <div class="note">FORGE · макет · демонстрация интерфейса</div>
+      <div class="note">PowerLab · макет · демонстрация интерфейса</div>
     </section>
 
     <!-- ============ ФОРМА ============ -->
@@ -458,7 +458,7 @@ body.tg .ov-foot{padding-bottom:calc(22px + var(--safe-b,0px))}
       <div class="section"><span class="t">Подписка</span></div>
       <div class="card soft" style="padding:0">
         <div class="item clickable" onclick="openSubscription()"><div class="ico">⭐</div>
-          <div class="body"><div class="tt">FORGE PRO</div><div class="ss">Оплата через Telegram Stars</div></div>
+          <div class="body"><div class="tt">PowerLab PRO</div><div class="ss">Оплата через Telegram Stars</div></div>
           <span class="vv" id="subVal">149 ⭐</span></div>
       </div>
     </section>
@@ -500,7 +500,7 @@ body.tg .ov-foot{padding-bottom:calc(22px + var(--safe-b,0px))}
 
       <div class="section"><span class="t">Объём по группам</span><span class="l">30 дней</span></div>
       <div class="card" id="volList"></div>
-      <div class="note">FORGE · макет · демонстрация интерфейса</div>
+      <div class="note">PowerLab · макет · демонстрация интерфейса</div>
     </section>
 
     <!-- ============ ЕДА ============ -->
@@ -530,7 +530,7 @@ body.tg .ov-foot{padding-bottom:calc(22px + var(--safe-b,0px))}
 
   <div class="toast" id="toast"></div>
 </div>
-<div class="caption">FORGE · кликабельный макет</div>
+<div class="caption">PowerLab · кликабельный макет</div>
 </div>
 
 <script>
@@ -1786,7 +1786,7 @@ function renderOnboarding(){
   const calc = calcMacros(ob);
   const chip = (cur, val, label, fn) =>
     `<button class="chip ${cur===val?'on':''}" style="flex:0 0 auto" onclick="${fn}('${val}')">${label}</button>`;
-  openOverlay('Настроим FORGE', 'Пять вопросов — и нормы посчитаются сами',
+  openOverlay('Настроим PowerLab', 'Пять вопросов — и нормы посчитаются сами',
     `<div class="card">
        <div class="lbl">ПОЛ</div>
        <div class="row" style="gap:7px;margin-top:9px">
