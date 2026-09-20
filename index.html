@@ -1,0 +1,1930 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#08090d">
+<title>FORGE</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#08090d;
+  --surface:#14161c;
+  --surface-2:#191c23;
+  --line:rgba(255,255,255,.075);
+  --line-strong:rgba(255,255,255,.14);
+  --lime:#cdff3e;
+  --lime-dim:rgba(205,255,62,.14);
+  --ember:#ff6a3d;
+  --violet:#8b7cff;
+  --text:#f2f4f7;
+  --muted:#7c838f;
+  --mono:'JetBrains Mono',ui-monospace,Consolas,monospace;
+  --sans:'Inter','Segoe UI',system-ui,sans-serif;
+  --disp:'Oswald','Inter',system-ui,sans-serif;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%}
+body{
+  font-family:var(--sans);color:var(--text);
+  background:
+    radial-gradient(900px 600px at 50% -10%,rgba(205,255,62,.10),transparent 62%),
+    radial-gradient(700px 500px at 95% 110%,rgba(139,124,255,.10),transparent 60%),
+    #040508;
+  display:flex;align-items:center;justify-content:center;padding:24px;
+}
+.stage{display:flex;flex-direction:column;align-items:center;gap:14px}
+.caption{color:#4d545e;font-size:12px;letter-spacing:.6px}
+
+.phone{
+  position:relative;width:400px;height:858px;border-radius:44px;overflow:hidden;
+  background:var(--bg);border:1px solid rgba(255,255,255,.10);
+  box-shadow:0 40px 100px rgba(0,0,0,.8),0 0 0 9px rgba(255,255,255,.022);
+  display:flex;flex-direction:column;
+}
+.phone::before{
+  content:"";position:absolute;top:-180px;left:-60px;right:-60px;height:420px;pointer-events:none;
+  background:radial-gradient(closest-side,rgba(205,255,62,.16),transparent 72%);
+}
+.statusbar{
+  position:relative;z-index:3;display:flex;justify-content:space-between;align-items:center;
+  padding:13px 26px 4px;font-size:11.5px;color:#b9c0c9;font-family:var(--mono);flex:0 0 auto;letter-spacing:.5px;
+}
+.brand-txt{font-family:var(--disp);letter-spacing:2.5px;font-weight:600;color:var(--lime)}
+#app{position:relative;z-index:2;flex:1 1 auto;overflow:hidden}
+.screen{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:6px 16px 106px;display:none;scrollbar-width:none}
+.screen::-webkit-scrollbar{display:none}
+.screen.active{display:block;animation:fade .22s ease}
+@keyframes fade{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+
+h1{font-family:var(--disp);font-weight:600;font-size:32px;letter-spacing:1px;text-transform:uppercase;margin:10px 0 2px;line-height:1.05}
+h2{font-size:17px;margin:0;font-weight:800}
+.sub{color:var(--muted);font-size:12.5px;margin:3px 0 0}
+.section{display:flex;align-items:baseline;justify-content:space-between;margin:22px 2px 11px}
+.section .t{font-family:var(--disp);font-size:15px;letter-spacing:2px;text-transform:uppercase;color:#e6e9ee}
+.section .l{font-size:11.5px;color:var(--lime);letter-spacing:.5px}
+.mono{font-family:var(--mono)}
+.muted{color:var(--muted)}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:16px;position:relative;overflow:hidden}
+.card.soft{background:var(--surface-2);border-color:var(--line)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.stack{display:flex;flex-direction:column;gap:11px}
+.row{display:flex;align-items:center;gap:12px}
+.spread{display:flex;align-items:center;justify-content:space-between;gap:10px}
+
+button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:none}
+.pill{border:1px solid var(--line-strong);border-radius:999px;padding:9px 16px;font-size:12.5px;font-weight:700;color:var(--text);background:rgba(255,255,255,.03);transition:.18s;letter-spacing:.3px}
+.pill:hover{border-color:var(--lime);color:var(--lime)}
+.pill.solid{background:var(--lime);color:#141a02;border-color:transparent;text-transform:uppercase;letter-spacing:1px;font-weight:800}
+.pill.danger{border-color:rgba(255,106,61,.35);color:var(--ember)}
+.pill.danger:hover{border-color:var(--ember);color:var(--ember);background:rgba(255,106,61,.09)}
+.pill.solid:hover{filter:brightness(1.08)}
+.chip{border:1px solid var(--line);border-radius:999px;padding:9px 14px;font-size:12px;color:#b7bec7;background:rgba(255,255,255,.02);display:inline-flex;align-items:center;gap:7px;white-space:nowrap;transition:.18s}
+.chip:hover,.chip.on{border-color:var(--lime);color:var(--lime);background:var(--lime-dim)}
+.icon-btn{width:38px;height:38px;border-radius:14px;border:1px solid var(--line);display:grid;place-items:center;color:var(--lime);background:rgba(255,255,255,.03);flex:0 0 auto;transition:.18s}
+.icon-btn:hover{background:var(--lime-dim);border-color:var(--lime)}
+.icon-btn.sm{width:28px;height:28px;border-radius:10px;font-size:14px;font-family:var(--mono)}
+.scroller{display:flex;gap:11px;overflow-x:auto;padding:2px 2px 6px;scrollbar-width:none}
+.scroller::-webkit-scrollbar{display:none}
+
+/* ---------- hero Форма ---------- */
+.hero{display:flex;gap:16px;align-items:center}
+.ringwrap{position:relative;width:146px;height:146px;flex:0 0 auto}
+.rings{width:100%;height:100%;overflow:visible}
+.gl{filter:drop-shadow(0 0 6px rgba(205,255,62,.45))}
+.gv{filter:drop-shadow(0 0 6px rgba(139,124,255,.5))}
+.ge{filter:drop-shadow(0 0 6px rgba(255,106,61,.5))}
+.ringcenter{position:absolute;inset:25px;border-radius:50%;background:#0b0c11;border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px}
+.ringcenter .day{font-size:10.5px;font-weight:800;background:rgba(255,255,255,.09);padding:2px 10px;border-radius:999px;letter-spacing:.5px}
+.ringcenter b{font-size:27px;font-family:var(--mono);line-height:1}
+.ringcenter span{font-size:10.5px;color:var(--muted);font-family:var(--mono)}
+.hero-right{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px}
+.macro{display:flex;align-items:center;gap:9px}
+.macro .tick{width:4px;height:20px;border-radius:2px;background:rgba(255,255,255,.09);overflow:hidden;display:flex;align-items:flex-end}
+.macro .tick i{display:block;width:100%;height:18%;background:var(--lime);border-radius:2px}
+.macro .v{font-size:13.5px;font-family:var(--mono);font-weight:700}
+.macro .n{font-size:12.5px;color:#aeb6c0}
+.hero .edit{position:absolute;top:13px;right:13px}
+.hero .rep{align-self:flex-end;margin-top:2px}
+
+.stat-head{display:flex;align-items:center;gap:9px;font-size:15.5px;font-weight:800}
+.stat-ico{width:32px;height:32px;border-radius:11px;border:1px solid var(--line);display:grid;place-items:center;color:var(--lime);font-size:15px}
+.stat-val{font-family:var(--mono);font-size:25px;font-weight:700;margin:10px 0 2px}
+.stat-sub{font-size:12px;color:var(--muted)}
+.stat-goal{font-size:12px;color:#aeb6c0}
+.water-ctl{display:flex;align-items:center;gap:9px;margin-top:5px}
+.water-track{flex:1;height:6px;border-radius:99px;background:rgba(255,255,255,.08);overflow:hidden}
+.water-fill{height:100%;width:0%;background:var(--lime);transition:.25s}
+.emoji-row{display:flex;gap:8px;margin-top:12px}
+.emoji{width:40px;height:40px;border-radius:13px;border:1px solid var(--line);display:grid;place-items:center;font-size:18px;opacity:.7;transition:.18s}
+.emoji:hover{opacity:1;border-color:var(--lime);transform:translateY(-2px)}
+.sleep{display:flex;align-items:flex-end;gap:6px;height:58px;margin-top:14px}
+.sleep .b{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;justify-content:flex-end;height:100%}
+.sleep .bar{width:100%;border-radius:4px;background:linear-gradient(180deg,var(--lime),rgba(205,255,62,.12));min-height:8px}
+.sleep .d{font-size:10px;color:var(--muted)}
+
+.item{display:flex;align-items:center;gap:13px;padding:14px 16px}
+.item .ico{width:44px;height:44px;border-radius:14px;border:1px solid var(--line);display:grid;place-items:center;font-size:19px;background:rgba(255,255,255,.03);flex:0 0 auto}
+.item .body{flex:1;min-width:0}
+.item .tt{font-size:15.5px;font-weight:800}
+.item .ss{font-size:12px;color:var(--muted);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.item .vv{font-size:13px;color:var(--lime);font-weight:700;font-family:var(--mono)}
+.chev{color:#4a5058;font-size:19px}
+
+.cal-head{display:flex;align-items:center;gap:8px}
+.cal-nav{width:32px;height:32px;border-radius:11px;background:rgba(255,255,255,.05);display:grid;place-items:center;font-size:15px;color:var(--muted)}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:14px}
+.cal .wd{font-size:11px;color:var(--muted);text-align:center;font-weight:700;padding-bottom:4px}
+.cal .dd{aspect-ratio:1;border-radius:11px;display:grid;place-items:center;font-size:12px;font-family:var(--mono);color:#c2c9d1}
+.cal .dd.today{border:1px solid var(--lime);color:var(--lime);background:var(--lime-dim)}
+.cal .dd.done{background:rgba(205,255,62,.13);color:var(--lime)}
+
+.chips{display:flex;gap:9px;overflow-x:auto;padding:12px 0 4px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.intake{font-family:var(--mono);font-size:34px;font-weight:700;margin:6px 0 10px}
+.bar{height:6px;border-radius:99px;background:rgba(255,255,255,.08);overflow:hidden}
+.bar i{display:block;height:100%;border-radius:99px;background:var(--lime)}
+.kcol{display:flex;justify-content:space-between;align-items:baseline}
+.macro3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.macro3 .g{font-family:var(--mono);font-size:17px;font-weight:700}
+.macro3 .of{font-size:11px;color:var(--muted);margin:2px 0 7px}
+.meal-head{display:flex;align-items:center;justify-content:space-between;cursor:pointer}
+.meal-body{margin-top:12px}
+.meal-body.closed{display:none}
+.meal-bju{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.meal-bju div{padding:10px 12px;border-right:1px solid var(--line);font-size:11.5px;color:var(--muted)}
+.meal-bju div:last-child{border-right:none}
+.meal-bju b{display:block;font-family:var(--mono);font-size:14.5px;color:var(--text);margin-bottom:2px}
+
+/* ---------- ТРЕНИРОВКА ---------- */
+.today{
+  border-radius:26px;padding:18px;position:relative;overflow:hidden;margin-top:14px;
+  background:linear-gradient(140deg,rgba(205,255,62,.14),rgba(20,22,28,.9) 55%),var(--surface);
+  border:1px solid rgba(205,255,62,.28);
+}
+.today .tl{font-size:10.5px;letter-spacing:2px;color:var(--lime);font-weight:800}
+.today .tn{font-family:var(--disp);font-size:26px;letter-spacing:.8px;text-transform:uppercase;margin:6px 0 4px;line-height:1.08}
+.today .tm{font-size:12px;color:#aeb6c0;display:flex;gap:14px;margin-top:10px;flex-wrap:wrap}
+.today .tm b{color:var(--text);font-family:var(--mono)}
+.today .cta{width:100%;margin-top:16px;padding:15px;border-radius:16px;font-size:14px}
+
+.prog{
+  flex:0 0 208px;border-radius:22px;padding:15px;border:1px solid var(--line);position:relative;overflow:hidden;
+  background:var(--surface);text-align:left;transition:.2s;
+}
+.prog:hover{transform:translateY(-3px);border-color:rgba(205,255,62,.45)}
+.prog .pn{font-family:var(--disp);font-size:18px;letter-spacing:.6px;text-transform:uppercase;line-height:1.1}
+.prog .pd{font-size:11px;color:var(--muted);margin-top:5px;min-height:30px}
+.prog .pmeta{display:flex;gap:6px;flex-wrap:wrap;margin-top:11px}
+.tag{font-size:10px;font-family:var(--mono);padding:4px 8px;border-radius:7px;background:rgba(255,255,255,.06);color:#b7bec7;letter-spacing:.3px}
+.tag.acc{background:var(--lime-dim);color:var(--lime)}
+.prog .lines{display:flex;gap:3px;margin-top:11px}
+.prog .lines i{height:3px;flex:1;border-radius:99px;background:rgba(205,255,62,.5)}
+
+.muscle{
+  position:relative;height:152px;border-radius:24px;overflow:hidden;border:1px solid var(--line);
+  background:#0c0e13;padding:0;transition:.22s;
+}
+.muscle:hover{border-color:rgba(205,255,62,.5);transform:translateY(-3px)}
+.muscle .mimg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;mix-blend-mode:screen;transition:.35s;opacity:.95}
+.muscle:hover .mimg{transform:scale(1.07)}
+.muscle::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 42%,rgba(6,7,10,.92));pointer-events:none}
+.muscle .mtxt{position:absolute;left:13px;right:13px;bottom:11px;z-index:2;text-align:left}
+.muscle .mn{display:block;font-family:var(--disp);font-size:16px;letter-spacing:1.4px;text-transform:uppercase}
+.muscle .mc{display:block;font-size:10.5px;color:var(--lime);font-family:var(--mono);margin-top:2px}
+
+.ex{display:flex;align-items:center;gap:11px;padding:13px 14px;border-bottom:1px solid var(--line)}
+.ex:last-child{border-bottom:none}
+.ex .num{width:25px;height:25px;border-radius:9px;background:var(--lime-dim);color:var(--lime);display:grid;place-items:center;font-size:11px;font-family:var(--mono);flex:0 0 auto}
+.ex .en{font-size:14px;font-weight:700}
+.ex .er{font-size:11px;color:var(--muted);margin-top:2px;font-family:var(--mono)}
+.ex .ctrl{margin-left:auto;display:flex;align-items:center;gap:7px}
+.ex .start{width:30px;height:30px;border-radius:10px;border:1px solid rgba(205,255,62,.45);background:var(--lime-dim);color:var(--lime);display:grid;place-items:center;font-size:11px;flex:0 0 auto;transition:.18s}
+.ex .start:hover{background:var(--lime);color:#141a02;border-color:var(--lime)}
+.wbox{display:flex;align-items:center;gap:3px;border:1px solid var(--line);border-radius:12px;padding:3px 5px}
+.wbox b{font-family:var(--mono);font-size:11.5px;min-width:44px;text-align:center;color:var(--lime)}
+.sets{display:flex;gap:4px;margin-top:8px;padding-left:36px}
+.sets i{width:15px;height:15px;border-radius:5px;border:1px solid var(--line-strong);transition:.15s;cursor:pointer}
+.sets i.on{background:var(--lime);border-color:var(--lime);box-shadow:0 0 10px rgba(205,255,62,.55)}
+
+.tabbar{
+  position:relative;z-index:5;flex:0 0 auto;margin:0 10px 10px;height:74px;border-radius:26px;
+  border:1px solid var(--line);background:linear-gradient(180deg,rgba(20,22,28,.97),rgba(8,9,13,.99));
+  display:flex;align-items:center;justify-content:space-around;box-shadow:0 -10px 34px rgba(0,0,0,.6);
+}
+.tab{display:flex;flex-direction:column;align-items:center;gap:5px;font-size:9.5px;color:var(--muted);flex:1;letter-spacing:.2px;transition:.2s}
+.tab .tic{width:32px;height:32px;display:grid;place-items:center;border-radius:12px;transition:.2s}
+.tab svg{width:21px;height:21px}
+.tab.active{color:var(--lime)}
+.tab.active .tic{background:var(--lime-dim)}
+
+.overlay{
+  position:absolute;inset:0;z-index:20;background:linear-gradient(180deg,#0b0d12,#040508);
+  display:flex;flex-direction:column;transform:translateY(101%);transition:transform .28s cubic-bezier(.3,.8,.3,1);
+}
+.overlay.open{transform:none}
+.ov-head{display:flex;align-items:center;gap:12px;padding:18px 16px 10px;flex:0 0 auto}
+.ov-head h2{font-family:var(--disp);font-size:22px;letter-spacing:1px;text-transform:uppercase}
+.ov-body{flex:1;overflow-y:auto;padding:4px 16px 108px;scrollbar-width:none}
+.ov-body::-webkit-scrollbar{display:none}
+.ov-foot{position:absolute;bottom:0;left:0;right:0;padding:14px 16px 22px;background:linear-gradient(180deg,transparent,#040508 42%)}
+.daytabs{display:flex;gap:8px;overflow-x:auto;padding:10px 0 4px;scrollbar-width:none}
+.daytabs::-webkit-scrollbar{display:none}
+.planlist{display:flex;flex-direction:column;gap:11px}
+.plan{border-radius:20px;padding:15px;border:1px solid var(--line);text-align:left;background:var(--surface)}
+.plan.on{border-color:var(--lime);background:linear-gradient(140deg,rgba(205,255,62,.12),var(--surface))}
+.plan .spread .nm{font-family:var(--disp);font-size:16px;letter-spacing:.8px;text-transform:uppercase}
+.plan .p2{font-family:var(--mono);font-size:24px;font-weight:700;margin:6px 0 2px;color:var(--lime)}
+.plan .p3{font-size:11.5px;color:var(--muted)}
+.food-row{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line)}
+.food-row:last-child{border-bottom:none}
+.search{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:16px;padding:12px 14px;background:rgba(255,255,255,.02);color:var(--muted);font-size:13px}
+.note{font-size:11px;color:#454b54;text-align:center;padding:18px 0;letter-spacing:.4px}
+
+/* ---------- активная тренировка ---------- */
+.timer{font-family:var(--mono);font-size:13px;color:var(--lime);background:var(--lime-dim);padding:6px 12px;border-radius:10px}
+.bigbtn{width:100%;padding:19px;border-radius:20px;font-size:14.5px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;background:var(--lime);color:#141a02;transition:.18s}
+.bigbtn:hover{filter:brightness(1.08)}
+.bigbtn.ghost{background:rgba(255,255,255,.04);color:var(--text);border:1px solid var(--line-strong)}
+.bigbtn.ghost:hover{border-color:var(--lime);color:var(--lime);filter:none}
+.now{border-radius:24px;padding:18px;border:1px solid rgba(205,255,62,.3);background:linear-gradient(140deg,rgba(205,255,62,.12),var(--surface) 60%)}
+.now .lbl{font-size:10px;letter-spacing:2px;color:var(--lime);font-weight:800}
+.now .nm{font-family:var(--disp);font-size:23px;letter-spacing:.8px;text-transform:uppercase;margin:6px 0 3px;line-height:1.1}
+.setdots{display:flex;gap:6px;margin-top:14px}
+.setdots i{flex:1;height:6px;border-radius:99px;background:rgba(255,255,255,.09)}
+.setdots i.on{background:var(--lime);box-shadow:0 0 12px rgba(205,255,62,.5)}
+.wstep{display:flex;align-items:center;justify-content:space-between;border:1px solid var(--line);border-radius:18px;padding:8px 10px;margin-top:14px}
+.wstep b{font-family:var(--mono);font-size:26px;color:var(--lime)}
+.restdial{position:relative;width:172px;height:172px;margin:4px auto 2px}
+.restdial b{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--mono);font-size:38px}
+.restdial span{position:absolute;left:0;right:0;bottom:34px;text-align:center;font-size:10.5px;color:var(--muted);letter-spacing:1.5px}
+.exprog{display:flex;align-items:center;gap:11px;padding:11px 14px;border-bottom:1px solid var(--line);cursor:pointer;transition:background .15s}
+.exprog:active{background:rgba(255,255,255,.05)}
+.exprog:last-child{border-bottom:none}
+.exprog.off .dot{border-color:rgba(255,106,61,.5);color:var(--ember)}
+.exprog.off .enm{color:var(--muted);text-decoration:line-through;text-decoration-color:rgba(255,106,61,.6)}
+.exprog.off .stat-sub{color:var(--ember);opacity:.75}
+.exprog.pend .dot{border-style:dashed;opacity:.6}
+.exprog.pend .enm{color:var(--muted);opacity:.75}
+.exprog .dot{width:22px;height:22px;border-radius:8px;border:1px solid var(--line-strong);display:grid;place-items:center;font-size:10px;font-family:var(--mono);color:var(--muted);flex:0 0 auto}
+.exprog.done .dot{background:var(--lime);border-color:var(--lime);color:#141a02}
+.exprog.cur{background:rgba(205,255,62,.06)}
+.exprog .enm{font-size:13.5px;font-weight:700}
+.exprog.done .enm{color:var(--muted)}
+
+/* ---------- прогресс ---------- */
+.chart{width:100%;height:118px;display:block;overflow:visible}
+.bars{display:flex;align-items:flex-end;gap:7px;height:106px;margin-top:16px}
+.bars .bcol{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px;height:100%}
+.bars .bcol i{width:100%;border-radius:6px 6px 3px 3px;background:linear-gradient(180deg,var(--lime),rgba(205,255,62,.15))}
+.bars .bcol span{font-size:9px;color:var(--muted);font-family:var(--mono)}
+.pr{display:flex;align-items:center;gap:12px;padding:13px 15px;border-bottom:1px solid var(--line)}
+.pr:last-child{border-bottom:none}
+.pr .medal{width:30px;height:30px;border-radius:11px;background:var(--lime-dim);color:var(--lime);display:grid;place-items:center;font-family:var(--mono);font-size:11px;flex:0 0 auto}
+.hbar{margin-top:13px}
+.hbar .top{display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:6px}
+.statbig{font-family:var(--mono);font-size:32px;font-weight:700;line-height:1}
+.delta{font-size:12px;font-family:var(--mono);color:var(--lime)}
+
+.clickable{cursor:pointer;transition:background .15s}
+.clickable:hover{background:rgba(255,255,255,.03)}
+.clickable:active{background:rgba(205,255,62,.07)}
+button:active{transform:scale(.985)}
+.lbl{font-size:10px;letter-spacing:2px;color:var(--lime);font-weight:800}
+.emoji.on{opacity:1;border-color:var(--lime);background:var(--lime-dim);transform:translateY(-2px)}
+.cal .dd{cursor:pointer;transition:.15s}
+.cal .dd:hover{background:rgba(255,255,255,.05)}
+.cal-nav:hover{color:var(--lime);background:var(--lime-dim)}
+.fitem{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--line)}
+.fitem:last-child{border-bottom:none}
+.search input{flex:1;background:none;border:none;outline:none;color:var(--text);font-family:inherit;font-size:13.5px}
+.search input::placeholder{color:var(--muted)}
+.plan{cursor:pointer}
+.plan:hover{border-color:rgba(205,255,62,.4)}
+.food-row.clickable{cursor:pointer;transition:background .15s}
+.food-row.clickable:hover{background:rgba(255,255,255,.03)}
+.section .l.act{cursor:pointer}
+.ex:hover{background:rgba(255,255,255,.03)}
+.toast{position:absolute;left:18px;right:18px;bottom:98px;z-index:40;background:rgba(22,25,32,.98);
+  border:1px solid rgba(205,255,62,.42);border-radius:16px;padding:13px 16px;font-size:13px;
+  box-shadow:0 14px 40px rgba(0,0,0,.6);transform:translateY(18px);opacity:0;pointer-events:none;transition:.25s}
+.toast.show{transform:none;opacity:1}
+
+/* ---------- Telegram Mini App ---------- */
+body.tg{
+  display:block;padding:0;height:100%;overflow:hidden;background:var(--bg);
+  overscroll-behavior:none;touch-action:manipulation;
+  -webkit-user-select:none;user-select:none;-webkit-touch-callout:none;
+}
+body.tg .stage{display:block;height:100%}
+body.tg .caption,body.tg .statusbar{display:none}
+body.tg .phone{
+  width:100%;height:var(--app-h,100vh);border-radius:0;border:0;box-shadow:none;
+  box-shadow:0 0 0 0 transparent;
+}
+body.tg .phone::before{display:none}
+body.tg .screen{padding-top:calc(8px + var(--safe-t,0px))}
+body.tg .tabbar{margin-bottom:calc(10px + var(--safe-b,0px))}
+body.tg .toast{bottom:calc(98px + var(--safe-b,0px))}
+body.tg .ov-body{padding-bottom:calc(108px + var(--safe-b,0px))}
+body.tg .ov-foot{padding-bottom:calc(22px + var(--safe-b,0px))}
+</style>
+</head>
+<body>
+<div class="stage">
+<div class="phone">
+  <div class="statusbar"><span>9:41</span><span class="brand-txt">FORGE</span><span>100%</span></div>
+
+  <main id="app">
+
+    <!-- ============ ТРЕНИРОВКА ============ -->
+    <section class="screen active" id="s-workout">
+      <h1>Тренировка</h1>
+      <p class="sub">Готовые программы · 6 групп мышц</p>
+
+      <div class="card soft today" style="margin-top:16px;padding:20px">
+        <div class="tl">СЕГОДНЯ · ДЕНЬ 3</div>
+        <div class="tn">Pull — Спина / Бицепс</div>
+        <div class="tm">
+          <span><b>6</b> упражнений</span><span><b>22</b> подхода</span><span>~<b>55</b> мин</span>
+        </div>
+        <button class="pill solid cta" onclick="startWorkout('ppl',1)">Начать тренировку</button>
+      </div>
+
+      <div class="section"><span class="t">Мои программы</span><span class="l">5 программ</span></div>
+      <div class="scroller" id="progRow"></div>
+
+      <div class="section"><span class="t">Группы мышц</span><span class="l">все</span></div>
+      <div class="grid2" id="muscleGrid"></div>
+
+      <div class="section"><span class="t">Другие активности</span></div>
+      <div class="grid2" id="actGrid"></div>
+
+      <div class="section"><span class="t">История</span></div>
+      <div class="card soft" style="padding:0" id="history"></div>
+      <div class="note">FORGE · макет · демонстрация интерфейса</div>
+    </section>
+
+    <!-- ============ ФОРМА ============ -->
+    <section class="screen" id="s-forma">
+      <div class="card hero">
+        <div class="ringwrap">
+          <svg class="rings" viewBox="0 0 100 100">
+            <g transform="rotate(-90 50 50)" fill="none" stroke-linecap="round">
+              <circle cx="50" cy="50" r="44" stroke="rgba(205,255,62,.12)" stroke-width="7"/>
+              <circle cx="50" cy="50" r="35" stroke="rgba(139,124,255,.12)" stroke-width="7"/>
+              <circle cx="50" cy="50" r="26" stroke="rgba(255,106,61,.12)" stroke-width="7"/>
+              <circle class="gl" id="ringKcal" cx="50" cy="50" r="44" stroke="#cdff3e" stroke-width="7" stroke-dasharray="0 276.5"/>
+              <circle class="gv" id="ringP" cx="50" cy="50" r="35" stroke="#8b7cff" stroke-width="7" stroke-dasharray="0 219.9"/>
+              <circle class="ge" id="ringC" cx="50" cy="50" r="26" stroke="#ff6a3d" stroke-width="7" stroke-dasharray="0 163.4"/>
+            </g>
+          </svg>
+          <div class="ringcenter"><span class="day">День 1</span><b id="ringVal">0</b><span id="ringGoal">1500 ккал</span></div>
+        </div>
+        <div class="hero-right">
+          <div class="macro"><span class="tick"><i id="tickC" style="height:3%"></i></span><span class="v" id="vC">0/160г</span></div>
+          <div class="macro"><span class="tick"><i style="height:0%;opacity:0"></i></span><span class="n">Углеводы</span></div>
+          <div class="macro"><span class="tick"><i id="tickP" style="height:3%"></i></span><span class="v" id="vP">0/75г</span></div>
+          <div class="macro"><span class="tick"><i style="height:0%;opacity:0"></i></span><span class="n">Белки</span></div>
+          <div class="macro"><span class="tick"><i id="tickF" style="height:3%"></i></span><span class="v" id="vF">0/30г</span></div>
+          <div class="macro"><span class="tick"><i style="height:0%;opacity:0"></i></span><span class="n">Жиры</span></div>
+          <button class="pill rep" onclick="openReport()">Отчёт</button>
+        </div>
+        <button class="icon-btn edit" title="Изменить цель" onclick="openGoals()">✎</button>
+      </div>
+
+      <div class="grid2" style="margin-top:11px">
+        <div class="card">
+          <div class="stat-head"><span class="stat-ico">💧</span>Вода</div>
+          <div class="stat-val" id="waterVal">0 <span style="font-size:13px">мл</span><span class="muted" style="float:right;font-size:13px">0%</span></div>
+          <div class="stat-sub">Цель: <span id="waterGoal">2</span> л в день</div>
+          <div class="water-ctl">
+            <button class="icon-btn sm" onclick="water(-250)">−</button>
+            <div class="water-track"><div class="water-fill" id="waterFill"></div></div>
+            <button class="icon-btn sm" onclick="water(250)">+</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="spread"><div class="stat-head"><span class="stat-ico">⚖️</span>Вес</div>
+            <div class="row" style="gap:6px">
+              <button class="icon-btn sm" onclick="bumpWeight(-0.1)">−</button>
+              <button class="icon-btn sm" onclick="bumpWeight(0.1)">+</button>
+            </div></div>
+          <div class="stat-val"><span id="wVal">0</span> <span style="font-size:13px">кг</span></div>
+          <div class="stat-sub" id="wGoal">Цель не задана</div>
+          <div class="stat-goal" style="margin-top:8px" id="wStart">Начало — не задано</div>
+        </div>
+      </div>
+
+      <div class="grid2" style="margin-top:11px">
+        <div class="card">
+          <div class="spread"><h2>Настроение</h2><span class="muted" style="cursor:pointer" onclick="toast('Настроение попадает в отчёт недели')">ⓘ</span></div>
+          <div class="stat-sub" style="margin-top:8px">Какое у вас<br>настроение?</div>
+          <div class="emoji-row" id="moodRow"></div>
+        </div>
+        <div class="card">
+          <div class="spread"><h2>Сон</h2><span class="muted" style="cursor:pointer" onclick="openSleep()">ⓘ</span></div>
+          <div class="stat-val" style="font-size:21px"><span id="sleepVal">7.3</span> <span style="font-size:13px">ч</span></div>
+          <div class="sleep" id="sleepBars"></div>
+        </div>
+      </div>
+
+      <div class="section"><span class="t">Тело и активность</span></div>
+      <div class="card soft" style="padding:0">
+        <div class="item clickable" onclick="openMeasures()"><div class="ico">📏</div>
+          <div class="body"><div class="tt">Замеры тела</div><div class="vv" style="font-size:12px" id="measVal">— · — · —</div><div class="ss" id="measSub">Пока нет замеров</div></div>
+          <span class="chev">›</span></div>
+        <div class="item clickable" onclick="openSteps()"><div class="ico">👟</div>
+          <div class="body"><div class="tt">Шаги</div><div class="vv" style="font-size:12px" id="stepsVal">Цель 12 000</div><div class="ss" id="stepsSub">Добавьте шаги за день</div></div>
+          <span class="chev">›</span></div>
+        <div class="item clickable" onclick="openSupps()"><div class="ico">💊</div>
+          <div class="body"><div class="tt">Добавки</div><div class="vv" style="font-size:12px" id="suppVal">0 из 4</div><div class="ss">Что вы пьёте</div></div>
+          <span class="chev">›</span></div>
+      </div>
+
+      <div class="section"><span class="t">Активность</span>
+        <span style="display:flex;gap:8px;align-items:center">
+          <button class="pill" onclick="openReport()">Отчёт</button>
+          <button class="cal-nav" onclick="shiftMonth(-1)">‹</button>
+          <button class="cal-nav" onclick="shiftMonth(1)">›</button>
+        </span>
+      </div>
+      <div class="card"><div class="cal-head"><h2 id="calTitle">Сентябрь 2026</h2></div><div class="cal" id="calGrid"></div></div>
+
+      <div class="section"><span class="t">Подписка</span></div>
+      <div class="card soft" style="padding:0">
+        <div class="item clickable" onclick="openSubscription()"><div class="ico">⭐</div>
+          <div class="body"><div class="tt">FORGE PRO</div><div class="ss">Оплата через Telegram Stars</div></div>
+          <span class="vv" id="subVal">149 ⭐</span></div>
+      </div>
+    </section>
+
+    <!-- ============ РАЦИОН ============ -->
+    <section class="screen" id="s-ration">
+      <div class="row" style="gap:6px;margin-top:8px">
+        <button class="icon-btn" style="border:none;background:none;font-size:22px" onclick="go('forma')">‹</button>
+        <h1 style="font-size:26px">Рацион</h1>
+      </div>
+      <div class="chips">
+        <button class="chip on" onclick="openGoals()">⛁ Мой БЖУ</button>
+        <button class="chip" onclick="go('food')">★ Мои блюда</button>
+        <button class="chip" onclick="scanPhoto()">📷 Фото</button>
+      </div>
+
+      <div id="rationBody"></div>
+    </section>
+
+    <!-- ============ ПРОГРЕСС ============ -->
+    <section class="screen" id="s-progress">
+      <h1>Прогресс</h1>
+      <p class="sub">30 дней наблюдений</p>
+
+      <div class="card" style="margin-top:14px">
+        <div class="spread">
+          <div><div class="stat-sub" id="weightLbl">Текущий вес</div><div class="statbig" id="weightNow">— <span style="font-size:14px">кг</span></div></div>
+          <div style="text-align:right"><div class="stat-sub" id="weightRange">—</div><div class="delta" id="weightDelta">—</div></div>
+        </div>
+        <svg class="chart" id="weightChart"></svg>
+        <div class="spread" style="margin-top:6px"><span class="stat-sub">начало</span><span class="stat-sub">сегодня</span></div>
+      </div>
+
+      <div class="section"><span class="t">Тоннаж по неделям</span><span class="l">кг</span></div>
+      <div class="card"><div class="bars" id="tonnageBars"></div></div>
+
+      <div class="section"><span class="t">Личные рекорды</span></div>
+      <div class="card soft" style="padding:0" id="prList"></div>
+
+      <div class="section"><span class="t">Объём по группам</span><span class="l">30 дней</span></div>
+      <div class="card" id="volList"></div>
+      <div class="note">FORGE · макет · демонстрация интерфейса</div>
+    </section>
+
+    <!-- ============ ЕДА ============ -->
+    <section class="screen" id="s-food">
+      <h1>Еда</h1>
+      <p class="sub">База продуктов · нажми, чтобы добавить в рацион</p>
+      <div class="search">🔍 <input id="foodSearch" placeholder="Поиск продукта…" oninput="renderFood()"></div>
+      <div class="chips" id="foodChips"></div>
+      <div class="card" style="padding:0;margin-top:10px" id="foodList"></div>
+    </section>
+
+  </main>
+
+  <nav class="tabbar" id="tabbar"></nav>
+
+  <div class="overlay" id="overlay">
+    <div class="ov-head">
+      <button class="icon-btn" onclick="closeOverlay()">‹</button>
+      <div style="flex:1;min-width:0">
+        <h2 id="ovTitle">—</h2>
+        <div class="sub" id="ovSub">—</div>
+      </div>
+    </div>
+    <div class="ov-body" id="ovBody"></div>
+    <div class="ov-foot" id="ovFoot"></div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+</div>
+<div class="caption">FORGE · кликабельный макет</div>
+</div>
+
+<script>
+/* ================== ИКОНКИ МЕНЮ ================== */
+const ICONS = {
+  food:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 11h17a8.5 8.5 0 0 1-17 0Z"/><path d="M8.5 11V6.5a2 2 0 0 1 4 0"/><path d="M12.5 7l5.5-2.5"/></svg>',
+  ration:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5V12h8.5"/></svg>',
+  forma:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13h3l2-5 3 9 2.4-6.5L15 15h6"/></svg>',
+  workout:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M6.5 6.5v11M3.5 9v5M17.5 6.5v11M20.5 9v5M6.5 12h11"/></svg>',
+  progress:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>'
+};
+
+const ACTIVITIES = [
+  {id:'warmup', name:'Разминка', img:'assets/act-warmup.png', sub:'8 мин · всё тело'},
+  {id:'cardio', name:'Кардио',   img:'assets/act-cardio.png', sub:'20 мин · бег'},
+  {id:'stretch',name:'Растяжка', img:'assets/act-stretch.png', sub:'10 мин · заминка'}
+];
+
+/* ================== ДАННЫЕ ================== */
+const MUSCLES = [
+  {id:'chest', name:'Грудь', img:'assets/muscle-chest.png', count:10, ex:[
+    ['Жим штанги лёжа','4 × 8-10',40],['Жим гантелей лёжа','4 × 10',20],
+    ['Жим гантелей на наклонной','3 × 10-12',18],
+    ['Жим в Смите на наклонной','4 × 8-10',35],['Жим в тренажёре','3 × 10-12',40],
+    ['Разводка гантелей','3 × 12-15',10],
+    ['Кроссовер в блоке','3 × 12-15',15],['Отжимания на брусьях','3 × 8-12',0],
+    ['Отжимания от пола','3 × 15-20',0],['Пулловер в блоке','3 × 12-15',20]]},
+  {id:'back', name:'Спина', img:'assets/muscle-back.png', count:10, ex:[
+    ['Становая тяга','4 × 6-8',60],['Подтягивания','4 × 8-12',0],['Подтягивания с весом','4 × 6-8',10],
+    ['Тяга штанги в наклоне','4 × 8-10',40],['Тяга Т-грифа','4 × 8-10',40],
+    ['Тяга верхнего блока','3 × 10-12',45],['Тяга гантели одной рукой','3 × 10-12',22],
+    ['Горизонтальная тяга','3 × 10-12',40],['Горизонтальная тяга в блоке','3 × 10-12',45],
+    ['Тяга в тренажёре Хаммер','3 × 10-12',50]]},
+  {id:'legs', name:'Ноги', img:'assets/muscle-legs.png', count:11, ex:[
+    ['Приседания со штангой','4 × 8-10',50],['Фронтальные приседания','4 × 8-10',40],
+    ['Приседания в Гакк-тренажёре','4 × 10-12',70],['Жим ногами','4 × 10-12',100],
+    ['Румынская тяга','3 × 10-12',45],['Разгибания ног','3 × 12-15',30],['Сгибания ног лёжа','3 × 12-15',30],
+    ['Подъёмы на носки','4 × 15-20',40],['Подъёмы на носки сидя','4 × 15-20',30],
+    ['Болгарский выпад','3 × 10-12',16],['Ягодичный мост','3 × 12-15',60]]},
+  {id:'arms', name:'Руки', img:'assets/muscle-arms.png', count:9, ex:[
+    ['Подъём штанги на бицепс','4 × 8-12',25],
+    ['Молотки','3 × 10-12',12],['Скамья Скотта','3 × 10-12',20],
+    ['Концентрированный подъём','3 × 12',10],['Французский жим','4 × 8-12',25],
+    ['Разгибания на блоке','3 × 12-15',20],['Жим узким хватом','3 × 10-12',30],
+    ['Разгибания рук в наклоне','3 × 12-15',10],['Обратные отжимания от скамьи','3 × 12-15',0]]},
+  {id:'shoulders', name:'Плечи', img:'assets/muscle-shoulders.png', count:10, ex:[
+    ['Жим штанги стоя','4 × 8-10',35],['Жим гантелей стоя','4 × 8-10',16],
+    ['Жим гантелей сидя','4 × 8-10',16],['Жим в тренажёре на плечи','4 × 10-12',40],
+    ['Жим Арнольда','3 × 10-12',14],['Махи гантелями в стороны','3 × 12-15',8],
+    ['Махи в наклоне','3 × 12-15',8],
+    ['Тяга штанги к подбородку','3 × 12',25],
+    ['Разведения в наклоне','3 × 12-15',8],['Шраги с гантелями','3 × 12-15',25]]},
+  {id:'abs', name:'Пресс', img:'assets/muscle-abs.png', count:5, ex:[
+    ['Планка','3 × 45 сек',0],['Скручивания','3 × 15-20',0],['Подъём ног в висе','3 × 10-15',0],
+    ['Ролик для пресса','3 × 10',0],['Боковая планка','3 × 40 сек',0]]}
+];
+
+const PROGRAMS = [
+  {id:'fb', name:'Full Body', meta:'3 дня/нед', level:'Новичок',
+   desc:'Всё тело за одну тренировку, 3 раза в неделю. Лучший старт.',
+   plan:[
+     {n:'День A', ex:[['Приседания со штангой','4 × 8-10',40],['Жим штанги лёжа','4 × 8-10',40],['Тяга штанги в наклоне','4 × 8-10',35],['Жим гантелей стоя','3 × 10-12',12],['Планка','3 × 45 сек',0]]},
+     {n:'День B', ex:[['Румынская тяга','4 × 8-10',45],['Жим гантелей лёжа','4 × 10',20],['Тяга верхнего блока','4 × 10-12',45],['Махи гантелями в стороны','3 × 12-15',8],['Скручивания','3 × 20',0]]},
+     {n:'День C', ex:[['Жим ногами','4 × 10-12',100],['Отжимания на брусьях','4 × 8-12',0],['Тяга гантели одной рукой','4 × 10',22],['Разводка гантелей','3 × 12-15',10],['Подъём ног в висе','3 × 12',0]]}]},
+  {id:'ppl', name:'Push / Pull / Legs', meta:'6 дней/нед', level:'Средний',
+   desc:'Жим, тяга, ноги. Каждая группа работает 2 раза в неделю.',
+   plan:[
+     {n:'Push', ex:[['Жим штанги лёжа','4 × 6-8',50],['Жим гантелей на наклонной','4 × 8-10',22],['Разводка гантелей','3 × 12-15',10],['Жим штанги стоя','4 × 8-10',30],['Французский жим','3 × 10-12',25]]},
+     {n:'Pull', ex:[['Становая тяга','4 × 6',70],['Подтягивания','4 × 8-12',0],['Тяга штанги в наклоне','4 × 8-10',45],['Тяга верхнего блока','3 × 10-12',45],['Подъём штанги на бицепс','4 × 10',25]]},
+     {n:'Legs', ex:[['Приседания со штангой','4 × 8-10',60],['Жим ногами','4 × 10-12',110],['Румынская тяга','3 × 10-12',50],['Разгибания ног','3 × 12-15',30],['Подъёмы на носки','4 × 15-20',40]]},
+     {n:'Push 2', ex:[['Жим гантелей лёжа','4 × 8-10',24],['Жим в Смите на наклонной','4 × 10',30],['Кроссовер в блоке','3 × 12-15',15],['Махи гантелями в стороны','4 × 12-15',8],['Разгибания на блоке','3 × 12-15',20]]},
+     {n:'Pull 2', ex:[['Тяга Т-грифа','4 × 8-10',40],['Тяга гантели одной рукой','4 × 10-12',24],['Горизонтальная тяга в блоке','3 × 10-12',45],['Молотки','4 × 10-12',14],['Шраги с гантелями','3 × 12-15',25]]},
+     {n:'Legs 2', ex:[['Фронтальные приседания','4 × 8-10',45],['Болгарский выпад','3 × 10-12',20],['Сгибания ног лёжа','4 × 12-15',30],['Ягодичный мост','3 × 12',60],['Подъёмы на носки сидя','4 × 15-20',30]]}]},
+  {id:'bro', name:'Bro Split', meta:'5 дней/нед', level:'Продвинутый',
+   desc:'Одна группа мышц в день. Максимальный объём и проработка.',
+   plan:[
+     {n:'Грудь', ex:[['Жим штанги лёжа','5 × 6-8',55],['Жим гантелей на наклонной','4 × 8-10',45],['Разводка гантелей','4 × 12',12],['Отжимания на брусьях','3 × 10-12',0],['Кроссовер в блоке','3 × 15',15]]},
+     {n:'Спина', ex:[['Подтягивания с весом','5 × 6-8',0],['Тяга штанги в наклоне','4 × 8-10',50],['Тяга верхнего блока','4 × 10-12',50],['Тяга Т-грифа','3 × 10',40],['Пулловер в блоке','3 × 12-15',25]]},
+     {n:'Ноги', ex:[['Приседания со штангой','5 × 6-8',70],['Жим ногами','4 × 10-12',120],['Румынская тяга','4 × 10',55],['Разгибания ног','3 × 12-15',35],['Подъёмы на носки','5 × 15-20',45]]},
+     {n:'Плечи', ex:[['Жим штанги стоя','5 × 6-8',35],['Махи гантелями в стороны','4 × 12-15',9],['Разведения в наклоне','4 × 12-15',9],['Тяга штанги к подбородку','3 × 12',28],['Шраги с гантелями','4 × 12-15',30]]},
+     {n:'Руки', ex:[['Подъём штанги на бицепс','4 × 8-10',30],['Французский жим','4 × 8-10',28],['Молотки','3 × 10-12',14],['Разгибания на блоке','3 × 12-15',22],['Скамья Скотта','3 × 12',20]]}]},
+  {id:'ul', name:'Upper / Lower', meta:'4 дня/нед', level:'Средний',
+   desc:'Верх и низ тела через день. Баланс объёма и восстановления.',
+   plan:[
+     {n:'Верх A', ex:[['Жим штанги лёжа','4 × 6-8',50],['Тяга штанги в наклоне','4 × 8-10',45],['Жим гантелей сидя','3 × 10-12',18],['Подтягивания','3 × 8-12',0],['Французский жим','3 × 10-12',25]]},
+     {n:'Низ A', ex:[['Приседания со штангой','5 × 6-8',60],['Румынская тяга','3 × 10',50],['Жим ногами','3 × 12',100],['Разгибания ног','3 × 12-15',30],['Подъёмы на носки','4 × 15',40]]},
+     {n:'Верх B', ex:[['Жим гантелей лёжа','4 × 8-10',24],['Тяга верхнего блока','4 × 10-12',48],['Разводка гантелей','3 × 12-15',11],['Тяга гантели одной рукой','3 × 10-12',24],['Подъём штанги на бицепс','3 × 10-12',26]]},
+     {n:'Низ B', ex:[['Становая тяга','4 × 6',75],['Болгарский выпад','3 × 10-12',20],['Сгибания ног лёжа','3 × 12-15',30],['Ягодичный мост','3 × 12',60],['Подъёмы на носки сидя','4 × 15',30]]}]},
+  {id:'ulppl', name:'Upper / Lower + Push Pull', meta:'6 дней/нед', level:'Продвинутый',
+   desc:'Upper, Lower, Upper, Lower, Push, Pull — сила и объём за неделю.',
+   plan:[
+     {n:'Верх', ex:[['Жим штанги лёжа','4 × 6-8',55],['Тяга штанги в наклоне','4 × 8-10',45],['Жим гантелей сидя','4 × 8-10',20],['Подтягивания','4 × 8-12',0],['Подъём штанги на бицепс','3 × 10',28]]},
+     {n:'Низ', ex:[['Приседания со штангой','5 × 6-8',65],['Румынская тяга','4 × 8-10',55],['Жим ногами','3 × 12',110],['Разгибания ног','3 × 12-15',32],['Подъёмы на носки','4 × 15-20',45]]},
+     {n:'Верх 2', ex:[['Жим гантелей лёжа','4 × 8-10',26],['Тяга Т-грифа','4 × 8-10',45],['Махи гантелями в стороны','4 × 12-15',9],['Горизонтальная тяга','3 × 10-12',48],['Французский жим','3 × 10-12',26]]},
+     {n:'Низ 2', ex:[['Фронтальные приседания','4 × 8-10',45],['Болгарский выпад','4 × 10-12',22],['Сгибания ног лёжа','4 × 12-15',32],['Ягодичный мост','3 × 12',65],['Подъёмы на носки','4 × 15',40]]},
+     {n:'Push', ex:[['Жим штанги лёжа','4 × 6-8',55],['Жим гантелей на наклонной','4 × 8-10',45],['Кроссовер в блоке','3 × 15',15],['Жим штанги стоя','3 × 10',32],['Разгибания на блоке','3 × 12',22]]},
+     {n:'Pull', ex:[['Становая тяга','3 × 6',80],['Подтягивания','4 × 8-12',0],['Тяга верхнего блока','4 × 10-12',50],['Молотки','4 × 10-12',16],['Шраги с гантелями','3 × 12-15',30]]}]}
+];
+
+const FOODS = [
+  {n:'Куриная грудка',      k:165, p:31,  f:3.6, c:0,   cat:'Белки'},
+  {n:'Творог 5%',           k:121, p:17,  f:5,   c:3,   cat:'Белки'},
+  {n:'Яйцо куриное',        k:155, p:13,  f:11,  c:1.1, cat:'Белки'},
+  {n:'Лосось',              k:208, p:20,  f:13,  c:0,   cat:'Белки'},
+  {n:'Индейка',             k:189, p:29,  f:7,   c:0,   cat:'Белки'},
+  {n:'Рис белый варёный',   k:130, p:2.7, f:0.3, c:28,  cat:'Углеводы'},
+  {n:'Гречка варёная',      k:110, p:4,   f:1.1, c:21,  cat:'Углеводы'},
+  {n:'Овсянка на воде',     k:88,  p:3,   f:1.7, c:15,  cat:'Углеводы'},
+  {n:'Банан',               k:89,  p:1.1, f:0.3, c:23,  cat:'Углеводы'},
+  {n:'Хлеб цельнозерновой', k:247, p:13,  f:3.4, c:41,  cat:'Углеводы'},
+  {n:'Оливковое масло',     k:884, p:0,   f:100, c:0,   cat:'Жиры'},
+  {n:'Авокадо',             k:160, p:2,   f:15,  c:9,   cat:'Жиры'},
+  {n:'Миндаль',             k:579, p:21,  f:50,  c:22,  cat:'Жиры'}
+];
+
+const TECH = {
+  'Жим штанги лёжа':'Лопатки сведены, прогиб в пояснице, гриф к низу груди, локти под 45°.',
+  'Приседания со штангой':'Стопы на ширине плеч, колени по направлению носков, спина прямая, до параллели.',
+  'Становая тяга':'Гриф у голени, спина нейтральная, толкаем пол ногами, корпус поднимается вместе.',
+  'Подтягивания':'Полный вис, тянем локти вниз, подбородок выше перекладины, опускание подконтрольно.',
+  'Жим штанги стоя':'Пресс напряжён, гриф по линии носа, поясницу не прогибаем, локти чуть впереди.',
+  'Планка':'Тело одной линией, таз подкручен, дышим ровно, поясницу не проваливаем.'
+};
+function techFor(n){
+  return TECH[n] || 'Средний темп, полная амплитуда. Дыхание: усилие — выдох. Разминка перед рабочими подходами.';
+}
+function seed(s){ let h=0; for(let i=0;i<s.length;i++) h=(h*31+s.charCodeAt(i))>>>0; return h; }
+function esc(s){ return String(s).replace(/'/g, "\\'"); }
+
+/* ================== СОСТОЯНИЕ ================== */
+const state = {
+  tab:'workout', mood:null, water:0, weight:0, steps:0,
+  goals:{ kcal:1500, p:75, f:30, c:160, water:2, steps:12000 },
+  meals:[
+    {n:'Завтрак', t:'08:00', open:true,  items:[]},
+    {n:'Обед',    t:'13:30', open:true,  items:[]},
+    {n:'Ужин',    t:'19:00', open:false, items:[]},
+    {n:'Перекус', t:'',      open:false, items:[]}
+  ],
+  measures:{chest:0, waist:0, hips:0, done:false},
+  supps:[{n:'Витамин D3',on:false},{n:'Омега-3',on:false},{n:'Креатин',on:false},{n:'Магний',on:false}],
+  calOffset:0, sub:0, foodCat:'Все',
+  workouts:[], weightLog:[], sleepLog:[], stepsLog:[], measLog:[],
+  day:'', onboarded:false,
+  profile:{sex:'m', age:0, height:0, weight:0, activity:1.375, goal:'cut'}
+};
+const MOODS = ['🙂','😐','😴','😖'];
+const MOOD_NAMES = ['Отлично','Нормально','Сонный','Разбитый'];
+
+/* ================== ХРАНЕНИЕ ================== */
+const STORE_KEY = 'forge.v1';
+function dayKey(d){
+  const x = d || new Date();
+  return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0');
+}
+function save(){
+  try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); return true; }
+  catch(e){ return false; }
+}
+function load(){
+  try{
+    const raw = localStorage.getItem(STORE_KEY);
+    if(!raw) return false;
+    const d = JSON.parse(raw);
+    if(!d || typeof d !== 'object') return false;
+    Object.keys(d).forEach(k=>{ if(k in state) state[k] = d[k]; });
+    return true;
+  }catch(e){ return false; }
+}
+function resetAll(){
+  try{ localStorage.removeItem(STORE_KEY); }catch(e){}
+  location.reload();
+}
+/* новый день — обнуляем ежедневные показатели */
+function rollover(){
+  const today = dayKey();
+  if(state.day !== today){
+    state.day = today;
+    state.water = 0; state.mood = null; state.steps = 0;
+    state.measures = {chest:0, waist:0, hips:0, done:false};
+    state.supps.forEach(s=> s.on = false);
+    state.meals.forEach(m=> m.items = []);
+  }
+  return today;
+}
+/* добавить/обновить точку в логе по дате */
+function logPush(key, val){
+  const today = dayKey();
+  const arr = state[key];
+  const i = arr.findIndex(x=> x.d === today);
+  if(i >= 0) arr[i] = Object.assign({d:today}, val);
+  else arr.push(Object.assign({d:today}, val));
+  if(arr.length > 400) arr.splice(0, arr.length-400);
+}
+function logSeries(key, mapFn){
+  return state[key].slice().sort((a,b)=> a.d < b.d ? -1 : 1).map(mapFn);
+}
+
+let toastTimer = null;
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove('show'), 2200);
+}
+
+/* ================== НАВИГАЦИЯ ================== */
+const TABS = [
+  {id:'workout', label:'Тренировка'}, {id:'progress', label:'Прогресс'},
+  {id:'forma', label:'Форма'}, {id:'ration', label:'Рацион'}, {id:'food', label:'Еда'}
+];
+function renderTabs(){
+  document.getElementById('tabbar').innerHTML = TABS.map(t=>`
+    <button class="tab" data-tab="${t.id}" onclick="go('${t.id}')">
+      <span class="tic">${ICONS[t.id]}</span>${t.label}
+    </button>`).join('');
+}
+function go(id){
+  state.tab = id;
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('s-'+id).classList.add('active');
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active', t.dataset.tab===id));
+  if(id==='ration') renderRation();
+  if(id==='food') renderFood();
+  if(id==='forma') renderForma();
+}
+
+/* ================== ОВЕРЛЕЙ ================== */
+function openOverlay(title, sub, bodyHTML, footHTML){
+  document.getElementById('ovTitle').textContent = title;
+  document.getElementById('ovSub').textContent = sub || '';
+  document.getElementById('ovBody').innerHTML = bodyHTML || '';
+  document.getElementById('ovFoot').innerHTML = footHTML || '';
+  document.getElementById('overlay').classList.add('open');
+  document.getElementById('ovBody').scrollTop = 0;
+}
+function closeOverlay(){
+  document.getElementById('overlay').classList.remove('open');
+  clearInterval(tick); S = null;
+}
+
+/* ================== ПОДСЧЁТ КБЖУ ================== */
+function totals(){
+  let k=0,p=0,f=0,c=0;
+  state.meals.forEach(m=>m.items.forEach(it=>{
+    const g = it.g/100; k+=it.k*g; p+=it.p*g; f+=it.f*g; c+=it.c*g;
+  }));
+  return { k:Math.round(k), p:Math.round(p), f:Math.round(f), c:Math.round(c) };
+}
+function mealTotals(m){
+  let k=0,p=0,f=0,c=0;
+  m.items.forEach(it=>{ const g=it.g/100; k+=it.k*g; p+=it.p*g; f+=it.f*g; c+=it.c*g; });
+  return { k:Math.round(k), p:Math.round(p), f:Math.round(f), c:Math.round(c) };
+}
+const pct = (v,g)=> Math.min(100, Math.round(v/(g||1)*100));
+
+/* ================== ФОРМА ================== */
+function renderForma(){
+  const t = totals(), g = state.goals;
+  const C = r => 2*Math.PI*r;
+  const setRing = (id, r, val, goal) =>
+    document.getElementById(id).setAttribute('stroke-dasharray',
+      (C(r)*Math.min(1,val/(goal||1))).toFixed(1)+' '+C(r).toFixed(1));
+  setRing('ringKcal',44,t.k,g.kcal);
+  setRing('ringP',35,t.p,g.p);
+  setRing('ringC',26,t.c,g.c);
+  document.getElementById('ringVal').textContent = t.k;
+  document.getElementById('ringGoal').textContent = g.kcal+' ккал';
+  document.getElementById('vC').textContent = t.c+'/'+g.c+'г';
+  document.getElementById('vP').textContent = t.p+'/'+g.p+'г';
+  document.getElementById('vF').textContent = t.f+'/'+g.f+'г';
+  document.getElementById('tickC').style.height = Math.max(3,pct(t.c,g.c))+'%';
+  document.getElementById('tickP').style.height = Math.max(3,pct(t.p,g.p))+'%';
+  document.getElementById('tickF').style.height = Math.max(3,pct(t.f,g.f))+'%';
+
+  const wg = g.water*1000;
+  document.getElementById('waterFill').style.width = Math.min(100, state.water/wg*100)+'%';
+  document.getElementById('waterVal').innerHTML = state.water+' <span style="font-size:13px">мл</span>'+
+    '<span class="muted" style="float:right;font-size:13px">'+pct(state.water,wg)+'%</span>';
+  document.getElementById('waterGoal').textContent = g.water;
+  document.getElementById('wVal').textContent = state.weight.toFixed(1).replace('.0','');
+
+  const pf = state.profile || {}, tgt = pf.targetWeight, beg = pf.startWeight;
+  const left = (tgt && state.weight) ? Math.round((state.weight - tgt)*10)/10 : null;
+  document.getElementById('wGoal').textContent = tgt
+    ? `Цель: ${tgt} кг${left !== null ? ' · '+(left>0?'↓ ':'✓ ')+Math.abs(left)+' кг' : ''}`
+    : 'Цель не задана — нажми, чтобы настроить';
+  document.getElementById('wStart').textContent = beg
+    ? `Начало — ${beg} кг` : 'Начало — не задано';
+  document.getElementById('wGoal').style.cursor = 'pointer';
+  document.getElementById('wGoal').onclick = ()=> openGoals();
+  document.getElementById('wStart').style.cursor = 'pointer';
+  document.getElementById('wStart').onclick = ()=> openOnboarding();
+
+  document.getElementById('moodRow').innerHTML = MOODS.map((m,i)=>
+    `<button class="emoji ${state.mood===i?'on':''}" onclick="setMood(${i})">${m}</button>`).join('');
+
+  const mv = state.measures;
+  document.getElementById('measVal').textContent = mv.done ? mv.chest+' · '+mv.waist+' · '+mv.hips : '— · — · —';
+  document.getElementById('measSub').textContent = mv.done ? 'Обновлено сегодня' : 'Пока нет замеров';
+  document.getElementById('stepsVal').textContent = state.steps.toLocaleString('ru-RU')+' / '+g.steps.toLocaleString('ru-RU');
+  document.getElementById('stepsSub').textContent = state.steps ? pct(state.steps,g.steps)+'% цели' : 'Добавьте шаги за день';
+  document.getElementById('suppVal').textContent = state.supps.filter(s=>s.on).length+' из '+state.supps.length;
+  document.getElementById('subVal').textContent = SUB_PLANS[state.sub][1]+' ⭐';
+  renderCalendar();
+}
+function setMood(i){ state.mood = i; save(); renderForma(); toast('Настроение: '+MOOD_NAMES[i]); }
+function water(d){
+  const max = state.goals.water*1000;
+  const was = state.water;
+  state.water = Math.max(0, Math.min(max, state.water+d));
+  save(); renderForma();
+  if(state.water>=max && was<max) toast('Цель по воде выполнена 💧');
+}
+function bumpWeight(d){
+  state.weight = Math.round((state.weight+d)*10)/10;
+  if(state.weight > 0){ logPush('weightLog', {kg: state.weight}); state.profile.weight = state.weight; }
+  save(); renderForma(); renderProgress();
+}
+const WD = ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'];
+function sleepWeek(){
+  const DEMO = [7.1,7.4,7.0,6.4,6.8,8.2,7.9];
+  const log = state.sleepLog.slice().sort((a,b)=> a.d < b.d ? -1 : 1).slice(-7);
+  if(!log.length) return DEMO.map((h,i)=>({h, l:WD[(i+1)%7]}));
+  return log.map(x=>{
+    const p = x.d.split('-');
+    return { h:x.h, l:WD[new Date(+p[0],+p[1]-1,+p[2]).getDay()] };
+  });
+}
+function renderSleep(){
+  const w = sleepWeek(), max = 9;
+  document.getElementById('sleepBars').innerHTML = w.map(x=>
+    `<div class="b clickable" onclick="toast('${x.l}: ${x.h} ч сна')">
+      <div class="bar" style="height:${Math.round(x.h/max*100)}%"></div><div class="d">${x.l}</div></div>`).join('');
+  const avg = w.reduce((a,b)=> a+b.h, 0) / (w.length||1);
+  const sv = document.getElementById('sleepVal');
+  if(sv) sv.textContent = avg.toFixed(1);
+}
+let sleepTmp = 7.5;
+function openSleep(){
+  const log = state.sleepLog.find(x=> x.d === dayKey());
+  sleepTmp = log ? log.h : 7.5;
+  const w = sleepWeek(), avg = w.reduce((a,b)=> a+b.h, 0)/(w.length||1);
+  openOverlay('Сон','Средняя продолжительность',
+    `<div class="card" style="text-align:center;padding:22px">
+      <div class="statbig" style="font-size:40px" id="slBig">${avg.toFixed(1)} <span style="font-size:14px">ч</span></div>
+      <div class="stat-sub">среднее за ${w.length} дней · норма 7–9 ч</div>
+      <div class="sleep" style="height:80px;margin-top:18px">${w.map(x=>
+        `<div class="b"><div class="bar" style="height:${Math.round(x.h/9*100)}%"></div><div class="d">${x.l}</div></div>`).join('')}</div>
+    </div>
+    <div class="card" style="margin-top:11px">
+      <div class="lbl">СОН ЗА СЕГОДНЯ</div>
+      <div class="row" style="justify-content:center;gap:12px;margin-top:10px">
+        <button class="icon-btn" onclick="sleepStep(-0.5)">−</button>
+        <b class="mono" style="font-size:26px;color:var(--lime);min-width:110px;text-align:center" id="slNow">${sleepTmp} ч</b>
+        <button class="icon-btn" onclick="sleepStep(0.5)">+</button>
+      </div>
+    </div>`,
+    `<button class="bigbtn" onclick="saveSleep()">Сохранить</button>`);
+}
+function sleepStep(d){
+  sleepTmp = Math.max(0, Math.min(14, Math.round((sleepTmp + d) * 2) / 2));
+  document.getElementById('slNow').textContent = sleepTmp + ' ч';
+}
+function saveSleep(){
+  logPush('sleepLog', {h: sleepTmp});
+  save(); closeOverlay(); renderSleep(); renderForma();
+  toast('Сон: ' + sleepTmp + ' ч');
+}
+let calDate = new Date(2026,8,20);
+const MONTHS=['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+function shiftMonth(d){ calDate = new Date(calDate.getFullYear(), calDate.getMonth()+d, 1); renderCalendar(); }
+function renderCalendar(){
+  const y=calDate.getFullYear(), m=calDate.getMonth();
+  document.getElementById('calTitle').textContent = MONTHS[m]+' '+y;
+  const days = new Date(y,m+1,0).getDate(), lead = (new Date(y,m,1).getDay()+6)%7;
+  const done=[2,5,7,9,12,14,16,18];
+  let html = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'].map(w=>`<div class="wd">${w}</div>`).join('');
+  for(let i=0;i<lead;i++) html += '<div></div>';
+  for(let d=1; d<=days; d++){
+    const isToday = d===20 && m===8 && y===2026;
+    const cls = isToday ? 'today' : (m===8 && y===2026 && done.includes(d) ? 'done' : '');
+    html += `<div class="dd ${cls}" onclick="toast('${d} ${MONTHS[m].toLowerCase()} · ${done.includes(d)&&m===8?'тренировка была':'записей нет'}')">${d}</div>`;
+  }
+  document.getElementById('calGrid').innerHTML = html;
+}
+function openGoals(){
+  openOverlay('Цели','Калории, БЖУ, вода и шаги',
+    `<div class="card">${[['kcal','Калории','ккал',50],['p','Белки','г',5],['f','Жиры','г',5],
+        ['c','Углеводы','г',10],['water','Вода','л',0.5],['steps','Шаги','',500]]
+      .map(x=>`<div class="spread clickable" style="padding:11px 0;border-bottom:1px solid var(--line)">
+        <span>${x[1]}</span><div class="row" style="gap:8px">
+        <button class="icon-btn sm" onclick="event.stopPropagation();stepGoal('${x[0]}',${-x[3]})">−</button>
+        <b class="mono" style="min-width:80px;text-align:center;color:var(--lime)" id="g_${x[0]}">${state.goals[x[0]]} ${x[2]}</b>
+        <button class="icon-btn sm" onclick="event.stopPropagation();stepGoal('${x[0]}',${x[3]})">+</button>
+      </div></div>`).join('')}</div>
+    <div class="stat-sub" style="margin:14px 4px">Кольцо на главном экране и шкалы в рационе пересчитаются сразу.</div>`,
+    `<button class="bigbtn" onclick="closeOverlay();toast('Цели сохранены')">Сохранить</button>`);
+}
+function stepGoal(key, d){
+  state.goals[key] = Math.max(0, Math.round((state.goals[key]+d)*10)/10);
+  const unit = {kcal:'ккал',p:'г',f:'г',c:'г',water:'л',steps:''}[key];
+  const el = document.getElementById('g_'+key);
+  if(el) el.textContent = state.goals[key]+' '+unit;
+  save(); renderForma(); renderRation();
+}
+function openMeasures(){
+  const mv = state.measures;
+  openOverlay('Замеры тела','Грудь · Талия · Бёдра',
+    `<div class="card">${['chest','waist','hips'].map((k,i)=>{
+      const lbl = ['Грудь','Талия','Бёдра'][i];
+      return `<div class="spread" style="padding:11px 0;border-bottom:1px solid var(--line)">
+        <span>${lbl}</span><div class="row" style="gap:8px">
+        <button class="icon-btn sm" onclick="stepMeasure('${k}',-1)">−</button>
+        <b class="mono" style="min-width:70px;text-align:center;color:var(--lime)" id="m_${k}">${mv[k]} см</b>
+        <button class="icon-btn sm" onclick="stepMeasure('${k}',1)">+</button>
+      </div></div>`;}).join('')}</div>
+    <div class="stat-sub" style="margin:14px 4px">Замеры раз в 2 недели — так виден реальный прогресс.</div>`,
+    `<button class="bigbtn" onclick="saveMeasures()">Сохранить замеры</button>`);
+}
+function stepMeasure(k, d){
+  state.measures[k] = Math.max(0, state.measures[k]+d);
+  document.getElementById('m_'+k).textContent = state.measures[k]+' см';
+}
+function saveMeasures(){
+  const mv = state.measures;
+  if(!mv.chest && !mv.waist && !mv.hips){ toast('Введи хотя бы один замер'); return; }
+  mv.done = true;
+  logPush('measLog', {chest:mv.chest, waist:mv.waist, hips:mv.hips});
+  save(); closeOverlay(); renderForma(); toast('Замеры сохранены');
+}
+let tempSteps = 0;
+function openSteps(){
+  tempSteps = state.steps;
+  openOverlay('Шаги','Цель '+state.goals.steps.toLocaleString('ru-RU')+' за день',
+    `<div class="card" style="text-align:center;padding:24px 16px">
+      <div class="statbig" style="font-size:42px" id="stepBig">${tempSteps.toLocaleString('ru-RU')}</div>
+      <div class="stat-sub">шагов сегодня</div>
+      <div class="bar" style="margin-top:16px"><i id="stepBar" style="width:${pct(tempSteps,state.goals.steps)}%"></i></div>
+    </div>
+    <div class="grid2" style="margin-top:11px">
+      ${[500,1000,2000,5000].map(n=>`<button class="pill" style="padding:15px" onclick="addSteps(${n})">+${n}</button>`).join('')}
+    </div>`,
+    `<button class="bigbtn" onclick="saveSteps()">Сохранить</button>`);
+}
+function addSteps(n){
+  tempSteps += n;
+  document.getElementById('stepBig').textContent = tempSteps.toLocaleString('ru-RU');
+  document.getElementById('stepBar').style.width = pct(tempSteps,state.goals.steps)+'%';
+}
+function saveSteps(){
+  state.steps = tempSteps;
+  logPush('stepsLog', {n: tempSteps});
+  save(); closeOverlay(); renderForma(); toast('Шаги: '+tempSteps.toLocaleString('ru-RU'));
+}
+function openSupps(){
+  openOverlay('Добавки','Что вы пьёте',
+    `<div class="card" style="padding:0">${state.supps.map((s,i)=>`
+      <div class="item clickable" onclick="toggleSupp(${i})">
+        <div class="ico" style="${s.on?'background:var(--lime-dim);border-color:var(--lime)':''}">${s.on?'✓':'💊'}</div>
+        <div class="body"><div class="tt">${s.n}</div><div class="ss">${s.on?'Принято сегодня':'Не отмечено'}</div></div>
+        <span class="chev">${s.on?'✓':''}</span></div>`).join('')}</div>`,
+    `<button class="bigbtn" onclick="closeOverlay();toast('Отмечено: '+state.supps.filter(s=>s.on).length+' из '+state.supps.length)">Готово</button>`);
+}
+function toggleSupp(i){ state.supps[i].on = !state.supps[i].on; save(); openSupps(); renderForma(); }
+function openReport(){
+  const t = totals(), g = state.goals;
+  openOverlay('Отчёт','20 сентября 2026',
+    `<div class="card"><div class="spread"><span class="muted">Калории за сегодня</span><b class="mono">${t.k} / ${g.kcal}</b></div>
+      <div class="bar" style="margin-top:10px"><i style="width:${pct(t.k,g.kcal)}%"></i></div>
+      <div class="spread" style="margin-top:10px"><span class="stat-sub">Б ${t.p} · Ж ${t.f} · У ${t.c}</span>
+      <span class="stat-sub">${pct(t.k,g.kcal)}%</span></div></div>
+    <div class="grid2" style="margin-top:11px">
+      <div class="card"><div class="stat-sub">Тренировок</div><div class="stat-val" style="font-size:22px">4</div><div class="stat-sub">за неделю</div></div>
+      <div class="card"><div class="stat-sub">Шаги</div><div class="stat-val" style="font-size:22px">${state.steps.toLocaleString('ru-RU')}</div><div class="stat-sub">сегодня</div></div>
+    </div>
+    <div class="card" style="margin-top:11px">
+      <div class="spread"><span>Вода</span><b class="mono" style="color:var(--lime)">${state.water} мл</b></div>
+      <div class="spread" style="margin-top:10px"><span>Вес</span><b class="mono" style="color:var(--lime)">${state.weight||'—'} кг</b></div>
+      <div class="spread" style="margin-top:10px"><span>Настроение</span><b>${state.mood===null?'не отмечено':MOOD_NAMES[state.mood]}</b></div>
+    </div>`);
+}
+
+/* ================== РАЦИОН ================== */
+function renderRation(){
+  const el = document.getElementById('rationBody');
+  if(!el) return;
+  const t = totals(), g = state.goals, rest = Math.max(0, g.kcal - t.k);
+  el.innerHTML = `
+    <div class="card">
+      <div class="spread">
+        <span class="muted" style="font-size:11px;letter-spacing:2px">ИТОГО ЗА ДЕНЬ</span>
+        <button class="pill" style="padding:7px 14px" onclick="openGoals()">Цель: ${g.kcal} ккал</button>
+      </div>
+      <div class="intake">${t.k} <span style="font-size:15px">ккал</span></div>
+      <div class="bar"><i style="width:${pct(t.k,g.kcal)}%"></i></div>
+      <div class="kcol" style="margin-top:9px">
+        <span style="font-size:12.5px">Осталось <b class="mono">${rest} ккал</b></span>
+        <b class="mono" style="font-size:12.5px">${pct(t.k,g.kcal)}%</b>
+      </div>
+      <div class="macro3">
+        ${[['Белки',t.p,g.p],['Жиры',t.f,g.f],['Углеводы',t.c,g.c]].map(x=>`
+          <div><div class="g">${x[1]} <span style="font-size:12px">г</span></div>
+          <div class="of">из ${x[2]} г</div><div class="bar"><i style="width:${pct(x[1],x[2])}%"></i></div></div>`).join('')}
+      </div>
+      <div class="macro3" style="margin-top:6px"><div class="of">Белки</div><div class="of">Жиры</div><div class="of">Углеводы</div></div>
+    </div>
+    <div class="stack" style="margin-top:13px">
+      ${state.meals.map((m,i)=>{
+        const mt = mealTotals(m);
+        return `<div class="card">
+          <div class="meal-head" onclick="toggleMeal(${i})">
+            <div><h2 style="font-size:16.5px">${m.n}</h2>
+              <div class="stat-sub">${m.items.length} блюд${m.t?' · '+m.t:''}</div></div>
+            <div class="row" style="gap:10px">
+              <span class="mono" style="font-size:12px">${mt.k} ккал · ${pct(mt.k,g.kcal)}%</span>
+              <span class="pill" style="padding:4px 10px;font-size:11px">${m.open?'⌃':'⌄'}</span>
+            </div>
+          </div>
+          <div class="meal-body ${m.open?'':'closed'}">
+            <div class="meal-bju">
+              <div><b>${mt.p} г · ${pct(mt.p,g.p)}%</b>Белки</div>
+              <div><b>${mt.f} г · ${pct(mt.f,g.f)}%</b>Жиры</div>
+              <div><b>${mt.c} г · ${pct(mt.c,g.c)}%</b>Углеводы</div>
+            </div>
+            ${m.items.length ? m.items.map((it,ii)=>`
+              <div class="fitem">
+                <div style="flex:1;min-width:0">
+                  <div style="font-size:13.5px;font-weight:700">${it.name}</div>
+                  <div class="stat-sub">${it.g} г · ${Math.round(it.k*it.g/100)} ккал · Б ${(it.p*it.g/100).toFixed(1)}</div>
+                </div>
+                <button class="icon-btn sm" onclick="event.stopPropagation();openPortion(${i},${ii})">✎</button>
+                <button class="icon-btn sm" onclick="event.stopPropagation();removeItem(${i},${ii})">✕</button>
+              </div>`).join('') : ''}
+            <div class="stat-sub" style="margin:14px 0 9px">Добавить еду</div>
+            <div class="scroller">
+              <button class="chip" onclick="event.stopPropagation();openFoodPicker(${i})">★ Мои</button>
+              <button class="chip" onclick="event.stopPropagation();scanPhoto()">📷 Фото</button>
+              <button class="chip" onclick="event.stopPropagation();openManual(${i})">✎ Вручную</button>
+            </div>
+          </div>
+        </div>`;}).join('')}
+    </div>`;
+}
+function toggleMeal(i){ state.meals[i].open = !state.meals[i].open; renderRation(); }
+function removeItem(mi, ii){
+  const nm = state.meals[mi].items[ii].name;
+  state.meals[mi].items.splice(ii,1);
+  save(); renderRation(); renderForma(); toast('Удалено: '+nm);
+}
+function openPortion(mi, ii){
+  const it = state.meals[mi].items[ii];
+  openOverlay(it.name, state.meals[mi].n,
+    `<div class="card" style="text-align:center;padding:22px">
+      <div class="statbig" style="font-size:40px"><span id="pG">${it.g}</span> <span style="font-size:15px">г</span></div>
+      <div class="stat-sub" style="margin-top:6px"><span id="pK">${Math.round(it.k*it.g/100)}</span> ккал</div>
+      <div class="bar" style="margin-top:16px"><i style="width:${Math.min(100,it.g/300*100)}%"></i></div>
+      <div class="row" style="justify-content:center;gap:8px;margin-top:16px">
+        ${[-50,-10,10,50].map(d=>`<button class="pill" onclick="stepPortion(${mi},${ii},${d})">${d>0?'+':''}${d}</button>`).join('')}
+      </div></div>`,
+    `<button class="bigbtn" onclick="closeOverlay();save();renderRation();renderForma();toast('Порция обновлена')">Готово</button>`);
+}
+function stepPortion(mi, ii, d){
+  const it = state.meals[mi].items[ii];
+  it.g = Math.max(5, it.g + d);
+  document.getElementById('pG').textContent = it.g;
+  document.getElementById('pK').textContent = Math.round(it.k*it.g/100);
+}
+function openFoodPicker(mi){
+  openOverlay('Выбрать продукт', state.meals[mi].n,
+    `<div class="card" style="padding:0">${FOODS.map((f,fi)=>`
+      <div class="food-row clickable" onclick="pickFood(${mi},${fi})">
+        <div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:700">${f.n}</div>
+        <div class="stat-sub">${f.k} ккал · Б ${f.p} · Ж ${f.f} · У ${f.c}</div></div>
+        <button class="icon-btn sm">+</button></div>`).join('')}</div>
+    <div class="stat-sub" style="margin:14px 4px">Порция по умолчанию — 100 г, потом можно изменить.</div>`,
+    `<button class="bigbtn ghost" onclick="closeOverlay()">Отмена</button>`);
+}
+function pickFood(mi, fi){
+  const f = FOODS[fi];
+  state.meals[mi].items.push({name:f.n,k:f.k,p:f.p,f:f.f,c:f.c,g:100});
+  state.meals[mi].open = true;
+  save(); closeOverlay(); renderRation(); renderForma();
+  toast('+ '+f.n+' → '+state.meals[mi].n);
+}
+function openManual(mi){
+  window._manual = {kcal:200,p:20,f:8,c:10};
+  openOverlay('Вручную', state.meals[mi].n,
+    `<div class="card">${[['kcal','Калории','ккал',10],['p','Белки','г',1],['f','Жиры','г',1],['c','Углеводы','г',1]]
+      .map(x=>`<div class="spread" style="padding:11px 0;border-bottom:1px solid var(--line)">
+        <span>${x[1]}</span><div class="row" style="gap:8px">
+        <button class="icon-btn sm" onclick="mStep('${x[0]}',${-x[3]},this)">−</button>
+        <b class="mono" style="min-width:70px;text-align:center;color:var(--lime)">${window._manual[x[0]]} ${x[2]}</b>
+        <button class="icon-btn sm" onclick="mStep('${x[0]}',${x[3]},this)">+</button></div></div>`).join('')}</div>
+    <div class="stat-sub" style="margin:14px 4px">Значения на 100 г продукта.</div>`,
+    `<button class="bigbtn" onclick="saveManual(${mi})">Добавить 100 г</button>`);
+}
+function mStep(k, d, btn){
+  window._manual[k] = Math.max(0, Math.round((window._manual[k]+d)*10)/10);
+  const unit = {kcal:'ккал',p:'г',f:'г',c:'г'}[k];
+  btn.parentElement.querySelector('b').textContent = window._manual[k]+' '+unit;
+}
+function saveManual(mi){
+  const v = window._manual;
+  state.meals[mi].items.push({name:'Своё блюдо',k:v.kcal,p:v.p,f:v.f,c:v.c,g:100});
+  state.meals[mi].open = true;
+  save(); closeOverlay(); renderRation(); renderForma(); toast('Добавлено своё блюдо');
+}
+function scanPhoto(){
+  openOverlay('Фото еды','Распознавание по снимку',
+    `<div class="card" style="text-align:center;padding:28px 16px">
+      <div style="font-size:44px">📷</div>
+      <div class="stat-sub" style="margin-top:12px">В рабочей версии здесь камера и распознавание блюда с расчётом КБЖУ.<br>В макете — заглушка.</div></div>`);
+}
+
+/* ================== ТРЕНИРОВКА ================== */
+function renderPrograms(){
+  document.getElementById('progRow').innerHTML = PROGRAMS.map(p=>`
+    <button class="prog" onclick="openProgram('${p.id}')">
+      <div class="pn">${p.name}</div>
+      <div class="pd">${p.desc}</div>
+      <div class="pmeta"><span class="tag acc">${p.meta}</span><span class="tag">${p.level}</span></div>
+      <div class="lines">${p.plan.map(()=>'<i></i>').join('')}</div>
+    </button>`).join('');
+}
+function renderMuscles(){
+  document.getElementById('muscleGrid').innerHTML = MUSCLES.map(m=>`
+    <button class="muscle" onclick="openMuscle('${m.id}')">
+      <img class="mimg" src="${m.img}" alt="${m.name}">
+      <div class="mtxt"><span class="mn">${m.name}</span><span class="mc">${m.count} упражнений</span></div>
+    </button>`).join('');
+}
+function renderActivities(){
+  document.getElementById('actGrid').innerHTML = ACTIVITIES.map(a=>`
+    <button class="muscle" style="height:132px" onclick="openActivity('${a.id}')">
+      <img class="mimg" src="${a.img}" alt="${a.name}">
+      <div class="mtxt"><span class="mn">${a.name}</span><span class="mc">${a.sub}</span></div>
+    </button>`).join('');
+}
+function relDay(d){
+  const t = dayKey(), y = dayKey(new Date(Date.now()-86400000));
+  if(d === t) return 'сегодня';
+  if(d === y) return 'вчера';
+  const p = d.split('-');
+  return +p[2]+' '+MONTHS[+p[1]-1].toLowerCase();
+}
+function renderHistory(){
+  const el = document.getElementById('history');
+  if(!el) return;
+  if(!state.workouts.length){
+    el.innerHTML = `<div class="item"><div class="ico">🎯</div>
+      <div class="body"><div class="tt" style="font-size:14px">Пока пусто</div>
+      <div class="ss">Заверши первую тренировку — она появится здесь</div></div></div>`;
+    return;
+  }
+  el.innerHTML = state.workouts.slice(0,6).map((h,i)=>`
+    <div class="item clickable" onclick="openWorkoutLog(${i})"><div class="ico">✓</div>
+      <div class="body"><div class="tt" style="font-size:14px">${h.n}</div>
+      <div class="ss">${h.sets} подходов · ${h.tonnage.toLocaleString('ru-RU')} кг</div></div>
+      <span class="vv" style="font-size:11px">${relDay(h.d)}</span></div>`).join('')
+    + (state.workouts.length > 6 ? `<div class="stat-sub" style="padding:12px 14px">и ещё ${state.workouts.length-6} тренировок в разделе Прогресс</div>` : '');
+}
+function openWorkoutLog(i){
+  const h = state.workouts[i];
+  if(!h) return;
+  const exs = h.exercises || [];
+  openOverlay(h.n, relDay(h.d)+' · '+h.time,
+    `<div class="grid2">
+       <div class="card"><div class="stat-sub">Подходов</div><div class="stat-val" style="font-size:24px">${h.sets}</div></div>
+       <div class="card"><div class="stat-sub">Тоннаж</div><div class="stat-val" style="font-size:24px">${h.tonnage.toLocaleString('ru-RU')}</div></div>
+     </div>
+     <div class="section"><span class="t">Упражнения</span><span class="l">${exs.length}</span></div>
+     <div class="card soft" style="padding:0">${exs.map(e=>`
+       <div class="item"><div class="ico" style="${e.skipped?'border-color:rgba(255,106,61,.5);color:var(--ember)':''}">${e.skipped?'✕':'✓'}</div>
+         <div class="body"><div class="tt" style="font-size:13.5px">${e.name}</div>
+         <div class="ss">${e.skipped?'пропущено':e.done+' из '+e.target+' подходов'} · ${e.kg||0} кг</div></div></div>`).join('')}</div>`,
+    `<button class="bigbtn" onclick="closeOverlay();startWorkout('${h.plan}',${h.dayIdx||0})">Повторить тренировку</button>
+     <button class="pill" style="width:100%;margin-top:10px;padding:12px" onclick="closeOverlay()">Закрыть</button>`);
+}
+function musOf(name){ return MUSCLES.find(m=> m.ex.some(e=> e[0]===name)); }
+
+/* ctx: откуда открыта карточка упражнения, чтобы предложить замену */
+let swapCtx = null, activeSwap = null, swapList = [];
+
+function exRow(e, i, dayId){
+  const [name, reps, kg] = e;
+  const g = musOf(name);
+  const play = dayId
+    ? `<button class="start" title="Начать тренировку с этого упражнения"
+         onclick="event.stopPropagation();startWorkout('${dayId}', activeDay, ${i})">▶</button>`
+    : '';
+  const ctx = dayId
+    ? `swapCtx={kind:'day',progId:'${dayId}',dayIdx:activeDay,exIdx:${i},name:'${esc(name)}'};`
+    : '';
+  return `<div class="ex" onclick="${ctx}openExercise('${esc(name)}','${reps}',${kg},'${g?g.name:''}')">
+    <div class="num">${i+1}</div>
+    <div style="min-width:0">
+      <div class="en">${name}</div>
+      <div class="er">${reps} <span style="color:var(--lime)">›</span></div>
+      <div class="sets">${'<i onclick="event.stopPropagation();this.classList.toggle(&#39;on&#39;)"></i>'.repeat(4)}</div>
+    </div>
+    <div class="ctrl"><span class="tag acc">${kg||0} кг</span>${play}</div>
+  </div>`;
+}
+function stepW(btn, d){ const b = btn.parentElement.querySelector('b'); b.textContent = Math.max(0,(+b.dataset.w||0)+d) + ' кг'; b.dataset.w = Math.max(0,(+b.dataset.w||0)+d); }
+
+function openExercise(name, reps, kg, group){
+  activeSwap = swapCtx ? Object.assign(swapCtx, {name, reps, kg}) : null;
+  swapCtx = null;
+  const h = seed(name), bars = Array.from({length:6},(_,i)=> 45 + ((h>>i)%43));
+  const prev = [[1,'12 сентября',kg],[2,'9 сентября',Math.max(0,kg-2.5)],[3,'5 сентября',Math.max(0,kg-2.5)]];
+  openOverlay(name, (group?group+' · ':'')+reps,
+    `<div class="card">
+       <div class="stat-sub">Рабочий вес</div>
+       <div class="statbig" style="margin:6px 0 2px">${kg||'—'} <span style="font-size:14px">кг</span></div>
+       <div class="bar" style="margin-top:12px"><i style="width:${kg?Math.min(100,kg/120*100):0}%"></i></div>
+     </div>
+     <div class="section"><span class="t">Техника</span></div>
+     <div class="card"><div class="stat-sub" style="line-height:1.65;color:#c2c9d1">${techFor(name)}</div></div>
+     <div class="section"><span class="t">Прогресс веса</span><span class="l">6 тренировок</span></div>
+     <div class="card"><div class="bars" style="height:86px">${bars.map((b,i)=>
+        `<div class="bcol"><i style="height:${b}%"></i><span>${i+1}</span></div>`).join('')}</div></div>
+     <div class="section"><span class="t">История</span></div>
+     <div class="card soft" style="padding:0">${prev.map(r=>`
+       <div class="item"><div class="ico">✓</div>
+         <div class="body"><div class="tt" style="font-size:13.5px">${r[1]}</div><div class="ss">${reps}</div></div>
+         <span class="vv">${r[2]||0} кг</span></div>`).join('')}</div>`,
+    (activeSwap ? `<button class="bigbtn" onclick="openSwap()">Заменить упражнение</button>` : '') +
+    `<button class="bigbtn ghost" style="margin-top:${activeSwap?'10px':'0'}" onclick="closeOverlay();toast('${esc(name)} ${activeSwap?'оставлено как есть':'добавлено в тренировку'}')">${activeSwap?'Оставить как есть':'Добавить в тренировку'}</button>`);
+}
+
+function openSwap(){
+  if(!activeSwap){ return; }
+  const m = musOf(activeSwap.name);
+  const pool = [];
+  MUSCLES.forEach(g=>{ if(!m || g.id===m.id) g.ex.forEach(e=> pool.push(e)); });
+  swapList = pool.filter(e=> e[0] !== activeSwap.name);
+  if(!swapList.length){ toast('В базе нет другой альтернативы'); return; }
+  const inSession = activeSwap.kind === 'session';
+  const rows = swapList.map((e,i)=>{
+    const g = musOf(e[0]);
+    return `<div class="ex" onclick="applySwap(${i})">
+      <div class="num">${i+1}</div>
+      <div style="min-width:0"><div class="en">${e[0]}</div>
+        <div class="er">${e[1]} · ${e[2]||0} кг${m?'':' · '+(g?g.name:'')}</div></div>
+      <div class="ctrl"><span class="tag acc">Выбрать</span></div></div>`;
+  }).join('');
+  openOverlay('Заменить упражнение',
+    `Вместо «${activeSwap.name}»${m?' · '+m.name:''}`,
+    `<div class="card" style="padding:0">${rows}</div>
+     <div class="stat-sub" style="margin:14px 4px">${inSession
+        ? 'Подходы по этому упражнению начнутся заново.'
+        : 'Упражнение заменится в программе на всех тренировках этого дня.'}</div>`,
+    `<button class="bigbtn ghost" onclick="closeOverlay()">Отмена</button>`);
+}
+
+function applySwap(i){
+  const e = swapList[i];
+  if(!e || !activeSwap) return;
+  const kind = activeSwap.kind, k = activeSwap.exIdx;
+  const progId = activeSwap.progId, dayIdx = activeSwap.dayIdx;
+  activeSwap = null; swapList = [];
+  if(kind === 'session'){
+    if(!S) return closeOverlay();
+    S.day.ex[k] = [e[0], e[1], e[2]];
+    S.w[k] = e[2]; S.done[k] = 0;
+    S.fin[k] = false; S.skip[k] = false; S.pre[k] = false;
+    S.resting = false;
+    toast(`Заменено на «${e[0]}»`);
+    renderSession();
+  } else {
+    const p = PROGRAMS.find(x=> x.id === progId);
+    if(p) p.plan[dayIdx].ex[k] = [e[0], e[1], e[2]];
+    toast(`Заменено на «${e[0]}»`);
+    openProgram(progId, dayIdx);
+  }
+}
+function openActivity(id){
+  const a = ACTIVITIES.find(x=>x.id===id);
+  openOverlay(a.name, a.sub,
+    `<div style="position:relative;height:230px;border-radius:24px;overflow:hidden;border:1px solid var(--line);background:#0c0e13;margin-bottom:12px">
+       <img src="${a.img}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;mix-blend-mode:screen"></div>
+     <div class="card">
+       <div class="spread"><span class="muted">Длительность</span><b class="mono">${a.sub.split(' · ')[0]}</b></div>
+       <div class="spread" style="margin-top:10px"><span class="muted">Зона</span><b>${a.id==='cardio'?'Пульс 130–150':'Спокойный темп'}</b></div>
+     </div>`,
+    `<button class="bigbtn" onclick="closeOverlay();toast('${a.name}: отмечено как выполненное')">Отметить выполненной</button>`);
+}
+function openMuscle(id){
+  const m = MUSCLES.find(x=>x.id===id);
+  openOverlay(m.name, m.count+' упражнений в базе',
+    `<div style="position:relative;height:190px;border-radius:24px;overflow:hidden;border:1px solid var(--line);background:#0c0e13;margin-bottom:12px">
+       <img src="${m.img}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;mix-blend-mode:screen"></div>
+     <div class="card" style="padding:0">${m.ex.map((e,i)=>exRow(e,i)).join('')}</div>`,
+    `<button class="bigbtn" onclick="openExercisePool()">Добавить упражнение</button>`);
+}
+function openExercisePool(){
+  const pool = MUSCLES.flatMap(m=>m.ex.map(e=>({n:e[0],r:e[1],k:e[2],g:m.name})));
+  openOverlay('База упражнений','Выбери упражнение',
+    `<div class="card" style="padding:0">${pool.map((p,i)=>`
+      <div class="ex" onclick="openExercise('${esc(p.n)}','${p.r}',${p.k},'${p.g}')">
+        <div class="num">${i+1}</div>
+        <div style="min-width:0"><div class="en">${p.n}</div><div class="er">${p.g} · ${p.r}</div></div>
+        <div class="ctrl"><span class="tag acc">${p.k||0} кг</span></div></div>`).join('')}</div>`,
+    `<button class="bigbtn ghost" onclick="closeOverlay()">Закрыть</button>`);
+}
+let activeDay = 0;
+function openProgram(id, dayIndex){
+  const p = PROGRAMS.find(x=>x.id===id);
+  activeDay = dayIndex || 0;
+  const tabs = p.plan.map((d,i)=>
+    `<button class="chip ${i===activeDay?'on':''}" onclick="selectDay(this,'${id}',${i})">${d.n}</button>`).join('');
+  openOverlay(p.name, p.meta+' · '+p.level,
+    `<p class="sub" style="margin-bottom:6px">${p.desc}</p>
+     <div class="daytabs">${tabs}</div>
+     <div class="card" style="padding:0" id="dayBox">${p.plan[activeDay].ex.map((e,i)=>exRow(e,i,id)).join('')}</div>
+     <div class="stat-sub" style="margin:14px 4px">Тап по упражнению — техника, история и <b style="color:var(--lime)">замена</b> · <b class="mono" style="color:var(--lime)">▶</b> — начать тренировку с него · квадратики — отметить подход</div>`,
+    `<button class="bigbtn" onclick="startWorkout('${id}', activeDay)">Начать тренировку</button>`);
+}
+function selectDay(btn, id, idx){
+  const p = PROGRAMS.find(x=>x.id===id);
+  activeDay = idx;
+  btn.parentElement.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('dayBox').innerHTML = p.plan[idx].ex.map((e,i)=>exRow(e,i,id)).join('');
+}
+/* ================== ПОДПИСКА ================== */
+const SUB_PLANS = [
+  ['1 месяц',149,'149 ⭐ за 1 месяц',''],
+  ['3 месяца',379,'≈126 ⭐ / мес · выгода 68 ⭐','-15%'],
+  ['1 год',1390,'≈116 ⭐ / мес · выгода 398 ⭐','-22%']
+];
+function openSubscription(){
+  openOverlay('Подписка','Оплата через Telegram Stars',
+    `<div class="planlist">${SUB_PLANS.map((p,i)=>`
+      <div class="plan ${state.sub===i?'on':''}" onclick="pickPlan(${i})">
+        <div class="spread"><span class="nm">${p[0]}</span>${p[3]?`<span class="tag acc">${p[3]}</span>`:''}</div>
+        <div class="p2">${p[1]} ⭐</div><div class="p3">${p[2]}</div>
+      </div>`).join('')}</div>
+    <div class="stat-sub" style="margin:14px 4px">Оплата в Stars — без привязки карты.</div>`,
+    `<button class="bigbtn" onclick="paySub()">Оплатить ${SUB_PLANS[state.sub][1]} ⭐</button>`);
+}
+function pickPlan(i){ state.sub = i; openSubscription(); renderForma(); }
+function paySub(){
+  const p = SUB_PLANS[state.sub];
+  openOverlay('Оплата', p[0],
+    `<div class="card" style="text-align:center;padding:30px 16px">
+      <div style="font-size:42px">⭐</div>
+      <div class="statbig" style="margin:14px 0 4px">${p[1]} ⭐</div>
+      <div class="stat-sub">${p[2]}</div>
+      <div class="stat-sub" style="margin-top:16px;line-height:1.6">В рабочей версии здесь откроется окно оплаты Telegram Stars.<br>В макете — имитация.</div>
+    </div>`,
+    `<button class="bigbtn" onclick="closeOverlay();toast('Подписка '+SUB_PLANS[state.sub][0]+' активирована')">Подтвердить оплату</button>`);
+}
+
+/* ================== ЕДА ================== */
+const CATS = ['Все','Белки','Жиры','Углеводы'];
+function renderFood(){
+  const el = document.getElementById('foodList');
+  if(!el) return;
+  document.getElementById('foodChips').innerHTML = CATS.map(c=>
+    `<button class="chip ${state.foodCat===c?'on':''}" onclick="setCat('${c}')">${c}</button>`).join('');
+  const q = (document.getElementById('foodSearch').value || '').toLowerCase().trim();
+  const list = FOODS.map((f,i)=>({f,i})).filter(x=>
+    (state.foodCat==='Все' || x.f.cat===state.foodCat) && (!q || x.f.n.toLowerCase().includes(q)));
+  el.innerHTML = list.length ? list.map(x=>`
+    <div class="food-row clickable" onclick="openAddFlow(${x.i})">
+      <div style="flex:1;min-width:0">
+        <div style="font-size:14px;font-weight:700">${x.f.n}</div>
+        <div class="stat-sub">${x.f.k} ккал · Б ${x.f.p} · Ж ${x.f.f} · У ${x.f.c} <span style="color:var(--lime)">· ${x.f.cat}</span></div>
+      </div>
+      <button class="icon-btn sm">+</button></div>`).join('')
+    : `<div class="food-row"><span class="stat-sub">Ничего не найдено</span></div>`;
+}
+function setCat(c){ state.foodCat = c; renderFood(); }
+function openAddFlow(fi){
+  const f = FOODS[fi];
+  openOverlay('Куда добавить?', f.n,
+    `<div class="card" style="padding:0">${state.meals.map((m,i)=>`
+      <div class="item clickable" onclick="quickAdd(${i},${fi})">
+        <div class="ico">🍽</div>
+        <div class="body"><div class="tt">${m.n}</div><div class="ss">${mealTotals(m).k} ккал сейчас</div></div>
+        <span class="chev">›</span></div>`).join('')}</div>
+    <div class="stat-sub" style="margin:14px 4px">Добавим 100 г — порцию потом изменишь в рационе.</div>`);
+}
+function quickAdd(mi, fi){
+  const f = FOODS[fi];
+  state.meals[mi].items.push({name:f.n,k:f.k,p:f.p,f:f.f,c:f.c,g:100});
+  state.meals[mi].open = true;
+  closeOverlay(); renderForma(); renderRation();
+  toast('+ '+f.n+' → '+state.meals[mi].n);
+}
+
+/* ================== АКТИВНАЯ ТРЕНИРОВКА ================== */
+let S = null, tick = null;
+const REST = 90;
+
+function setsOf(reps){ const m = String(reps).match(/(\d+)/); return m ? +m[1] : 3; }
+function fmt(t){ const m=Math.floor(t/60), s=t%60; return (m<10?'0':'')+m+':'+(s<10?'0':'')+s; }
+
+function startWorkout(id, dayIdx, startEx){
+  const p = PROGRAMS.find(x=>x.id===id);
+  const src = p.plan[dayIdx || 0];
+  const day = { n: src.n, ex: src.ex.map(e=> e.slice()) };
+  let start = parseInt(startEx, 10);
+  if(!(start >= 0 && start < day.ex.length)) start = 0;
+  S = { p, day, dayIdx: dayIdx || 0, exIdx:start, w: day.ex.map(e=>e[2]), done: day.ex.map(()=>0),
+        fin: day.ex.map((e,k)=> k < start), skip: day.ex.map(()=>false),
+        pre: day.ex.map((e,k)=> k < start),
+        elapsed:0, resting:false, restLeft:REST };
+  document.getElementById('ovTitle').textContent = p.name;
+  document.getElementById('ovSub').textContent = day.n;
+  document.getElementById('overlay').classList.add('open');
+  renderSession();
+  if(start > 0) toast(`Начинаем с «${day.ex[start][0]}»`);
+  clearInterval(tick);
+  tick = setInterval(()=>{
+    if(!S) return;
+    S.elapsed++;
+    if(S.resting){
+      S.restLeft--;
+      const l = document.getElementById('restLeft'), r = document.getElementById('restRing');
+      if(l) l.textContent = S.restLeft;
+      if(r) r.setAttribute('stroke-dashoffset', 276.5*(1-Math.max(0,S.restLeft)/REST));
+      if(S.restLeft <= 0){ S.resting = false; renderSession(); return; }
+    }
+    const t = document.getElementById('sessTime');
+    if(t) t.textContent = fmt(S.elapsed);
+  }, 1000);
+}
+
+function sessionHTML(){
+  const exs = S.day.ex, i = S.exIdx, ex = exs[i];
+  const target = setsOf(ex[1]), done = S.done[i];
+  const list = exs.map((e,k)=>{
+    const t = setsOf(e[1]), d = S.done[k], full = d >= t, sk = S.skip[k], pre = S.pre[k];
+    let cls = 'exprog', dot = k+1, sub = `${e[1]} · ${d}/${t}`;
+    if(sk){ cls += ' off'; dot = '✕'; sub = 'пропущено'; }
+    else if(pre){ cls += ' pend'; dot = '—'; sub = `${e[1]} · ниже старта`; }
+    else if(full){ cls += ' done'; dot = '✓'; sub = `${e[1]} · ${t}/${t}`; }
+    else if(S.fin[k]){ cls += ' done'; dot = '✓'; sub = `${e[1]} · закрыто досрочно ${d}/${t}`; }
+    if(k===i && !S.fin[k]) cls += ' cur';
+    return `<div class="${cls}" onclick="gotoEx(${k})"><span class="dot">${dot}</span>
+      <div style="flex:1;min-width:0"><div class="enm">${e[0]}</div>
+      <div class="stat-sub">${sub}</div></div></div>`;
+  }).join('');
+
+  const allClosed = S.fin.every(Boolean);
+
+  const restPanel = `
+    <div class="card" style="text-align:center">
+      <div class="lbl" style="font-size:10px;letter-spacing:2px;color:var(--lime);font-weight:800">ОТДЫХ</div>
+      <div class="restdial">
+        <svg viewBox="0 0 100 100" style="width:100%;height:100%">
+          <g transform="rotate(-90 50 50)" fill="none" stroke-linecap="round">
+            <circle cx="50" cy="50" r="44" stroke="rgba(255,255,255,.08)" stroke-width="6"/>
+            <circle id="restRing" cx="50" cy="50" r="44" stroke="#cdff3e" stroke-width="6"
+              stroke-dasharray="276.5" stroke-dashoffset="${276.5*(1-S.restLeft/REST)}"/>
+          </g>
+        </svg>
+        <b id="restLeft">${S.restLeft}</b>
+        <span>СЕК</span>
+      </div>
+      <div class="row" style="justify-content:center;margin-top:10px">
+        <button class="pill" onclick="addRest()">+20 сек</button>
+        <button class="pill solid" onclick="endRest()">Пропустить</button>
+      </div>
+    </div>`;
+
+  const workPanel = `
+    <div class="now">
+      <div class="lbl">УПРАЖНЕНИЕ ${i+1} ИЗ ${exs.length}</div>
+      <div class="nm" style="cursor:pointer"
+        onclick="swapCtx={kind:'session',exIdx:${i},name:'${esc(ex[0])}'};openExercise('${esc(ex[0])}','${ex[1]}',${S.w[i]},'${(musOf(ex[0])||{}).name||''}')"
+        >${ex[0]} <span style="color:var(--lime);font-size:15px">›</span></div>
+      <div class="stat-sub">Цель: ${ex[1]}${done ? ` · сделано ${done}` : ''}</div>
+      <div class="setdots">${Array.from({length:target},(_,k)=>`<i class="${k<done?'on':''}"></i>`).join('')}</div>
+      <div class="wstep">
+        <button class="icon-btn" onclick="sessW(-2.5)">−</button>
+        <b>${S.w[i]} кг</b>
+        <button class="icon-btn" onclick="sessW(2.5)">+</button>
+      </div>
+    </div>
+    <button class="bigbtn" style="margin-top:12px" onclick="scoreSet()">Засчитать подход ${done+1}</button>
+    <button class="pill" style="width:100%;margin-top:10px;padding:12px" onclick="finishEx()">Закончить упражнение</button>
+    <button class="pill danger" style="width:100%;margin-top:8px;padding:12px" onclick="skipEx()">Пропустить упражнение</button>`;
+
+  const closedPanel = `
+    <div class="card" style="text-align:center;padding:22px 16px">
+      <div class="lbl">УПРАЖНЕНИЕ ${i+1} ИЗ ${exs.length}</div>
+      <div class="nm" style="margin:7px 0 4px">${ex[0]}</div>
+      ${S.skip[i]
+        ? `<div class="stat-sub" style="color:var(--ember)">Пропущено — подходы не засчитаны</div>`
+        : S.pre[i]
+        ? `<div class="stat-sub" style="opacity:.7">Не выполнялось — тренировка началась позже</div>`
+        : `<div class="stat-sub">Закрыто: <b class="mono" style="color:var(--lime)">${done}</b> из ${target} подходов</div>`}
+    </div>
+    <button class="bigbtn" style="margin-top:12px" onclick="advance()">Дальше →</button>
+    <button class="pill" style="width:100%;margin-top:10px;padding:12px" onclick="reopenEx()">Вернуть упражнение в работу</button>`;
+
+  const donePanel = `
+    <div class="card" style="text-align:center;padding:26px 16px">
+      <div class="lbl" style="font-size:10px;letter-spacing:2px;color:var(--lime);font-weight:800">ВСЕ УПРАЖНЕНИЯ ЗАКРЫТЫ</div>
+      <div class="statbig" style="font-size:42px;margin:10px 0 2px">${S.done.reduce((a,b)=>a+b,0)}</div>
+      <div class="stat-sub">подходов засчитано</div>
+    </div>
+    <div class="stat-sub" style="margin:14px 4px">Можно вернуться к любому упражнению в плане ниже или завершить тренировку.</div>`;
+
+  const panel = allClosed ? donePanel
+    : S.resting ? restPanel
+    : S.fin[i] ? closedPanel
+    : workPanel;
+
+  return `
+    <div class="spread" style="margin-bottom:12px">
+      <span class="timer" id="sessTime">${fmt(S.elapsed)}</span>
+      <span class="stat-sub">Подходов: <b class="mono" style="color:var(--text)">${S.done.reduce((a,b)=>a+b,0)}</b></span>
+    </div>
+    ${panel}
+    <div class="section"><span class="t">План дня</span></div>
+    <div class="card" style="padding:0">${list}</div>
+    <div class="stat-sub" style="margin:14px 4px">${S.resting ? 'Отдых между подходами · 90 сек по умолчанию'
+      : allClosed ? 'Нажми на упражнение в плане, чтобы вернуться к нему'
+      : 'Тап по названию — техника и замена упражнения · тап по плану — переход'}</div>`;
+}
+
+function renderSession(){
+  if(!S) return;
+  const body = document.getElementById('ovBody');
+  const sc = body.scrollTop;
+  body.innerHTML = sessionHTML();
+  body.scrollTop = sc;
+  document.getElementById('ovFoot').innerHTML = `<button class="bigbtn ghost" onclick="finishWorkout()">Завершить тренировку</button>`;
+}
+function sessW(d){ S.w[S.exIdx] = Math.max(0, S.w[S.exIdx] + d); renderSession(); }
+
+function nextOpen(from){
+  const n = S.day.ex.length;
+  for(let j = from + 1; j < n; j++) if(!S.fin[j]) return j;
+  return -1;
+}
+function advance(){
+  const j = nextOpen(S.exIdx);
+  if(j >= 0) S.exIdx = j;
+  S.resting = false;
+  renderSession();
+}
+function gotoEx(k){
+  if(k === S.exIdx) return;
+  S.exIdx = k; S.resting = false;
+  renderSession();
+}
+function scoreSet(){
+  if(!S || S.resting) return;
+  const i = S.exIdx, target = setsOf(S.day.ex[i][1]);
+  if(S.done[i] < target) S.done[i]++;
+  if(S.done[i] >= target){
+    S.fin[i] = true;
+    const j = nextOpen(i);
+    if(j >= 0) S.exIdx = j;
+  }
+  if(!S.fin.every(Boolean)){ S.resting = true; S.restLeft = REST; }
+  renderSession();
+}
+function finishEx(){
+  const i = S.exIdx;
+  if(!S.done[i]) return skipEx();
+  S.fin[i] = true; S.skip[i] = false; S.pre[i] = false;
+  toast(`«${S.day.ex[i][0]}» закрыто: ${S.done[i]} подход(а)`);
+  advance();
+}
+function skipEx(){
+  const i = S.exIdx;
+  S.fin[i] = true; S.skip[i] = true; S.pre[i] = false;
+  toast(`«${S.day.ex[i][0]}» пропущено`);
+  advance();
+}
+function reopenEx(){
+  const i = S.exIdx;
+  S.fin[i] = false; S.skip[i] = false; S.pre[i] = false;
+  S.resting = false;
+  renderSession();
+}
+function endRest(){ if(S){ S.resting = false; renderSession(); } }
+function addRest(){ S.restLeft += 20; renderSession(); }
+
+function finishWorkout(){
+  clearInterval(tick);
+  S.resting = false;
+  const sets = S.done.reduce((a,b)=>a+b,0);
+  const tonnage = Math.round(S.done.reduce((a,b,k)=> a + b * S.w[k] * 10, 0));
+  window._lastWorkout = {
+    d: dayKey(), ts: Date.now(),
+    n: S.p.name+' — '+S.day.n,
+    plan: S.p.id, day: S.day.n, dayIdx: S.dayIdx,
+    sets, tonnage, time: fmt(S.elapsed), sec: S.elapsed,
+    exercises: S.day.ex.map((e,k)=>({
+      name: e[0], reps: e[1], kg: S.w[k],
+      done: S.done[k], target: setsOf(e[1]),
+      skipped: !!S.skip[k], pre: !!S.pre[k]
+    })).filter(e=> !e.pre && (e.done > 0 || e.skipped))
+  };
+  const exDone = S.fin.filter((f,k)=> f && !S.skip[k] && !S.pre[k]).length;
+  const exSkip = S.skip.filter(Boolean).length;
+  const exPre = S.pre.filter(Boolean).length;
+  const exEarly = S.fin.filter((f,k)=> f && !S.skip[k] && !S.pre[k] && S.done[k] < setsOf(S.day.ex[k][1])).length;
+  document.getElementById('ovTitle').textContent = 'Готово';
+  document.getElementById('ovSub').textContent = S.day.n;
+  document.getElementById('ovBody').innerHTML = `
+    <div class="card" style="text-align:center;padding:26px 16px">
+      <div class="lbl" style="font-size:10px;letter-spacing:2px;color:var(--lime);font-weight:800">ТРЕНИРОВКА ЗАВЕРШЕНА</div>
+      <div class="statbig" style="font-size:46px;margin:12px 0 4px">${fmt(S.elapsed)}</div>
+      <div class="stat-sub">общее время</div>
+    </div>
+    <div class="grid2" style="margin-top:11px">
+      <div class="card"><div class="stat-sub">Подходов</div><div class="stat-val" style="font-size:24px">${sets}</div><div class="stat-sub">из ${S.day.ex.reduce((a,e)=>a+setsOf(e[1]),0)}</div></div>
+      <div class="card"><div class="stat-sub">Тоннаж</div><div class="stat-val" style="font-size:24px">${tonnage.toLocaleString('ru-RU')}</div><div class="stat-sub">кг поднято</div></div>
+    </div>
+    <div class="card" style="margin-top:11px">
+      <div class="spread"><span>Упражнений выполнено</span><b class="mono" style="color:var(--lime)">${exDone} / ${S.day.ex.length}</b></div>
+      ${exEarly ? `<div class="spread" style="margin-top:10px"><span class="stat-sub">из них закрыто досрочно</span><b class="mono" style="color:var(--text)">${exEarly}</b></div>` : ''}
+      ${exSkip ? `<div class="spread" style="margin-top:10px"><span class="stat-sub" style="color:var(--ember)">Пропущено упражнений</span><b class="mono" style="color:var(--ember)">${exSkip}</b></div>` : ''}
+      ${exPre ? `<div class="spread" style="margin-top:10px"><span class="stat-sub">Не выполнялось (старт позже)</span><b class="mono" style="color:var(--muted)">${exPre}</b></div>` : ''}
+      <div class="bar" style="margin-top:12px"><i style="width:${Math.round(exDone/S.day.ex.length*100)}%"></i></div>
+    </div>`;
+  document.getElementById('ovFoot').innerHTML =
+    `<button class="bigbtn" onclick="saveWorkout()">Сохранить</button>
+     <button class="pill" style="width:100%;margin-top:10px;padding:12px" onclick="saveWorkout(true)">Сохранить и закрыть</button>`;
+  S = null;
+}
+function saveWorkout(quiet){
+  const w = window._lastWorkout;
+  if(!w) return closeOverlay();
+  state.workouts.unshift(w);
+  if(state.workouts.length > 200) state.workouts.length = 200;
+  if(state.weight > 0) logPush('weightLog', {kg: state.weight});
+  save();
+  window._lastWorkout = null;
+  renderHistory(); renderProgress(); renderCalendar(); renderForma();
+  closeOverlay();
+  if(!quiet) toast('Тренировка сохранена в историю');
+  else go('progress');
+}
+
+/* ================== ПРОГРЕСС ================== */
+const MUSCLE_ID_BY_NAME = {Грудь:'chest', Спина:'back', Ноги:'legs', Руки:'arms', Плечи:'shoulders', Пресс:'abs'};
+
+function weeklyTonnage(){
+  const out = new Array(8).fill(0), week = 7*86400000, now = Date.now();
+  state.workouts.forEach(w=>{
+    const age = now - (w.ts || 0);
+    if(age < 0 || age >= week*8) return;
+    out[7 - Math.floor(age/week)] += w.tonnage || 0;
+  });
+  return out.some(v=> v>0) ? out : [12.4,15.1,13.8,17.2,16.4,19.8,18.1,21.6];
+}
+function personalRecords(){
+  const best = {};
+  state.workouts.forEach(w=> (w.exercises||[]).forEach(e=>{
+    if(e.skipped || !e.kg) return;
+    if(!best[e.name] || e.kg > best[e.name].kg) best[e.name] = {kg:e.kg, reps:e.reps, d:w.d};
+  }));
+  const list = Object.keys(best).map(n=> [n, best[n].kg+' кг · '+best[n].reps, relDay(best[n].d), best[n].kg]);
+  if(!list.length) return [['Жим лёжа','82.5 кг · 5×5','12 сентября',82.5],['Приседания','105 кг · 4×6','5 сентября',105],
+                           ['Становая тяга','130 кг · 3×5','28 августа',130],['Жим стоя','52.5 кг · 4×8','20 августа',52.5]];
+  return list.sort((a,b)=> b[3]-a[3]).slice(0,5);
+}
+function renderProgress(){
+  const DEMO = [82.4,82.1,82.3,81.8,81.9,81.4,81.6,81.1,81.2,80.9,81.0,80.6,80.8,80.4,80.5,
+                80.1,80.3,80.0,80.2,79.9,80.1,79.8,79.9,79.6,79.8,79.5,79.6,79.3,79.6,80.4];
+  const logged = logSeries('weightLog', x=> x.kg);
+  /* меньше двух своих замеров — показываем демо-кривую, чтобы график не был пустым */
+  const mine = logged.length >= 2;
+  const w = mine ? logged : DEMO;
+  const label = document.getElementById('weightLbl');
+  if(label) label.textContent = mine ? 'Твой вес' : 'Пример данных';
+  const last = mine ? w[w.length-1] : (state.weight || w[w.length-1]);
+  document.getElementById('weightNow').innerHTML = last.toFixed(1)+' <span style="font-size:14px">кг</span>';
+  document.getElementById('weightDelta').textContent = (w[w.length-1]-w[0]).toFixed(1)+' кг';
+  const range = document.getElementById('weightRange');
+  if(range) range.textContent = mine ? (relDay(state.weightLog.slice().sort((a,b)=>a.d<b.d?-1:1)[0].d)+' — сегодня') : 'за 30 дней';
+
+  const W=328, H=118, pad=10, min=Math.min(...w), max=Math.max(...w), span=(max-min)||1;
+  const n = w.length;
+  const X=i=> n>1 ? pad + i*(W-pad*2)/(n-1) : W/2;
+  const Y=v=> pad + (1-(v-min)/span)*(H-pad*2);
+  const pts = w.map((v,i)=>[X(i),Y(v)]);
+  const line = pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ');
+  const area = line+` L ${X(n-1).toFixed(1)} ${H} L ${X(0).toFixed(1)} ${H} Z`;
+  const c = document.getElementById('weightChart');
+  c.setAttribute('viewBox',`0 0 ${W} ${H}`);
+  c.innerHTML = `<defs><linearGradient id="wg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#cdff3e" stop-opacity=".32"/>
+      <stop offset="100%" stop-color="#cdff3e" stop-opacity="0"/></linearGradient></defs>
+    <path d="${area}" fill="url(#wg)"/>
+    <path d="${line}" fill="none" stroke="#cdff3e" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>
+    <circle cx="${pts[pts.length-1][0].toFixed(1)}" cy="${pts[pts.length-1][1].toFixed(1)}" r="4.5" fill="#cdff3e"/>`;
+
+  /* тоннаж по неделям — из сохранённых тренировок */
+  const ton = weeklyTonnage();
+  const tmax = Math.max(1, ...ton);
+  document.getElementById('tonnageBars').innerHTML = ton.map((v,i)=>
+    `<div class="bcol" title="${v} кг"><i style="height:${Math.max(3,Math.round(v/tmax*100))}%"></i><span>${i+1}н</span></div>`).join('');
+
+  const prs = personalRecords();
+  document.getElementById('prList').innerHTML = prs.map((p,i)=>`
+    <div class="pr" onclick="openExercise('${esc(p[0])}','${p[1].split(' · ')[1]}',${p[3]},'Личный рекорд')">
+      <span class="medal">${i+1}</span>
+      <div style="flex:1;min-width:0"><div class="tt" style="font-size:14px;font-weight:700">${p[0]}</div>
+      <div class="ss">${p[2]}</div></div>
+      <span class="vv">${p[1].split(' · ')[0]}</span></div>`).join('');
+
+  const vol = [['Ноги',82],['Спина',74],['Грудь',61],['Плечи',48],['Руки',44],['Пресс',30]];
+  document.getElementById('volList').innerHTML = vol.map(v=>`
+    <div class="hbar clickable" onclick="openMuscle('${MUSCLE_ID_BY_NAME[v[0]]}')">
+      <div class="top"><span>${v[0]}</span><b class="mono" style="color:var(--lime)">${v[1]}%</b></div>
+      <div class="bar"><i style="width:${v[1]}%"></i></div></div>`).join('');
+}
+
+/* ================== НОРМА КБЖУ (Mifflin-St Jeor) ================== */
+const ACTIVITY = [[1.2,'Сидячий'],[1.375,'1–2 трен.'],[1.55,'3–4 трен.'],[1.725,'5–6 трен.']];
+const GOALS3 = [['cut','Похудеть'],['keep','Держать'],['bulk','Набрать']];
+function calcMacros(p){
+  const kg = +p.weight, cm = +p.height, age = +p.age;
+  if(!(kg > 0) || !(cm > 0) || !(age > 0)) return null;
+  const bmr = 10*kg + 6.25*cm - 5*age + (p.sex === 'f' ? -161 : 5);
+  const tdee = bmr * (+p.activity || 1.375);
+  const kcal = Math.round(tdee * ({cut:0.85, keep:1, bulk:1.1}[p.goal] || 1) / 10) * 10;
+  const prot = Math.round(kg * (p.goal === 'cut' ? 2.0 : 1.8));
+  const fat = Math.round(kcal * 0.25 / 9);
+  const carb = Math.max(0, Math.round((kcal - prot*4 - fat*9) / 4));
+  return { kcal, p:prot, f:fat, c:carb, water: Math.round(kg*0.03*10)/10, steps:10000,
+           bmr:Math.round(bmr), tdee:Math.round(tdee) };
+}
+function applyMacros(){
+  const m = calcMacros(state.profile);
+  if(!m) return null;
+  Object.assign(state.goals, m);
+  return m;
+}
+
+/* ================== ОНБОРДИНГ ================== */
+let ob = null;
+function openOnboarding(){
+  ob = Object.assign({}, state.profile);
+  if(!(ob.age > 0)) ob.age = 28;
+  if(!(ob.height > 0)) ob.height = 178;
+  if(!(ob.weight > 0)) ob.weight = state.weight > 0 ? state.weight : 80;
+  renderOnboarding();
+}
+function renderOnboarding(){
+  const sc = document.getElementById('ovBody').scrollTop;
+  const calc = calcMacros(ob);
+  const chip = (cur, val, label, fn) =>
+    `<button class="chip ${cur===val?'on':''}" style="flex:0 0 auto" onclick="${fn}('${val}')">${label}</button>`;
+  openOverlay('Настроим FORGE', 'Пять вопросов — и нормы посчитаются сами',
+    `<div class="card">
+       <div class="lbl">ПОЛ</div>
+       <div class="row" style="gap:7px;margin-top:9px">
+         ${chip(ob.sex,'m','Мужчина','obSet')}${chip(ob.sex,'f','Женщина','obSet')}
+       </div>
+     </div>
+     <div class="card" style="margin-top:11px">
+       ${[['age','Возраст',1,'лет',1],['height','Рост',1,'см',0],['weight','Вес',0.5,'кг',1]]
+         .map(x=>`<div class="spread" style="padding:11px 0;border-bottom:1px solid var(--line)">
+           <span>${x[1]}</span><div class="row" style="gap:8px">
+             <button class="icon-btn sm" onclick="obStep('${x[0]}',${-x[2]},${x[4]})">−</button>
+             <b class="mono" style="min-width:82px;text-align:center;color:var(--lime)">${ob[x[0]]} ${x[3]}</b>
+             <button class="icon-btn sm" onclick="obStep('${x[0]}',${x[2]},${x[4]})">+</button>
+           </div></div>`).join('')}
+     </div>
+     <div class="card" style="margin-top:11px">
+       <div class="lbl">АКТИВНОСТЬ</div>
+       <div class="row" style="gap:7px;margin-top:9px;flex-wrap:wrap">
+         ${ACTIVITY.map(a=>`<button class="chip ${Math.abs(ob.activity-a[0])<0.01?'on':''}"
+            style="flex:0 0 auto" onclick="obActivity(${a[0]})">${a[1]}</button>`).join('')}
+       </div>
+     </div>
+     <div class="card" style="margin-top:11px">
+       <div class="lbl">ЦЕЛЬ</div>
+       <div class="row" style="gap:7px;margin-top:9px">
+         ${GOALS3.map(g=>chip(ob.goal,g[0],g[1],'obGoal')).join('')}
+       </div>
+     </div>
+     ${calc ? `<div class="card" style="margin-top:11px">
+       <div class="lbl" style="color:var(--lime)">ТВОЯ НОРМА</div>
+       <div class="intake" style="margin:8px 0 6px">${calc.kcal.toLocaleString('ru-RU')} <span style="font-size:14px">ккал</span></div>
+       <div class="macro3">
+         ${[['Белки',calc.p,'г'],['Жиры',calc.f,'г'],['Углеводы',calc.c,'г']].map(x=>
+           `<div><div class="g">${x[1]} <span style="font-size:12px">${x[2]}</span></div><div class="of">${x[0]}</div></div>`).join('')}
+       </div>
+       <div class="stat-sub" style="margin-top:12px">Базовый обмен ${calc.bmr.toLocaleString('ru-RU')} ккал · с активностью ${calc.tdee.toLocaleString('ru-RU')} ккал</div>
+       <div class="stat-sub" style="margin-top:6px">Вода ${calc.water} л · Шаги ${calc.steps.toLocaleString('ru-RU')}</div>
+     </div>` : `<div class="stat-sub" style="margin:14px 4px">Заполни рост, вес и возраст — посчитаю норму.</div>`}`,
+    `<button class="bigbtn" onclick="finishOnboarding()">${calc?'Начать':'Пропустить'}</button>`);
+  document.getElementById('ovBody').scrollTop = sc;
+}
+function obSet(k, v){ ob.sex = v; renderOnboarding(); }
+function obGoal(v){ ob.goal = v; renderOnboarding(); }
+function obActivity(v){ ob.activity = v; renderOnboarding(); }
+function obStep(k, d, isInt){
+  let v = Math.round((ob[k] + d) * 10) / 10;
+  v = Math.max(k === 'weight' ? 30 : (k === 'height' ? 120 : 10), v);
+  v = Math.min(k === 'weight' ? 300 : (k === 'height' ? 230 : 99), v);
+  ob[k] = isInt ? Math.round(v) : v;
+  renderOnboarding();
+}
+function finishOnboarding(){
+  const calc = calcMacros(ob);
+  state.profile = Object.assign({}, ob);
+  if(calc){
+    state.profile.startWeight = state.weight > 0 ? state.weight : ob.weight;
+    state.profile.targetWeight = Math.round(ob.weight * ({cut:0.92, keep:1, bulk:1.08}[ob.goal] || 1) * 10) / 10;
+    state.weight = ob.weight;
+    logPush('weightLog', {kg: ob.weight});
+    applyMacros();
+  }
+  state.onboarded = true;
+  save();
+  closeOverlay();
+  boot();
+  toast(calc ? 'Нормы посчитаны — можно менять в Целях' : 'Данных мало, нормы оставил по умолчанию');
+}
+
+/* ================== СТАРТ ================== */
+function boot(){
+  renderTabs();
+  renderSleep(); renderPrograms(); renderMuscles(); renderActivities(); renderHistory();
+  renderProgress(); renderFood(); renderRation(); renderForma();
+  go(state.tab || 'workout');
+}
+load();
+rollover();
+if(state.profile && state.profile.weight > 0 && !(state.weight > 0)) state.weight = state.profile.weight;
+boot();
+if(!state.onboarded) openOnboarding();
+
+/* ================== TELEGRAM MINI APP ==================
+   Открыто внутри Telegram — снимаем макетную рамку и живём по размерам вебвью.
+   Открыто в обычном браузере — остаётся рамка телефона, чтобы можно было смотреть локально. */
+const TG = (window.Telegram && window.Telegram.WebApp) || null;
+const IN_TG = !!(TG && (TG.initData || (TG.platform && TG.platform !== 'unknown')));
+
+function tgViewport(){
+  if(!TG) return;
+  const h = TG.viewportStableHeight || TG.viewportHeight || window.innerHeight;
+  document.documentElement.style.setProperty('--app-h', h + 'px');
+  const cs = TG.contentSafeAreaInset || {};
+  document.documentElement.style.setProperty('--safe-t', (cs.top || 0) + 'px');
+  document.documentElement.style.setProperty('--safe-b', (cs.bottom || 0) + 'px');
+}
+function tgSyncBack(){
+  if(!IN_TG || !TG.BackButton) return;
+  const ov = document.getElementById('overlay');
+  if(ov && ov.classList.contains('open')) TG.BackButton.show();
+  else TG.BackButton.hide();
+}
+function initTelegram(){
+  if(!IN_TG) return;
+  document.body.classList.add('tg');
+  try{
+    TG.ready();
+    TG.expand();
+    if(TG.setHeaderColor) TG.setHeaderColor('#08090d');
+    if(TG.setBackgroundColor) TG.setBackgroundColor('#08090d');
+    if(TG.setBottomBarColor) TG.setBottomBarColor('#08090d');
+  }catch(e){}
+  tgViewport();
+  if(TG.onEvent){
+    TG.onEvent('viewportChanged', tgViewport);
+    TG.onEvent('safeAreaChanged', tgViewport);
+  }
+  window.addEventListener('resize', tgViewport);
+  window.addEventListener('orientationchange', tgViewport);
+
+  const ov = document.getElementById('overlay');
+  if(ov && TG.BackButton){
+    TG.BackButton.onClick(function(){
+      if(ov.classList.contains('open')) closeOverlay();
+    });
+  }
+  if(ov && window.MutationObserver){
+    new MutationObserver(tgSyncBack).observe(ov, {attributes:true, attributeFilter:['class']});
+  }
+  tgSyncBack();
+
+  if(TG.HapticFeedback){
+    document.addEventListener('click', function(e){
+      const b = e.target.closest && e.target.closest('.tab,.pill.solid,.cta,.icon-btn,.chip');
+      if(b){ try{ TG.HapticFeedback.impactOccurred('light'); }catch(_){} }
+    }, true);
+  }
+}
+initTelegram();
+</script>
+</body>
+</html>
