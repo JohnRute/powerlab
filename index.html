@@ -314,6 +314,36 @@ button:active{transform:scale(.985)}
   box-shadow:0 14px 40px rgba(0,0,0,.6);transform:translateY(18px);opacity:0;pointer-events:none;transition:.25s}
 .toast.show{transform:none;opacity:1}
 
+/* ---------- подтверждение ---------- */
+.confirm{position:absolute;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;padding:24px;
+  background:rgba(4,5,8,.74);opacity:0;visibility:hidden;transition:opacity .2s,visibility .2s}
+.confirm.open{opacity:1;visibility:visible}
+.cf-box{width:100%;max-width:300px;border-radius:22px;border:1px solid var(--line-strong);
+  background:linear-gradient(180deg,#14161c,#0d0f14);padding:22px 20px 16px;text-align:center;
+  box-shadow:0 24px 60px rgba(0,0,0,.72);transform:translateY(8px);transition:transform .22s}
+.confirm.open .cf-box{transform:none}
+.cf-t{font-family:var(--disp);font-size:19px;letter-spacing:1px;text-transform:uppercase;line-height:1.15}
+.cf-s{font-size:12.5px;color:var(--muted);margin-top:8px;line-height:1.5}
+.cf-row{display:flex;flex-direction:column;gap:8px;margin-top:18px}
+.cf-row .pill{width:100%;padding:13px}
+
+/* ---------- экран загрузки ---------- */
+.splash{position:absolute;inset:0;z-index:60;background:#08090d;display:flex;align-items:center;justify-content:center;
+  transition:opacity .45s ease,visibility .45s}
+.splash.hide{opacity:0;visibility:hidden;pointer-events:none}
+.splash-bg{position:absolute;inset:0;background:url('assets/splash.jpg') center/cover no-repeat}
+.splash-bg::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(8,9,13,.74),rgba(8,9,13,.42) 42%,rgba(8,9,13,.90))}
+.splash-in{position:relative;z-index:2;text-align:center;padding:0 26px;animation:splashIn .5s ease both}
+.splash-rule{width:44px;height:3px;background:var(--lime);margin:0 auto 16px}
+.splash-name{font-family:var(--disp);font-size:40px;font-weight:600;letter-spacing:4px;color:#fff;line-height:1}
+.splash-tag{font-size:10px;letter-spacing:2.2px;color:var(--muted);margin-top:9px}
+.splash-bar{width:132px;height:2px;background:rgba(255,255,255,.12);border-radius:2px;margin:34px auto 0;overflow:hidden}
+.splash-bar i{display:block;height:100%;width:38%;background:var(--lime);border-radius:2px;
+  animation:splashRun 1.05s ease-in-out infinite}
+@keyframes splashRun{0%{transform:translateX(-100%)}100%{transform:translateX(365%)}}
+@keyframes splashIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
 /* ---------- Telegram Mini App ---------- */
 body.tg{
   display:block;padding:0;height:100%;overflow:hidden;background:var(--bg);
@@ -518,7 +548,7 @@ body.tg .ov-foot{padding-bottom:calc(22px + var(--safe-b,0px))}
 
   <div class="overlay" id="overlay">
     <div class="ov-head">
-      <button class="icon-btn" onclick="closeOverlay()">‹</button>
+      <button class="icon-btn" onclick="ovBack()">‹</button>
       <div style="flex:1;min-width:0">
         <h2 id="ovTitle">—</h2>
         <div class="sub" id="ovSub">—</div>
@@ -529,6 +559,27 @@ body.tg .ov-foot{padding-bottom:calc(22px + var(--safe-b,0px))}
   </div>
 
   <div class="toast" id="toast"></div>
+
+  <div class="confirm" id="confirm">
+    <div class="cf-box">
+      <div class="cf-t" id="cfTitle">Прервать тренировку?</div>
+      <div class="cf-s" id="cfSub"></div>
+      <div class="cf-row">
+        <button class="pill solid" id="cfOk" onclick="confirmYes()">Прервать</button>
+        <button class="pill" onclick="confirmNo()">Продолжить</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="splash" id="splash">
+    <div class="splash-bg"></div>
+    <div class="splash-in">
+      <div class="splash-rule"></div>
+      <div class="splash-name">POWERLAB</div>
+      <div class="splash-tag">ТРЕНИРОВКИ · ПИТАНИЕ · ПРОГРЕСС</div>
+      <div class="splash-bar"><i></i></div>
+    </div>
+  </div>
 </div>
 <div class="caption">PowerLab · кликабельный макет</div>
 </div>
@@ -760,6 +811,9 @@ function go(id){
 
 /* ================== ОВЕРЛЕЙ ================== */
 function openOverlay(title, sub, bodyHTML, footHTML){
+  /* запоминаем точку возврата только для тренировки/отчёта, иначе вложенные окна её затирают */
+  if(ovKind === 'session' || ovKind === 'done') ovPrev = ovKind;
+  ovKind = 'other';
   document.getElementById('ovTitle').textContent = title;
   document.getElementById('ovSub').textContent = sub || '';
   document.getElementById('ovBody').innerHTML = bodyHTML || '';
@@ -768,8 +822,38 @@ function openOverlay(title, sub, bodyHTML, footHTML){
   document.getElementById('ovBody').scrollTop = 0;
 }
 function closeOverlay(){
+  ovKind = null; ovPrev = null;
   document.getElementById('overlay').classList.remove('open');
   clearInterval(tick); S = null;
+}
+/* Кнопка «назад» — в шапке окна и системная кнопка Telegram.
+   Два случая: под-окно, открытое из тренировки, возвращает в тренировку;
+   саму тренировку закрываем только с подтверждением, иначе подходы потеряются молча. */
+function ovBack(){
+  if(ovPrev === 'session' && S){
+    ovPrev = null; ovKind = 'session';
+    renderSession();
+    return;
+  }
+  if(ovKind === 'session' && S && S.done.some(d => d > 0)){
+    askConfirm('Прервать тренировку?', 'Отмеченные подходы не сохранятся.', 'Прервать', closeOverlay);
+    return;
+  }
+  closeOverlay();
+}
+let confirmFn = null;
+function askConfirm(title, sub, okLabel, fn){
+  confirmFn = fn;
+  document.getElementById('cfTitle').textContent = title;
+  document.getElementById('cfSub').textContent = sub || '';
+  document.getElementById('cfOk').textContent = okLabel || 'Да';
+  document.getElementById('confirm').classList.add('open');
+}
+function confirmNo(){ confirmFn = null; document.getElementById('confirm').classList.remove('open'); }
+function confirmYes(){
+  const f = confirmFn; confirmFn = null;
+  document.getElementById('confirm').classList.remove('open');
+  if(f) f();
 }
 
 /* ================== ПОДСЧЁТ КБЖУ ================== */
@@ -1259,7 +1343,7 @@ function openExercise(name, reps, kg, group){
          <div class="body"><div class="tt" style="font-size:13.5px">${r[1]}</div><div class="ss">${reps}</div></div>
          <span class="vv">${r[2]||0} кг</span></div>`).join('')}</div>`,
     (activeSwap ? `<button class="bigbtn" onclick="openSwap()">Заменить упражнение</button>` : '') +
-    `<button class="bigbtn ghost" style="margin-top:${activeSwap?'10px':'0'}" onclick="closeOverlay();toast('${esc(name)} ${activeSwap?'оставлено как есть':'добавлено в тренировку'}')">${activeSwap?'Оставить как есть':'Добавить в тренировку'}</button>`);
+     `<button class="bigbtn ghost" style="margin-top:${activeSwap?'10px':'0'}" onclick="ovBack();toast('${esc(name)} ${activeSwap?'оставлено как есть':'добавлено в тренировку'}')">${activeSwap?'Оставить как есть':'Добавить в тренировку'}</button>`);
 }
 
 function openSwap(){
@@ -1284,7 +1368,7 @@ function openSwap(){
      <div class="stat-sub" style="margin:14px 4px">${inSession
         ? 'Подходы по этому упражнению начнутся заново.'
         : 'Упражнение заменится в программе на всех тренировках этого дня.'}</div>`,
-    `<button class="bigbtn ghost" onclick="closeOverlay()">Отмена</button>`);
+    `<button class="bigbtn ghost" onclick="ovBack()">Отмена</button>`);
 }
 
 function applySwap(i){
@@ -1426,6 +1510,9 @@ function quickAdd(mi, fi){
 
 /* ================== АКТИВНАЯ ТРЕНИРОВКА ================== */
 let S = null, tick = null;
+/* что сейчас лежит в оверлее: 'session' — идёт тренировка, 'done' — отчёт, иначе под-окно.
+   ovPrev хранит, откуда пришли, чтобы под-окно возвращало в тренировку, а не закрывало её. */
+let ovKind = null, ovPrev = null;
 const REST = 90;
 
 function setsOf(reps){ const m = String(reps).match(/(\d+)/); return m ? +m[1] : 3; }
@@ -1559,6 +1646,7 @@ function sessionHTML(){
 
 function renderSession(){
   if(!S) return;
+  ovKind = 'session'; ovPrev = null;
   const body = document.getElementById('ovBody');
   const sc = body.scrollTop;
   body.innerHTML = sessionHTML();
@@ -1619,6 +1707,7 @@ function addRest(){ S.restLeft += 20; renderSession(); }
 
 function finishWorkout(){
   clearInterval(tick);
+  ovKind = 'done'; ovPrev = null;      /* отчёт: закрывается без подтверждения */
   S.resting = false;
   const sets = S.done.reduce((a,b)=>a+b,0);
   const tonnage = Math.round(S.done.reduce((a,b,k)=> a + b * S.w[k] * 10, 0));
@@ -1909,7 +1998,7 @@ function initTelegram(){
   const ov = document.getElementById('overlay');
   if(ov && TG.BackButton){
     TG.BackButton.onClick(function(){
-      if(ov.classList.contains('open')) closeOverlay();
+      if(ov.classList.contains('open')) ovBack();
     });
   }
   if(ov && window.MutationObserver){
@@ -1925,6 +2014,24 @@ function initTelegram(){
   }
 }
 initTelegram();
+
+/* ================== ЭКРАН ЗАГРУЗКИ ==================
+   Держим минимальную паузу, чтобы не мигал на быстрой загрузке,
+   и обязательно убираем — даже если load не сработает. */
+(function(){
+  const sp = document.getElementById('splash');
+  if(!sp) return;
+  const t0 = Date.now();
+  let done = false;
+  function hide(){
+    if(done) return;
+    done = true;
+    setTimeout(function(){ sp.classList.add('hide'); }, Math.max(0, 700 - (Date.now() - t0)));
+  }
+  if(document.readyState === 'complete') hide();
+  else window.addEventListener('load', hide);
+  setTimeout(hide, 3000);
+})();
 </script>
 </body>
 </html>
