@@ -329,7 +329,7 @@ button:active{transform:scale(.985)}
 
 /* ---------- экран загрузки ---------- */
 .splash{position:absolute;inset:0;z-index:60;background:#08090d;display:flex;align-items:center;justify-content:center;
-  transition:opacity .45s ease,visibility .45s}
+  transition:opacity .7s ease,visibility .7s}
 .splash.hide{opacity:0;visibility:hidden;pointer-events:none}
 .splash-bg{position:absolute;inset:0;background:url('assets/splash.jpg') center/cover no-repeat}
 .splash-bg::after{content:"";position:absolute;inset:0;
@@ -2016,21 +2016,29 @@ function initTelegram(){
 initTelegram();
 
 /* ================== ЭКРАН ЗАГРУЗКИ ==================
-   Держим минимальную паузу, чтобы не мигал на быстрой загрузке,
-   и обязательно убираем — даже если load не сработает. */
+   Обложка держится SPLASH_MS от начала открытия страницы и потом плавно
+   уходит. Отсчёт специально не от load: load может прийти позже (медленная
+   сеть) — тогда экран просто останется до него. Страховочный таймер убирает
+   обложку в любом случае, даже если load так и не сработает. */
 (function(){
+  const SPLASH_MS = 4000;
   const sp = document.getElementById('splash');
   if(!sp) return;
+  /* performance.now() отсчитывает от начала навигации — именно то, что нужно.
+     Если его нет, падаем на Date.now() от момента запуска этого скрипта. */
   const t0 = Date.now();
+  const elapsed = (window.performance && performance.now)
+    ? function(){ return performance.now(); }
+    : function(){ return Date.now() - t0; };
   let done = false;
   function hide(){
     if(done) return;
     done = true;
-    setTimeout(function(){ sp.classList.add('hide'); }, Math.max(0, 700 - (Date.now() - t0)));
+    setTimeout(function(){ sp.classList.add('hide'); }, Math.max(0, SPLASH_MS - elapsed()));
   }
   if(document.readyState === 'complete') hide();
   else window.addEventListener('load', hide);
-  setTimeout(hide, 3000);
+  setTimeout(hide, SPLASH_MS + 5000);
 })();
 </script>
 </body>
