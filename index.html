@@ -362,6 +362,25 @@ body.tg .tabbar{margin-bottom:calc(10px + var(--safe-b,0px))}
 body.tg .toast{bottom:calc(98px + var(--safe-b,0px))}
 body.tg .ov-body{padding-bottom:calc(108px + var(--safe-b,0px))}
 body.tg .ov-foot{padding-bottom:calc(22px + var(--safe-b,0px))}
+/* вернуть выделение и каретку полям ввода — иначе на телефоне
+   в них нельзя ни встать курсором, ни стереть символ */
+body.tg input,body.tg textarea{-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
+
+/* ---- выбор порции: цифра, ползунок, быстрые кнопки ---- */
+.pwrap{text-align:center;padding:18px 14px 20px}
+.pinput{font-family:var(--mono);font-size:40px;font-weight:700;line-height:1.15;color:var(--lime);
+  background:none;border:none;outline:none;text-align:center;width:160px;padding:0 2px;
+  border-bottom:1px dashed rgba(205,255,62,.4);-webkit-appearance:none;appearance:none}
+.pinput::-webkit-outer-spin-button,.pinput::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.pinput[type=number]{-moz-appearance:textfield}
+.prange{-webkit-appearance:none;appearance:none;width:100%;height:24px;background:none;margin:16px 0 0;display:block}
+.prange::-webkit-slider-runnable-track{height:5px;border-radius:99px;background:rgba(255,255,255,.13)}
+.prange::-webkit-slider-thumb{-webkit-appearance:none;width:23px;height:23px;border-radius:50%;background:var(--lime);
+  margin-top:-9px;box-shadow:0 0 0 5px rgba(205,255,62,.16)}
+.prange::-moz-range-track{height:5px;border-radius:99px;background:rgba(255,255,255,.13)}
+.prange::-moz-range-thumb{width:23px;height:23px;border:none;border-radius:50%;background:var(--lime);
+  box-shadow:0 0 0 5px rgba(205,255,62,.16)}
+.prow{display:flex;gap:7px;justify-content:center;flex-wrap:wrap;margin-top:12px}
 </style>
 </head>
 <body>
@@ -814,6 +833,7 @@ function openOverlay(title, sub, bodyHTML, footHTML){
   /* запоминаем точку возврата только для тренировки/отчёта, иначе вложенные окна её затирают */
   if(ovKind === 'session' || ovKind === 'done') ovPrev = ovKind;
   ovKind = 'other';
+  ovStep = null;
   document.getElementById('ovTitle').textContent = title;
   document.getElementById('ovSub').textContent = sub || '';
   document.getElementById('ovBody').innerHTML = bodyHTML || '';
@@ -822,7 +842,7 @@ function openOverlay(title, sub, bodyHTML, footHTML){
   document.getElementById('ovBody').scrollTop = 0;
 }
 function closeOverlay(){
-  ovKind = null; ovPrev = null;
+  ovKind = null; ovPrev = null; ovStep = null;
   document.getElementById('overlay').classList.remove('open');
   clearInterval(tick); S = null;
 }
@@ -830,6 +850,7 @@ function closeOverlay(){
    Два случая: под-окно, открытое из тренировки, возвращает в тренировку;
    саму тренировку закрываем только с подтверждением, иначе подходы потеряются молча. */
 function ovBack(){
+  if(ovStep){ const f = ovStep; ovStep = null; f(); return; }
   if(ovPrev === 'session' && S){
     ovPrev = null; ovKind = 'session';
     renderSession();
@@ -1165,23 +1186,67 @@ function removeItem(mi, ii){
   state.meals[mi].items.splice(ii,1);
   save(); renderRation(); renderForma(); toast('Удалено: '+nm);
 }
+/* ---- выбор порции: цифру можно стереть и ввести вручную, ползунок и ±кнопки
+   двигают то же значение, КБЖУ пересчитывается на лету. opt: {title, sub, item, ok, back, onDone} ---- */
+function portionDialog(opt){
+  const it = opt.item, g0 = it.g || 100;
+  window._portion = { k:it.k, p:it.p, f:it.f, c:it.c, g:g0, onDone:opt.onDone };
+  openOverlay(opt.title, opt.sub,
+    `<div class="card pwrap">
+      <div><input id="pGin" class="pinput" type="number" inputmode="numeric" min="1" max="2000"
+        value="${g0}" oninput="portionSet(this.value,1)" onblur="portionBlur()"><span style="font-size:16px;color:var(--muted)"> г</span></div>
+      <div class="stat-sub" style="margin-top:10px"><span id="pK"></span> ккал · Б <span id="pP"></span> · Ж <span id="pF"></span> · У <span id="pC"></span></div>
+      <input id="pR" class="prange" type="range" min="5" max="600" step="5"
+        value="${Math.min(600, Math.max(5, g0))}" oninput="portionSet(this.value,0)">
+      <div class="row" style="justify-content:space-between"><span class="stat-sub">5 г</span><span class="stat-sub">600 г</span></div>
+      <div class="prow">${[50,100,150,200,250].map(v=>`<button class="chip" onclick="portionSet(${v},0)">${v} г</button>`).join('')}</div>
+      <div class="prow">${[-50,-10,10,50].map(d=>`<button class="pill" onclick="portionStep(${d})">${d>0?'+':'−'}${Math.abs(d)}</button>`).join('')}</div>
+      <div class="stat-sub" style="margin-top:13px">Цифру можно стереть и ввести свой вес</div>
+    </div>`,
+    `<button class="bigbtn" onclick="portionDone()">${opt.ok || 'Добавить'}</button>`);
+  ovStep = opt.back || null;
+  portionSet(g0, 0);
+}
+function portionSet(v, fromInput){
+  const P = window._portion; if(!P) return;
+  const n = Math.round((parseFloat(String(v).replace(',', '.')) || 0) * 10) / 10;
+  P.g = Math.max(0, Math.min(2000, n));
+  const bin = document.getElementById('pGin');
+  if(bin && !fromInput) bin.value = P.g;
+  const r = document.getElementById('pR');
+  if(r && +r.value !== Math.min(600, Math.max(5, P.g))) r.value = Math.min(600, Math.max(5, P.g));
+  const m = P.g / 100;
+  const put = function(id, val){ const e = document.getElementById(id); if(e) e.textContent = val; };
+  put('pK', Math.round(P.k * m));
+  put('pP', (P.p * m).toFixed(1));
+  put('pF', (P.f * m).toFixed(1));
+  put('pC', (P.c * m).toFixed(1));
+}
+function portionStep(d){
+  const P = window._portion; if(!P) return;
+  portionSet(Math.max(5, Math.round(P.g) + d), 0);
+}
+function portionBlur(){
+  const P = window._portion; if(!P) return;
+  portionSet(P.g < 1 ? 5 : P.g, 0);
+}
+function portionDone(){
+  const P = window._portion; if(!P) return;
+  const g = Math.max(1, Math.round(P.g) || 1);
+  const fn = P.onDone;
+  window._portion = null;
+  if(fn) fn(g);
+}
 function openPortion(mi, ii){
   const it = state.meals[mi].items[ii];
-  openOverlay(it.name, state.meals[mi].n,
-    `<div class="card" style="text-align:center;padding:22px">
-      <div class="statbig" style="font-size:40px"><span id="pG">${it.g}</span> <span style="font-size:15px">г</span></div>
-      <div class="stat-sub" style="margin-top:6px"><span id="pK">${Math.round(it.k*it.g/100)}</span> ккал</div>
-      <div class="bar" style="margin-top:16px"><i style="width:${Math.min(100,it.g/300*100)}%"></i></div>
-      <div class="row" style="justify-content:center;gap:8px;margin-top:16px">
-        ${[-50,-10,10,50].map(d=>`<button class="pill" onclick="stepPortion(${mi},${ii},${d})">${d>0?'+':''}${d}</button>`).join('')}
-      </div></div>`,
-    `<button class="bigbtn" onclick="closeOverlay();save();renderRation();renderForma();toast('Порция обновлена')">Готово</button>`);
-}
-function stepPortion(mi, ii, d){
-  const it = state.meals[mi].items[ii];
-  it.g = Math.max(5, it.g + d);
-  document.getElementById('pG').textContent = it.g;
-  document.getElementById('pK').textContent = Math.round(it.k*it.g/100);
+  portionDialog({
+    title:'Порция', sub:it.name+' · '+state.meals[mi].n, item:it, ok:'Готово',
+    onDone:function(g){
+      it.g = g;
+      save(); closeOverlay(); renderRation(); renderForma();
+      toast(it.name+': '+g+' г');
+    }
+  });
 }
 function openFoodPicker(mi){
   openOverlay('Выбрать продукт', state.meals[mi].n,
@@ -1190,15 +1255,22 @@ function openFoodPicker(mi){
         <div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:700">${f.n}</div>
         <div class="stat-sub">${f.k} ккал · Б ${f.p} · Ж ${f.f} · У ${f.c}</div></div>
         <button class="icon-btn sm">+</button></div>`).join('')}</div>
-    <div class="stat-sub" style="margin:14px 4px">Порция по умолчанию — 100 г, потом можно изменить.</div>`,
+    <div class="stat-sub" style="margin:14px 4px">Дальше спросим, сколько грамм.</div>`,
     `<button class="bigbtn ghost" onclick="closeOverlay()">Отмена</button>`);
 }
 function pickFood(mi, fi){
   const f = FOODS[fi];
-  state.meals[mi].items.push({name:f.n,k:f.k,p:f.p,f:f.f,c:f.c,g:100});
-  state.meals[mi].open = true;
-  save(); closeOverlay(); renderRation(); renderForma();
-  toast('+ '+f.n+' → '+state.meals[mi].n);
+  portionDialog({
+    title:'Сколько добавить?', sub:f.n+' · '+state.meals[mi].n,
+    item:{k:f.k,p:f.p,f:f.f,c:f.c,g:100},
+    back:function(){ openFoodPicker(mi); },
+    onDone:function(g){
+      state.meals[mi].items.push({name:f.n,k:f.k,p:f.p,f:f.f,c:f.c,g:g});
+      state.meals[mi].open = true;
+      save(); closeOverlay(); renderRation(); renderForma();
+      toast('+ '+f.n+', '+g+' г → '+state.meals[mi].n);
+    }
+  });
 }
 function openManual(mi){
   window._manual = {kcal:200,p:20,f:8,c:10};
@@ -1210,7 +1282,7 @@ function openManual(mi){
         <b class="mono" style="min-width:70px;text-align:center;color:var(--lime)">${window._manual[x[0]]} ${x[2]}</b>
         <button class="icon-btn sm" onclick="mStep('${x[0]}',${x[3]},this)">+</button></div></div>`).join('')}</div>
     <div class="stat-sub" style="margin:14px 4px">Значения на 100 г продукта.</div>`,
-    `<button class="bigbtn" onclick="saveManual(${mi})">Добавить 100 г</button>`);
+    `<button class="bigbtn" onclick="saveManual(${mi})">Дальше</button>`);
 }
 function mStep(k, d, btn){
   window._manual[k] = Math.max(0, Math.round((window._manual[k]+d)*10)/10);
@@ -1219,9 +1291,17 @@ function mStep(k, d, btn){
 }
 function saveManual(mi){
   const v = window._manual;
-  state.meals[mi].items.push({name:'Своё блюдо',k:v.kcal,p:v.p,f:v.f,c:v.c,g:100});
-  state.meals[mi].open = true;
-  save(); closeOverlay(); renderRation(); renderForma(); toast('Добавлено своё блюдо');
+  portionDialog({
+    title:'Сколько добавить?', sub:'Своё блюдо · '+state.meals[mi].n,
+    item:{k:v.kcal,p:v.p,f:v.f,c:v.c,g:100},
+    back:function(){ openManual(mi); },
+    onDone:function(g){
+      state.meals[mi].items.push({name:'Своё блюдо',k:v.kcal,p:v.p,f:v.f,c:v.c,g:g});
+      state.meals[mi].open = true;
+      save(); closeOverlay(); renderRation(); renderForma();
+      toast('Своё блюдо, '+g+' г добавлено');
+    }
+  });
 }
 function scanPhoto(){
   openOverlay('Фото еды','Распознавание по снимку',
@@ -1498,14 +1578,21 @@ function openAddFlow(fi){
         <div class="ico">🍽</div>
         <div class="body"><div class="tt">${m.n}</div><div class="ss">${mealTotals(m).k} ккал сейчас</div></div>
         <span class="chev">›</span></div>`).join('')}</div>
-    <div class="stat-sub" style="margin:14px 4px">Добавим 100 г — порцию потом изменишь в рационе.</div>`);
+    <div class="stat-sub" style="margin:14px 4px">Дальше спросим, сколько грамм.</div>`);
 }
 function quickAdd(mi, fi){
   const f = FOODS[fi];
-  state.meals[mi].items.push({name:f.n,k:f.k,p:f.p,f:f.f,c:f.c,g:100});
-  state.meals[mi].open = true;
-  closeOverlay(); renderForma(); renderRation();
-  toast('+ '+f.n+' → '+state.meals[mi].n);
+  portionDialog({
+    title:'Сколько добавить?', sub:f.n+' · '+state.meals[mi].n,
+    item:{k:f.k,p:f.p,f:f.f,c:f.c,g:100},
+    back:function(){ openAddFlow(fi); },
+    onDone:function(g){
+      state.meals[mi].items.push({name:f.n,k:f.k,p:f.p,f:f.f,c:f.c,g:g});
+      state.meals[mi].open = true;
+      save(); closeOverlay(); renderForma(); renderRation();
+      toast('+ '+f.n+', '+g+' г → '+state.meals[mi].n);
+    }
+  });
 }
 
 /* ================== АКТИВНАЯ ТРЕНИРОВКА ================== */
@@ -1513,6 +1600,9 @@ let S = null, tick = null;
 /* что сейчас лежит в оверлее: 'session' — идёт тренировка, 'done' — отчёт, иначе под-окно.
    ovPrev хранит, откуда пришли, чтобы под-окно возвращало в тренировку, а не закрывало её. */
 let ovKind = null, ovPrev = null;
+/* ovStep — шаг назад внутри цепочки под-окон (список продуктов → порция).
+   Если задан, кнопка «назад» возвращает на предыдущий шаг, а не закрывает всё. */
+let ovStep = null;
 const REST = 90;
 
 function setsOf(reps){ const m = String(reps).match(/(\d+)/); return m ? +m[1] : 3; }
