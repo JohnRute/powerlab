@@ -103,9 +103,11 @@ html[data-theme="light"]{
   --faint:#9aa1ab;
   --faint-2:#9aa1ab;
   --faint-3:#a4abb4;
+  /* на светлой теме картинка оборачивается по яркости, но оттенок сохраняется:
+     invert + hue-rotate(180°) возвращает лаймовый цвет, saturate/brightness его проявляют */
   --img-blend:multiply;
-  --img-filter:grayscale(1) invert(1);
-  --img-opacity:.55;
+  --img-filter:invert(1) hue-rotate(180deg) sepia(.5) saturate(1.8) brightness(1.65);
+  --img-opacity:.8;
   --card-fade:rgba(255,255,255,.95);
   --accent-line:rgba(95,139,0,.42);
   --accent-line-2:rgba(95,139,0,.30);
