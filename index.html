@@ -22,12 +22,91 @@
   --violet:#8b7cff;
   --text:#f2f4f7;
   --muted:#7c838f;
+
+  /* --- служебные цвета: их переопределяет светлая тема --- */
+  --page:#040508;
+  --deep-1:#0b0d12;
+  --deep-2:#0c0e13;
+  --deep-3:#0d0f14;
+  --ring:#0b0c11;
+  --sheet:rgba(20,22,28,.97);
+  --sheet-2:#14161c;
+  --toast-bg:rgba(22,25,32,.98);
+  --veil:rgba(4,5,8,.74);
+  --shadow:rgba(0,0,0,.6);
+  --shadow-lg:rgba(0,0,0,.72);
+  --w2:rgba(255,255,255,.02);
+  --w3:rgba(255,255,255,.03);
+  --w5:rgba(255,255,255,.05);
+  --w8:rgba(255,255,255,.08);
+  --w12:rgba(255,255,255,.12);
+  --status:#b9c0c9;
+  --strong:#e6e9ee;
+  --dim:#b7bec7;
+  --dim-2:#aeb6c0;
+  --dim-3:#c2c9d1;
+  --faint:#4d545e;
+  --faint-2:#454b54;
+  --faint-3:#4a5058;
+  --on-lime:#141a02;
+  --accent-line:rgba(205,255,62,.45);
+  --accent-line-2:rgba(205,255,62,.3);
+  --accent-fill:rgba(205,255,62,.13);
+  --accent-soft:rgba(205,255,62,.07);
+  --accent-glow:rgba(205,255,62,.5);
   --mono:'JetBrains Mono',ui-monospace,Consolas,monospace;
   --sans:'Inter','Segoe UI',system-ui,sans-serif;
   --disp:'Oswald','Inter',system-ui,sans-serif;
 }
+/* ============ СВЕТЛАЯ ТЕМА ============
+   Меняются только цвета. Разметка и логика общие, поэтому включается
+   мгновенно и не может «потерять» какой-то экран.
+   Обложка остаётся тёмной: под ней фотография. */
+html[data-theme="light"]{
+  --bg:#f1f2f5;
+  --surface:#ffffff;
+  --surface-2:#f7f8fa;
+  --line:rgba(12,16,26,.10);
+  --line-strong:rgba(12,16,26,.20);
+  --lime:#5f8b00;
+  --lime-dim:rgba(120,170,0,.14);
+  --ember:#d0491c;
+  --violet:#6a57ee;
+  --text:#11151c;
+  --muted:#6b7280;
+  --page:#f1f2f5;
+  --deep-1:#f1f2f5;
+  --deep-2:#eceef2;
+  --deep-3:#ffffff;
+  --ring:#eceef2;
+  --sheet:rgba(255,255,255,.97);
+  --sheet-2:#ffffff;
+  --toast-bg:rgba(255,255,255,.98);
+  --veil:rgba(20,24,32,.34);
+  --shadow:rgba(16,20,30,.14);
+  --shadow-lg:rgba(16,20,30,.20);
+  --w2:rgba(12,16,26,.025);
+  --w3:rgba(12,16,26,.04);
+  --w5:rgba(12,16,26,.06);
+  --w8:rgba(12,16,26,.09);
+  --w12:rgba(12,16,26,.13);
+  --status:#454c56;
+  --strong:#141922;
+  --dim:#3f4650;
+  --dim-2:#454c56;
+  --dim-3:#3a4048;
+  --faint:#9aa1ab;
+  --faint-2:#9aa1ab;
+  --faint-3:#a4abb4;
+  --accent-line:rgba(95,139,0,.42);
+  --accent-line-2:rgba(95,139,0,.30);
+  --accent-fill:rgba(120,170,0,.12);
+  --accent-soft:rgba(120,170,0,.06);
+  --accent-glow:rgba(120,170,0,.32);
+}
+
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;height:100%}
+html,body{margin:0;height:100%;overscroll-behavior:none}
 body{
   font-family:var(--sans);color:var(--text);
   background:
@@ -35,6 +114,7 @@ body{
     radial-gradient(700px 500px at 95% 110%,rgba(139,124,255,.10),transparent 60%),
     #040508;
   display:flex;align-items:center;justify-content:center;padding:24px;
+  overflow-x:hidden;
 }
 .stage{display:flex;flex-direction:column;align-items:center;gap:14px}
 .caption{color:#4d545e;font-size:12px;letter-spacing:.6px}
@@ -47,11 +127,11 @@ body{
 }
 .phone::before{
   content:"";position:absolute;top:-180px;left:-60px;right:-60px;height:420px;pointer-events:none;
-  background:radial-gradient(closest-side,rgba(205,255,62,.16),transparent 72%);
+  background:radial-gradient(closest-side,var(--accent-fill),transparent 72%);
 }
 .statusbar{
   position:relative;z-index:3;display:flex;justify-content:space-between;align-items:center;
-  padding:13px 26px 4px;font-size:11.5px;color:#b9c0c9;font-family:var(--mono);flex:0 0 auto;letter-spacing:.5px;
+  padding:13px 26px 4px;font-size:11.5px;color:var(--status);font-family:var(--mono);flex:0 0 auto;letter-spacing:.5px;
 }
 .brand-txt{font-family:var(--disp);letter-spacing:2.5px;font-weight:600;color:var(--lime)}
 #app{position:relative;z-index:2;flex:1 1 auto;overflow:hidden}
@@ -64,7 +144,7 @@ h1{font-family:var(--disp);font-weight:600;font-size:32px;letter-spacing:1px;tex
 h2{font-size:17px;margin:0;font-weight:800}
 .sub{color:var(--muted);font-size:12.5px;margin:3px 0 0}
 .section{display:flex;align-items:baseline;justify-content:space-between;margin:22px 2px 11px}
-.section .t{font-family:var(--disp);font-size:15px;letter-spacing:2px;text-transform:uppercase;color:#e6e9ee}
+.section .t{font-family:var(--disp);font-size:15px;letter-spacing:2px;text-transform:uppercase;color:var(--strong)}
 .section .l{font-size:11.5px;color:var(--lime);letter-spacing:.5px}
 .mono{font-family:var(--mono)}
 .muted{color:var(--muted)}
@@ -77,15 +157,15 @@ h2{font-size:17px;margin:0;font-weight:800}
 .spread{display:flex;align-items:center;justify-content:space-between;gap:10px}
 
 button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:none}
-.pill{border:1px solid var(--line-strong);border-radius:999px;padding:9px 16px;font-size:12.5px;font-weight:700;color:var(--text);background:rgba(255,255,255,.03);transition:.18s;letter-spacing:.3px}
+.pill{border:1px solid var(--line-strong);border-radius:999px;padding:9px 16px;font-size:12.5px;font-weight:700;color:var(--text);background:var(--w3);transition:.18s;letter-spacing:.3px}
 .pill:hover{border-color:var(--lime);color:var(--lime)}
-.pill.solid{background:var(--lime);color:#141a02;border-color:transparent;text-transform:uppercase;letter-spacing:1px;font-weight:800}
+.pill.solid{background:var(--lime);color:var(--on-lime);border-color:transparent;text-transform:uppercase;letter-spacing:1px;font-weight:800}
 .pill.danger{border-color:rgba(255,106,61,.35);color:var(--ember)}
 .pill.danger:hover{border-color:var(--ember);color:var(--ember);background:rgba(255,106,61,.09)}
 .pill.solid:hover{filter:brightness(1.08)}
-.chip{border:1px solid var(--line);border-radius:999px;padding:9px 14px;font-size:12px;color:#b7bec7;background:rgba(255,255,255,.02);display:inline-flex;align-items:center;gap:7px;white-space:nowrap;transition:.18s}
+.chip{border:1px solid var(--line);border-radius:999px;padding:9px 14px;font-size:12px;color:var(--dim);background:var(--w2);display:inline-flex;align-items:center;gap:7px;white-space:nowrap;transition:.18s}
 .chip:hover,.chip.on{border-color:var(--lime);color:var(--lime);background:var(--lime-dim)}
-.icon-btn{width:38px;height:38px;border-radius:14px;border:1px solid var(--line);display:grid;place-items:center;color:var(--lime);background:rgba(255,255,255,.03);flex:0 0 auto;transition:.18s}
+.icon-btn{width:38px;height:38px;border-radius:14px;border:1px solid var(--line);display:grid;place-items:center;color:var(--lime);background:var(--w3);flex:0 0 auto;transition:.18s}
 .icon-btn:hover{background:var(--lime-dim);border-color:var(--lime)}
 .icon-btn.sm{width:28px;height:28px;border-radius:10px;font-size:14px;font-family:var(--mono)}
 .scroller{display:flex;gap:11px;overflow-x:auto;padding:2px 2px 6px;scrollbar-width:none}
@@ -95,19 +175,19 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .hero{display:flex;gap:16px;align-items:center}
 .ringwrap{position:relative;width:146px;height:146px;flex:0 0 auto}
 .rings{width:100%;height:100%;overflow:visible}
-.gl{filter:drop-shadow(0 0 6px rgba(205,255,62,.45))}
+.gl{filter:drop-shadow(0 0 6px var(--accent-line))}
 .gv{filter:drop-shadow(0 0 6px rgba(139,124,255,.5))}
 .ge{filter:drop-shadow(0 0 6px rgba(255,106,61,.5))}
-.ringcenter{position:absolute;inset:25px;border-radius:50%;background:#0b0c11;border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px}
-.ringcenter .day{font-size:10.5px;font-weight:800;background:rgba(255,255,255,.09);padding:2px 10px;border-radius:999px;letter-spacing:.5px}
+.ringcenter{position:absolute;inset:25px;border-radius:50%;background:var(--ring);border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px}
+.ringcenter .day{font-size:10.5px;font-weight:800;background:var(--w8);padding:2px 10px;border-radius:999px;letter-spacing:.5px}
 .ringcenter b{font-size:27px;font-family:var(--mono);line-height:1}
 .ringcenter span{font-size:10.5px;color:var(--muted);font-family:var(--mono)}
 .hero-right{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px}
 .macro{display:flex;align-items:center;gap:9px}
-.macro .tick{width:4px;height:20px;border-radius:2px;background:rgba(255,255,255,.09);overflow:hidden;display:flex;align-items:flex-end}
+.macro .tick{width:4px;height:20px;border-radius:2px;background:var(--w8);overflow:hidden;display:flex;align-items:flex-end}
 .macro .tick i{display:block;width:100%;height:18%;background:var(--lime);border-radius:2px}
 .macro .v{font-size:13.5px;font-family:var(--mono);font-weight:700}
-.macro .n{font-size:12.5px;color:#aeb6c0}
+.macro .n{font-size:12.5px;color:var(--dim-2)}
 .hero .edit{position:absolute;top:13px;right:13px}
 .hero .rep{align-self:flex-end;margin-top:2px}
 
@@ -115,38 +195,38 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .stat-ico{width:32px;height:32px;border-radius:11px;border:1px solid var(--line);display:grid;place-items:center;color:var(--lime);font-size:15px}
 .stat-val{font-family:var(--mono);font-size:25px;font-weight:700;margin:10px 0 2px}
 .stat-sub{font-size:12px;color:var(--muted)}
-.stat-goal{font-size:12px;color:#aeb6c0}
+.stat-goal{font-size:12px;color:var(--dim-2)}
 .water-ctl{display:flex;align-items:center;gap:9px;margin-top:5px}
-.water-track{flex:1;height:6px;border-radius:99px;background:rgba(255,255,255,.08);overflow:hidden}
+.water-track{flex:1;height:6px;border-radius:99px;background:var(--w8);overflow:hidden}
 .water-fill{height:100%;width:0%;background:var(--lime);transition:.25s}
 .emoji-row{display:flex;gap:8px;margin-top:12px}
 .emoji{width:40px;height:40px;border-radius:13px;border:1px solid var(--line);display:grid;place-items:center;font-size:18px;opacity:.7;transition:.18s}
 .emoji:hover{opacity:1;border-color:var(--lime);transform:translateY(-2px)}
 .sleep{display:flex;align-items:flex-end;gap:6px;height:58px;margin-top:14px}
 .sleep .b{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;justify-content:flex-end;height:100%}
-.sleep .bar{width:100%;border-radius:4px;background:linear-gradient(180deg,var(--lime),rgba(205,255,62,.12));min-height:8px}
+.sleep .bar{width:100%;border-radius:4px;background:linear-gradient(180deg,var(--lime),var(--accent-fill));min-height:8px}
 .sleep .d{font-size:10px;color:var(--muted)}
 
 .item{display:flex;align-items:center;gap:13px;padding:14px 16px}
-.item .ico{width:44px;height:44px;border-radius:14px;border:1px solid var(--line);display:grid;place-items:center;font-size:19px;background:rgba(255,255,255,.03);flex:0 0 auto}
+.item .ico{width:44px;height:44px;border-radius:14px;border:1px solid var(--line);display:grid;place-items:center;font-size:19px;background:var(--w3);flex:0 0 auto}
 .item .body{flex:1;min-width:0}
 .item .tt{font-size:15.5px;font-weight:800}
 .item .ss{font-size:12px;color:var(--muted);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .item .vv{font-size:13px;color:var(--lime);font-weight:700;font-family:var(--mono)}
-.chev{color:#4a5058;font-size:19px}
+.chev{color:var(--faint-3);font-size:19px}
 
 .cal-head{display:flex;align-items:center;gap:8px}
-.cal-nav{width:32px;height:32px;border-radius:11px;background:rgba(255,255,255,.05);display:grid;place-items:center;font-size:15px;color:var(--muted)}
+.cal-nav{width:32px;height:32px;border-radius:11px;background:var(--w5);display:grid;place-items:center;font-size:15px;color:var(--muted)}
 .cal{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:14px}
 .cal .wd{font-size:11px;color:var(--muted);text-align:center;font-weight:700;padding-bottom:4px}
-.cal .dd{aspect-ratio:1;border-radius:11px;display:grid;place-items:center;font-size:12px;font-family:var(--mono);color:#c2c9d1}
+.cal .dd{aspect-ratio:1;border-radius:11px;display:grid;place-items:center;font-size:12px;font-family:var(--mono);color:var(--dim-3)}
 .cal .dd.today{border:1px solid var(--lime);color:var(--lime);background:var(--lime-dim)}
-.cal .dd.done{background:rgba(205,255,62,.13);color:var(--lime)}
+.cal .dd.done{background:var(--accent-fill);color:var(--lime)}
 
 .chips{display:flex;gap:9px;overflow-x:auto;padding:12px 0 4px;scrollbar-width:none}
 .chips::-webkit-scrollbar{display:none}
 .intake{font-family:var(--mono);font-size:34px;font-weight:700;margin:6px 0 10px}
-.bar{height:6px;border-radius:99px;background:rgba(255,255,255,.08);overflow:hidden}
+.bar{height:6px;border-radius:99px;background:var(--w8);overflow:hidden}
 .bar i{display:block;height:100%;border-radius:99px;background:var(--lime)}
 .kcol{display:flex;justify-content:space-between;align-items:baseline}
 .macro3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
@@ -163,12 +243,12 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 /* ---------- ТРЕНИРОВКА ---------- */
 .today{
   border-radius:26px;padding:18px;position:relative;overflow:hidden;margin-top:14px;
-  background:linear-gradient(140deg,rgba(205,255,62,.14),rgba(20,22,28,.9) 55%),var(--surface);
-  border:1px solid rgba(205,255,62,.28);
+  background:linear-gradient(140deg,var(--accent-fill),var(--sheet) 55%),var(--surface);
+  border:1px solid var(--accent-line-2);
 }
 .today .tl{font-size:10.5px;letter-spacing:2px;color:var(--lime);font-weight:800}
 .today .tn{font-family:var(--disp);font-size:26px;letter-spacing:.8px;text-transform:uppercase;margin:6px 0 4px;line-height:1.08}
-.today .tm{font-size:12px;color:#aeb6c0;display:flex;gap:14px;margin-top:10px;flex-wrap:wrap}
+.today .tm{font-size:12px;color:var(--dim-2);display:flex;gap:14px;margin-top:10px;flex-wrap:wrap}
 .today .tm b{color:var(--text);font-family:var(--mono)}
 .today .cta{width:100%;margin-top:16px;padding:15px;border-radius:16px;font-size:14px}
 
@@ -176,26 +256,26 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
   flex:0 0 208px;border-radius:22px;padding:15px;border:1px solid var(--line);position:relative;overflow:hidden;
   background:var(--surface);text-align:left;transition:.2s;
 }
-.prog:hover{transform:translateY(-3px);border-color:rgba(205,255,62,.45)}
+.prog:hover{transform:translateY(-3px);border-color:var(--accent-line)}
 .prog .pn{font-family:var(--disp);font-size:18px;letter-spacing:.6px;text-transform:uppercase;line-height:1.1}
 .prog .pd{font-size:11px;color:var(--muted);margin-top:5px;min-height:30px}
 .prog .pmeta{display:flex;gap:6px;flex-wrap:wrap;margin-top:11px}
-.tag{font-size:10px;font-family:var(--mono);padding:4px 8px;border-radius:7px;background:rgba(255,255,255,.06);color:#b7bec7;letter-spacing:.3px}
+.tag{font-size:10px;font-family:var(--mono);padding:4px 8px;border-radius:7px;background:var(--w5);color:var(--dim);letter-spacing:.3px}
 .tag.acc{background:var(--lime-dim);color:var(--lime)}
-.tag.own{background:rgba(139,124,255,.18);color:#bfb4ff}
+.tag.own{background:rgba(139,124,255,.18);color:var(--violet)}
 .prog .lines{display:flex;gap:3px;margin-top:11px}
-.prog .lines i{height:3px;flex:1;border-radius:99px;background:rgba(205,255,62,.5)}
+.prog .lines i{height:3px;flex:1;border-radius:99px;background:var(--accent-glow)}
 .prog.own{border-color:rgba(139,124,255,.42)}
 .prog.own .lines i{background:rgba(139,124,255,.7)}
-.prog.add{border-style:dashed;background:rgba(205,255,62,.045)}
+.prog.add{border-style:dashed;background:var(--accent-soft)}
 .prog.add .pn{color:var(--lime)}
 .prog.add .lines{display:none}
 
 .muscle{
   position:relative;height:152px;border-radius:24px;overflow:hidden;border:1px solid var(--line);
-  background:#0c0e13;padding:0;transition:.22s;
+  background:var(--deep-2);padding:0;transition:.22s;
 }
-.muscle:hover{border-color:rgba(205,255,62,.5);transform:translateY(-3px)}
+.muscle:hover{border-color:var(--accent-glow);transform:translateY(-3px)}
 .muscle .mimg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;mix-blend-mode:screen;transition:.35s;opacity:.95}
 .muscle:hover .mimg{transform:scale(1.07)}
 .muscle::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 42%,rgba(6,7,10,.92));pointer-events:none}
@@ -209,18 +289,18 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .ex .en{font-size:14px;font-weight:700}
 .ex .er{font-size:11px;color:var(--muted);margin-top:2px;font-family:var(--mono)}
 .ex .ctrl{margin-left:auto;display:flex;align-items:center;gap:7px}
-.ex .start{width:30px;height:30px;border-radius:10px;border:1px solid rgba(205,255,62,.45);background:var(--lime-dim);color:var(--lime);display:grid;place-items:center;font-size:11px;flex:0 0 auto;transition:.18s}
-.ex .start:hover{background:var(--lime);color:#141a02;border-color:var(--lime)}
+.ex .start{width:30px;height:30px;border-radius:10px;border:1px solid var(--accent-line);background:var(--lime-dim);color:var(--lime);display:grid;place-items:center;font-size:11px;flex:0 0 auto;transition:.18s}
+.ex .start:hover{background:var(--lime);color:var(--on-lime);border-color:var(--lime)}
 .wbox{display:flex;align-items:center;gap:3px;border:1px solid var(--line);border-radius:12px;padding:3px 5px}
 .wbox b{font-family:var(--mono);font-size:11.5px;min-width:44px;text-align:center;color:var(--lime)}
 .sets{display:flex;gap:4px;margin-top:8px;padding-left:36px}
 .sets i{width:15px;height:15px;border-radius:5px;border:1px solid var(--line-strong);transition:.15s;cursor:pointer}
-.sets i.on{background:var(--lime);border-color:var(--lime);box-shadow:0 0 10px rgba(205,255,62,.55)}
+.sets i.on{background:var(--lime);border-color:var(--lime);box-shadow:0 0 10px var(--accent-glow)}
 
 .tabbar{
   position:relative;z-index:5;flex:0 0 auto;margin:0 10px 10px;height:74px;border-radius:26px;
-  border:1px solid var(--line);background:linear-gradient(180deg,rgba(20,22,28,.97),rgba(8,9,13,.99));
-  display:flex;align-items:center;justify-content:space-around;box-shadow:0 -10px 34px rgba(0,0,0,.6);
+  border:1px solid var(--line);background:linear-gradient(180deg,var(--sheet),var(--page));
+  display:flex;align-items:center;justify-content:space-around;box-shadow:0 -10px 34px var(--shadow);
 }
 .tab{display:flex;flex-direction:column;align-items:center;gap:5px;font-size:9.5px;color:var(--muted);flex:1;letter-spacing:.2px;transition:.2s}
 .tab .tic{width:32px;height:32px;display:grid;place-items:center;border-radius:12px;transition:.2s}
@@ -229,7 +309,7 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .tab.active .tic{background:var(--lime-dim)}
 
 .overlay{
-  position:absolute;inset:0;z-index:20;background:linear-gradient(180deg,#0b0d12,#040508);
+  position:absolute;inset:0;z-index:20;background:linear-gradient(180deg,var(--deep-1),var(--page));
   display:flex;flex-direction:column;transform:translateY(101%);transition:transform .28s cubic-bezier(.3,.8,.3,1);
 }
 .overlay.open{transform:none}
@@ -237,41 +317,41 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .ov-head h2{font-family:var(--disp);font-size:22px;letter-spacing:1px;text-transform:uppercase}
 /* --foot-h подставляет openOverlay по фактической высоте подвала:
    иначе кнопки разной высоты перекрывают низ контента */
-.ov-body{flex:1;overflow-y:auto;padding:4px 16px calc(var(--foot-h,108px) + var(--safe-b,0px));scrollbar-width:none}
+.ov-body{flex:1;overflow-y:auto;overflow-x:hidden;padding:4px 16px calc(var(--foot-h,108px) + var(--safe-b,0px));scrollbar-width:none;overscroll-behavior:contain}
 .ov-body::-webkit-scrollbar{display:none}
-.ov-foot{position:absolute;bottom:0;left:0;right:0;padding:14px 16px 22px;background:linear-gradient(180deg,transparent,#040508 42%)}
-.daytabs{display:flex;gap:8px;overflow-x:auto;padding:10px 0 4px;scrollbar-width:none}
+.ov-foot{position:absolute;bottom:0;left:0;right:0;padding:14px 16px 22px;background:linear-gradient(180deg,transparent,var(--page) 42%)}
+.daytabs{display:flex;gap:8px;overflow-x:auto;padding:10px 0 4px;scrollbar-width:none;overscroll-behavior-x:contain;touch-action:pan-x}
 .daytabs::-webkit-scrollbar{display:none}
 .planlist{display:flex;flex-direction:column;gap:11px}
 .plan{border-radius:20px;padding:15px;border:1px solid var(--line);text-align:left;background:var(--surface)}
-.plan.on{border-color:var(--lime);background:linear-gradient(140deg,rgba(205,255,62,.12),var(--surface))}
+.plan.on{border-color:var(--lime);background:linear-gradient(140deg,var(--accent-fill),var(--surface))}
 .plan .spread .nm{font-family:var(--disp);font-size:16px;letter-spacing:.8px;text-transform:uppercase}
 .plan .p2{font-family:var(--mono);font-size:24px;font-weight:700;margin:6px 0 2px;color:var(--lime)}
 .plan .p3{font-size:11.5px;color:var(--muted)}
 .food-row{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line)}
 .food-row:last-child{border-bottom:none}
-.search{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:16px;padding:12px 14px;background:rgba(255,255,255,.02);color:var(--muted);font-size:13px}
-.note{font-size:11px;color:#454b54;text-align:center;padding:18px 0;letter-spacing:.4px}
+.search{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:16px;padding:12px 14px;background:var(--w2);color:var(--muted);font-size:13px}
+.note{font-size:11px;color:var(--faint-2);text-align:center;padding:18px 0;letter-spacing:.4px}
 
 /* ---------- активная тренировка ---------- */
 .timer{font-family:var(--mono);font-size:13px;color:var(--lime);background:var(--lime-dim);padding:6px 12px;border-radius:10px}
-.bigbtn{width:100%;padding:19px;border-radius:20px;font-size:14.5px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;background:var(--lime);color:#141a02;transition:.18s}
+.bigbtn{width:100%;padding:19px;border-radius:20px;font-size:14.5px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;background:var(--lime);color:var(--on-lime);transition:.18s}
 .bigbtn:hover{filter:brightness(1.08)}
-.bigbtn.ghost{background:rgba(255,255,255,.04);color:var(--text);border:1px solid var(--line-strong)}
+.bigbtn.ghost{background:var(--w3);color:var(--text);border:1px solid var(--line-strong)}
 .bigbtn.ghost:hover{border-color:var(--lime);color:var(--lime);filter:none}
-.now{border-radius:24px;padding:18px;border:1px solid rgba(205,255,62,.3);background:linear-gradient(140deg,rgba(205,255,62,.12),var(--surface) 60%)}
+.now{border-radius:24px;padding:18px;border:1px solid var(--accent-line-2);background:linear-gradient(140deg,var(--accent-fill),var(--surface) 60%)}
 .now .lbl{font-size:10px;letter-spacing:2px;color:var(--lime);font-weight:800}
 .now .nm{font-family:var(--disp);font-size:23px;letter-spacing:.8px;text-transform:uppercase;margin:6px 0 3px;line-height:1.1}
 .setdots{display:flex;gap:6px;margin-top:14px}
-.setdots i{flex:1;height:6px;border-radius:99px;background:rgba(255,255,255,.09)}
-.setdots i.on{background:var(--lime);box-shadow:0 0 12px rgba(205,255,62,.5)}
+.setdots i{flex:1;height:6px;border-radius:99px;background:var(--w8)}
+.setdots i.on{background:var(--lime);box-shadow:0 0 12px var(--accent-glow)}
 .wstep{display:flex;align-items:center;justify-content:space-between;border:1px solid var(--line);border-radius:18px;padding:8px 10px;margin-top:14px}
 .wstep b{font-family:var(--mono);font-size:26px;color:var(--lime)}
 .restdial{position:relative;width:172px;height:172px;margin:4px auto 2px}
 .restdial b{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--mono);font-size:38px}
 .restdial span{position:absolute;left:0;right:0;bottom:34px;text-align:center;font-size:10.5px;color:var(--muted);letter-spacing:1.5px}
 .exprog{display:flex;align-items:center;gap:11px;padding:11px 14px;border-bottom:1px solid var(--line);cursor:pointer;transition:background .15s}
-.exprog:active{background:rgba(255,255,255,.05)}
+.exprog:active{background:var(--w5)}
 .exprog:last-child{border-bottom:none}
 .exprog.off .dot{border-color:rgba(255,106,61,.5);color:var(--ember)}
 .exprog.off .enm{color:var(--muted);text-decoration:line-through;text-decoration-color:rgba(255,106,61,.6)}
@@ -279,8 +359,8 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .exprog.pend .dot{border-style:dashed;opacity:.6}
 .exprog.pend .enm{color:var(--muted);opacity:.75}
 .exprog .dot{width:22px;height:22px;border-radius:8px;border:1px solid var(--line-strong);display:grid;place-items:center;font-size:10px;font-family:var(--mono);color:var(--muted);flex:0 0 auto}
-.exprog.done .dot{background:var(--lime);border-color:var(--lime);color:#141a02}
-.exprog.cur{background:rgba(205,255,62,.06)}
+.exprog.done .dot{background:var(--lime);border-color:var(--lime);color:var(--on-lime)}
+.exprog.cur{background:var(--accent-soft)}
 .exprog .enm{font-size:13.5px;font-weight:700}
 .exprog.done .enm{color:var(--muted)}
 
@@ -288,7 +368,7 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .chart{width:100%;height:118px;display:block;overflow:visible}
 .bars{display:flex;align-items:flex-end;gap:7px;height:106px;margin-top:16px}
 .bars .bcol{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px;height:100%}
-.bars .bcol i{width:100%;border-radius:6px 6px 3px 3px;background:linear-gradient(180deg,var(--lime),rgba(205,255,62,.15))}
+.bars .bcol i{width:100%;border-radius:6px 6px 3px 3px;background:linear-gradient(180deg,var(--lime),var(--accent-fill))}
 .bars .bcol span{font-size:9px;color:var(--muted);font-family:var(--mono)}
 .pr{display:flex;align-items:center;gap:12px;padding:13px 15px;border-bottom:1px solid var(--line)}
 .pr:last-child{border-bottom:none}
@@ -299,43 +379,43 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .delta{font-size:12px;font-family:var(--mono);color:var(--lime)}
 
 .clickable{cursor:pointer;transition:background .15s}
-.clickable:hover{background:rgba(255,255,255,.03)}
-.clickable:active{background:rgba(205,255,62,.07)}
+.clickable:hover{background:var(--w3)}
+.clickable:active{background:var(--accent-soft)}
 button:active{transform:scale(.985)}
 .lbl{font-size:10px;letter-spacing:2px;color:var(--lime);font-weight:800}
 .emoji.on{opacity:1;border-color:var(--lime);background:var(--lime-dim);transform:translateY(-2px)}
 .cal .dd{cursor:pointer;transition:.15s}
-.cal .dd:hover{background:rgba(255,255,255,.05)}
+.cal .dd:hover{background:var(--w5)}
 .cal-nav:hover{color:var(--lime);background:var(--lime-dim)}
 .fitem{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--line)}
 .fitem:last-child{border-bottom:none}
 .search input{flex:1;background:none;border:none;outline:none;color:var(--text);font-family:inherit;font-size:13.5px}
 .search input::placeholder{color:var(--muted)}
 .plan{cursor:pointer}
-.plan:hover{border-color:rgba(205,255,62,.4)}
+.plan:hover{border-color:var(--accent-line)}
 .food-row.clickable{cursor:pointer;transition:background .15s}
-.food-row.clickable:hover{background:rgba(255,255,255,.03)}
+.food-row.clickable:hover{background:var(--w3)}
 .section .l.act{cursor:pointer}
-.ex:hover{background:rgba(255,255,255,.03)}
-.toast{position:absolute;left:18px;right:18px;bottom:98px;z-index:40;background:rgba(22,25,32,.98);
-  border:1px solid rgba(205,255,62,.42);border-radius:16px;padding:13px 16px;font-size:13px;
-  box-shadow:0 14px 40px rgba(0,0,0,.6);transform:translateY(18px);opacity:0;pointer-events:none;transition:.25s}
+.ex:hover{background:var(--w3)}
+.toast{position:absolute;left:18px;right:18px;bottom:98px;z-index:40;background:var(--toast-bg);
+  border:1px solid var(--accent-line);border-radius:16px;padding:13px 16px;font-size:13px;
+  box-shadow:0 14px 40px var(--shadow);transform:translateY(18px);opacity:0;pointer-events:none;transition:.25s}
 .toast.show{transform:none;opacity:1}
 
 /* ---------- подтверждение ---------- */
 .confirm{position:absolute;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;padding:24px;
-  background:rgba(4,5,8,.74);opacity:0;visibility:hidden;transition:opacity .2s,visibility .2s}
+  background:var(--veil);opacity:0;visibility:hidden;transition:opacity .2s,visibility .2s}
 .confirm.open{opacity:1;visibility:visible}
 .cf-box{width:100%;max-width:300px;border-radius:22px;border:1px solid var(--line-strong);
-  background:linear-gradient(180deg,#14161c,#0d0f14);padding:22px 20px 16px;text-align:center;
-  box-shadow:0 24px 60px rgba(0,0,0,.72);transform:translateY(8px);transition:transform .22s}
+  background:linear-gradient(180deg,var(--sheet-2),var(--deep-3));padding:22px 20px 16px;text-align:center;
+  box-shadow:0 24px 60px var(--shadow-lg);transform:translateY(8px);transition:transform .22s}
 .confirm.open .cf-box{transform:none}
 .cf-t{font-family:var(--disp);font-size:19px;letter-spacing:1px;text-transform:uppercase;line-height:1.15}
 .cf-s{font-size:12.5px;color:var(--muted);margin-top:8px;line-height:1.5}
 .cf-row{display:flex;flex-direction:column;gap:8px;margin-top:18px}
 .cf-row .pill{width:100%;padding:13px}
 .gate{position:absolute;inset:0;z-index:80;display:flex;align-items:center;justify-content:center;padding:26px;
-  text-align:center;background:linear-gradient(180deg,#0b0d12,#040508);opacity:0;visibility:hidden;transition:.24s}
+  text-align:center;background:linear-gradient(180deg,var(--deep-1),var(--page));opacity:0;visibility:hidden;transition:.24s}
 .gate.open{opacity:1;visibility:visible}
 .gate-in{max-width:330px}
 .gate-ico{font-size:40px;line-height:1}
@@ -356,7 +436,7 @@ button:active{transform:scale(.985)}
 .splash-rule{width:44px;height:3px;background:var(--lime);margin:0 auto 16px}
 .splash-name{font-family:var(--disp);font-size:40px;font-weight:600;letter-spacing:4px;color:#fff;line-height:1}
 .splash-tag{font-size:10px;letter-spacing:2.2px;color:var(--muted);margin-top:9px}
-.splash-bar{width:132px;height:2px;background:rgba(255,255,255,.12);border-radius:2px;margin:34px auto 0;overflow:hidden}
+.splash-bar{width:132px;height:2px;background:#ffffff1f;border-radius:2px;margin:34px auto 0;overflow:hidden}
 .splash-bar i{display:block;height:100%;width:38%;background:var(--lime);border-radius:2px;
   animation:splashRun 1.05s ease-in-out infinite}
 @keyframes splashRun{0%{transform:translateX(-100%)}100%{transform:translateX(365%)}}
@@ -387,20 +467,20 @@ body.tg input,body.tg textarea{-webkit-user-select:text;user-select:text;-webkit
 .pwrap{text-align:center;padding:18px 14px 20px}
 .pinput{font-family:var(--mono);font-size:40px;font-weight:700;line-height:1.15;color:var(--lime);
   background:none;border:none;outline:none;text-align:center;width:160px;padding:0 2px;
-  border-bottom:1px dashed rgba(205,255,62,.4);-webkit-appearance:none;appearance:none}
+  border-bottom:1px dashed var(--accent-line);-webkit-appearance:none;appearance:none}
 .pinput::-webkit-outer-spin-button,.pinput::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
 .pinput[type=number]{-moz-appearance:textfield}
 .prange{-webkit-appearance:none;appearance:none;width:100%;height:24px;background:none;margin:16px 0 0;display:block}
-.prange::-webkit-slider-runnable-track{height:5px;border-radius:99px;background:rgba(255,255,255,.13)}
+.prange::-webkit-slider-runnable-track{height:5px;border-radius:99px;background:var(--w12)}
 .prange::-webkit-slider-thumb{-webkit-appearance:none;width:23px;height:23px;border-radius:50%;background:var(--lime);
-  margin-top:-9px;box-shadow:0 0 0 5px rgba(205,255,62,.16)}
-.prange::-moz-range-track{height:5px;border-radius:99px;background:rgba(255,255,255,.13)}
+  margin-top:-9px;box-shadow:0 0 0 5px var(--accent-fill)}
+.prange::-moz-range-track{height:5px;border-radius:99px;background:var(--w12)}
 .prange::-moz-range-thumb{width:23px;height:23px;border:none;border-radius:50%;background:var(--lime);
-  box-shadow:0 0 0 5px rgba(205,255,62,.16)}
+  box-shadow:0 0 0 5px var(--accent-fill)}
 .prow{display:flex;gap:7px;justify-content:center;flex-wrap:wrap;margin-top:12px}
 .tinput{width:100%;margin-top:9px;padding:12px 14px;border-radius:14px;border:1px solid var(--line-strong);
-  background:#0c0e13;color:var(--text);font-family:var(--sans);font-size:15px;font-weight:700;outline:none;appearance:none}
-.tinput:focus{border-color:rgba(205,255,62,.55)}
+  background:var(--deep-2);color:var(--text);font-family:var(--sans);font-size:15px;font-weight:700;outline:none;appearance:none}
+.tinput:focus{border-color:var(--accent-glow)}
 .tinput::placeholder{color:var(--muted);font-weight:500}
 .tinput.sm{margin-top:0;padding:8px 12px;text-align:center;font-family:var(--mono);font-size:14px;max-width:112px}
 </style>
@@ -449,12 +529,12 @@ body.tg input,body.tg textarea{-webkit-user-select:text;user-select:text;-webkit
         <div class="ringwrap">
           <svg class="rings" viewBox="0 0 100 100">
             <g transform="rotate(-90 50 50)" fill="none" stroke-linecap="round">
-              <circle cx="50" cy="50" r="44" stroke="rgba(205,255,62,.12)" stroke-width="7"/>
+              <circle cx="50" cy="50" r="44" stroke="var(--accent-fill)" stroke-width="7"/>
               <circle cx="50" cy="50" r="35" stroke="rgba(139,124,255,.12)" stroke-width="7"/>
               <circle cx="50" cy="50" r="26" stroke="rgba(255,106,61,.12)" stroke-width="7"/>
               <circle class="gl" id="ringKcal" cx="50" cy="50" r="44" stroke="#cdff3e" stroke-width="7" stroke-dasharray="0 276.5"/>
-              <circle class="gv" id="ringP" cx="50" cy="50" r="35" stroke="#8b7cff" stroke-width="7" stroke-dasharray="0 219.9"/>
-              <circle class="ge" id="ringC" cx="50" cy="50" r="26" stroke="#ff6a3d" stroke-width="7" stroke-dasharray="0 163.4"/>
+              <circle class="gv" id="ringP" cx="50" cy="50" r="35" stroke="var(--violet)" stroke-width="7" stroke-dasharray="0 219.9"/>
+              <circle class="ge" id="ringC" cx="50" cy="50" r="26" stroke="var(--ember)" stroke-width="7" stroke-dasharray="0 163.4"/>
             </g>
           </svg>
           <div class="ringcenter"><span class="day">День 1</span><b id="ringVal">0</b><span id="ringGoal">1500 ккал</span></div>
@@ -810,6 +890,7 @@ const state = {
   workouts:[], weightLog:[], sleepLog:[], stepsLog:[], measLog:[],
   day:'', onboarded:false,
   myProgs:[], myEx:[],
+  theme:'dark', lang:'ru',
   profile:{sex:'m', age:0, height:0, weight:0, activity:1.375, goal:'cut'}
 };
 const MOODS = ['🙂','😐','😴','😖'];
@@ -994,7 +1075,7 @@ function mergeCloud(copy){
 /* Экран отказа. Показываем только когда сервер прямо сказал «нет»:
    если связи нет, человек остаётся в своём приложении. */
 const GATE_TEXT = {
-  no_access: ['Заявка отправлена', 'Владелец получил уведомление в Телеграме. Как только разрешит — нажми «Проверить снова».'],
+  no_access: ['Заявка отправлена', 'Владелец получил уведомление с кнопкой «Разрешить». Как только разрешит — нажми «Проверить снова».'],
   blocked:   ['Доступ закрыт', 'Владелец закрыл доступ для этой учётной записи.'],
   no_owner:  ['Приложение не настроено', 'Владелец не указан на сервере. Пусть проверит переменную OWNER_ID.']
 };
@@ -1043,7 +1124,8 @@ function openCloud(){
          Если сменишь телефон — на новом устройстве открой «Восстановить из облака», и данные вернутся.
        </div>
        <div class="stat-sub" style="margin-top:11px;line-height:1.7">
-         Доступ выдаёт владелец командой <b class="mono" style="color:var(--lime)">/allow</b> в чате с ботом.
+         Доступ выдаёт владелец — кнопкой под уведомлением в чате с ботом
+         (или командой <b class="mono" style="color:var(--lime)">/allow</b>).
          Пересылка ссылки на бота доступа не даёт: у каждого свой номер, и подделать его нельзя.
        </div>
      </div>
@@ -1206,7 +1288,7 @@ function renderForma(){
   const mv = state.measures;
   document.getElementById('measVal').textContent = mv.done ? mv.chest+' · '+mv.waist+' · '+mv.hips : '— · — · —';
   document.getElementById('measSub').textContent = mv.done ? 'Обновлено сегодня' : 'Пока нет замеров';
-  document.getElementById('stepsVal').textContent = state.steps.toLocaleString('ru-RU')+' / '+g.steps.toLocaleString('ru-RU');
+  document.getElementById('stepsVal').textContent = state.steps.toLocaleString(LOC())+' / '+g.steps.toLocaleString(LOC());
   document.getElementById('stepsSub').textContent = state.steps ? pct(state.steps,g.steps)+'% цели' : 'Добавьте шаги за день';
   document.getElementById('suppVal').textContent = state.supps.filter(s=>s.on).length+' из '+state.supps.length;
   document.getElementById('subVal').textContent = SUB_PLANS[state.sub][1]+' ⭐';
@@ -1277,10 +1359,1191 @@ function saveSleep(){
 }
 let calDate = new Date(2026,8,20);
 const MONTHS=['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+const MONTHS_EN=['January','February','March','April','May','June','July','August','September','October','November','December'];
+/* число и месяц зависят от выбранного языка */
+function LOC(){ return state.lang==='en' ? 'en-US' : 'ru-RU'; }
+function months(){ return state.lang==='en' ? MONTHS_EN : MONTHS; }
+
+/* ================== ЯЗЫК ==================
+   Русский — исходный язык интерфейса, английский включается словарём.
+   Переводим уже готовый текст узлов, поэтому новые экраны и подписи,
+   которые рисует скрипт, подхватываются сами: не нужно оборачивать
+   каждую строку в вызов перевода. */
+/* @@I18N_START@@ */
+/* Словарь английского. Собран скриптом _i18n.py — правь таблицы, а не этот блок. */
+const I18N_EN = {
+  "(или командой /allow).":"(or with the /allow command).",
+  "10 упражнений в базе":"10 exercises in the library",
+  "149 ⭐ за 1 месяц":"149 ⭐ for 1 month",
+  "30 дней наблюдений":"30 days of tracking",
+  "5 программ тренировок и замена упражнений":"5 training programs and exercise swapping",
+  "PowerLab · кликабельный макет":"PowerLab · clickable mockup",
+  "PowerLab · макет · демонстрация интерфейса":"PowerLab · mockup · interface preview",
+  "Pull — Спина / Бицепс":"Pull — Back / Biceps",
+  "Upper, Lower, Upper, Lower, Push, Pull — сила и объём за неделю.":"Upper, Lower, Upper, Lower, Push, Pull — strength and volume across the week.",
+  "База продуктов · нажми, чтобы добавить в рацион":"Food library · tap to add to your day",
+  "База продуктов и добавление в рацион":"Food library and adding to meals",
+  "База продуктов с поиском и выбором порции":"Food library with search and portion choice",
+  "База упражнений":"Exercise library",
+  "Базовый обмен":"Basal metabolic rate",
+  "Боковая планка":"Side plank",
+  "Болгарский выпад":"Bulgarian split squat",
+  "В ПЛАНАХ":"PLANNED",
+  "В базе нет другой альтернативы":"No other alternative in the library",
+  "В облаке пока пусто — сначала сохрани":"The cloud is still empty — save something first",
+  "В этом дне пока нет упражнений":"No exercises in this day yet",
+  "В этом дне пока пусто":"Nothing in this day yet",
+  "ВСЕ УПРАЖНЕНИЯ ЗАКРЫТЫ":"ALL EXERCISES CLOSED",
+  "Введи хотя бы один замер":"Enter at least one measurement",
+  "Верх / Низ":"Upper / Lower",
+  "Верх 2":"Upper 2",
+  "Верх A":"Upper A",
+  "Верх B":"Upper B",
+  "Верх и низ тела через день. Баланс объёма и восстановления.":"Upper and lower body every other day. Balanced volume and recovery.",
+  "Вес, сон, шаги, замеры и графики":"Weight, sleep, steps, measurements and charts",
+  "Взять данные из облака?":"Take the data from the cloud?",
+  "Витамин D3":"Vitamin D3",
+  "Владелец закрыл доступ для этой учётной записи.":"The owner has closed access for this account.",
+  "Владелец не указан на сервере. Пусть проверит переменную OWNER_ID.":"The owner is not set on the server. Check the OWNER_ID variable.",
+  "Владелец получил уведомление с кнопкой «Разрешить». Как только разрешит — нажми «Проверить снова».":"The owner got a notification with an \"Allow\" button. Once approved, tap \"Check again\".",
+  "Восстановить из облака":"Restore from cloud",
+  "Впиши название упражнения":"Enter an exercise name",
+  "Всё тело":"Full body",
+  "Всё тело за одну тренировку, 3 раза в неделю. Лучший старт.":"The whole body in one session, 3 times a week. The best start.",
+  "Выбери упражнение":"Pick an exercise",
+  "Выбрать продукт":"Choose a food",
+  "ГРУППА МЫШЦ":"MUSCLE GROUP",
+  "Горизонтальная тяга":"Seated row",
+  "Горизонтальная тяга в блоке":"Seated cable row",
+  "Готовые программы · 6 групп мышц":"Ready-made programs · 6 muscle groups",
+  "Гречка варёная":"Buckwheat, cooked",
+  "Гриф у голени, спина нейтральная, толкаем пол ногами, корпус поднимается вместе.":"Bar at the shin, neutral spine, push the floor away, torso rises as one.",
+  "Грудь · Талия · Бёдра":"Chest · Waist · Hips",
+  "Группы мышц":"Muscle groups",
+  "Дальше спросим, сколько грамм.":"Then we ask how many grams.",
+  "Данные на этом устройстве заменятся, отменить будет нельзя.":"Data on this device will be replaced and cannot be restored.",
+  "Данных мало, нормы оставил по умолчанию":"Not enough data, targets left at defaults",
+  "День 1":"Day 1",
+  "День A":"Day A",
+  "День B":"Day B",
+  "День C":"Day C",
+  "День добавлен":"Day added",
+  "День удалён":"Day deleted",
+  "Дневник подходов с таймером отдыха":"Set log with a rest timer",
+  "Добавится в базу и в этот день":"Added to the library and to this day",
+  "Добавить в тренировку":"Add to the workout",
+  "Добавить еду":"Add food",
+  "Добавить упражнение":"Add exercise",
+  "Добавьте шаги за день":"Add the steps for the day",
+  "Доступ выдаёт владелец — кнопкой под уведомлением в чате с ботом":"The owner grants access with the button under the bot notification",
+  "Доступ выдаёт владелец — кнопкой под уведомлением в чате с ботом (или командой":"The owner grants access with the button under the bot notification (or with",
+  "Доступ закрыт":"Access closed",
+  "Доступ к облаку закрыт":"Cloud access is closed",
+  "Доступ открыт":"Access open",
+  "Доступно внутри Telegram":"Available inside Telegram",
+  "Другие активности":"Other activities",
+  "Если сменишь телефон — на новом устройстве открой «Восстановить из облака», и данные вернутся.":"Switching phones? Open \"Restore from cloud\" on the new one and your data comes back.",
+  "Жим Арнольда":"Arnold press",
+  "Жим в Смите на наклонной":"Incline Smith machine press",
+  "Жим в тренажёре":"Machine press",
+  "Жим в тренажёре на плечи":"Machine shoulder press",
+  "Жим гантелей лёжа":"Dumbbell bench press",
+  "Жим гантелей на наклонной":"Incline dumbbell press",
+  "Жим гантелей сидя":"Seated dumbbell press",
+  "Жим гантелей стоя":"Standing dumbbell press",
+  "Жим лёжа":"Bench press",
+  "Жим ногами":"Leg press",
+  "Жим стоя":"Overhead press",
+  "Жим узким хватом":"Close-grip bench press",
+  "Жим штанги лёжа":"Barbell bench press",
+  "Жим штанги стоя":"Standing barbell press",
+  "Жим, тяга, ноги. Каждая группа работает 2 раза в неделю.":"Push, pull, legs. Every group trained twice a week.",
+  "Заверши первую тренировку — она появится здесь":"Finish your first workout and it will show up here",
+  "Заменить упражнение":"Swap exercise",
+  "Замеры раз в 2 недели — так виден реальный прогресс.":"Measurements once every 2 weeks — that is how real progress shows.",
+  "Замеры сохранены":"Measurements saved",
+  "Замеры тела":"Body measurements",
+  "Заявка отправлена":"Request sent",
+  "Значения на 100 г продукта.":"Values per 100 g of the food.",
+  "Итог скопирован — вставь в чат":"Summary copied — paste it into the chat",
+  "КАК ЭТО РАБОТАЕТ":"HOW IT WORKS",
+  "Как выглядит приложение":"How the app looks",
+  "Как это работает":"How it works",
+  "Какое у вас":"How is your",
+  "Калории, БЖУ, вода и шаги":"Calories, macros, water and steps",
+  "Кольцо на главном экране и шкалы в рационе пересчитаются сразу.":"The ring on the main screen and the bars in meals recalculate at once.",
+  "Кольцо на главном экране и шкалы в рационе пересчитываются сразу.":"The ring on the main screen and the bars in meals recalculate at once.",
+  "Концентрированный подъём":"Concentration curl",
+  "Копия данных на сервере":"A copy of the data on the server",
+  "Копия от":"Copy from",
+  "Кроссовер в блоке":"Cable crossover",
+  "Куда добавить?":"Where to add?",
+  "Куриная грудка":"Chicken breast",
+  "Личные рекорды":"Personal records",
+  "Личный рекорд":"Personal record",
+  "Лопатки сведены, прогиб в пояснице, гриф к низу груди, локти под 45°.":"Blades squeezed, slight arch, bar to the lower chest, elbows at 45°.",
+  "Махи в наклоне":"Reverse fly",
+  "Махи гантелями в стороны":"Dumbbell lateral raise",
+  "Мои блюда":"My dishes",
+  "Нажми на упражнение в плане, чтобы вернуться к нему":"Tap an exercise in the plan to return to it",
+  "Назад в настройки":"Back to settings",
+  "Название, дни, упражнения, подходы и рабочий вес":"Name, days, exercises, sets and working weight",
+  "Напоминания о тренировке":"Workout reminders",
+  "Например: Тяга к поясу":"For example: Seated row",
+  "Настроение:":"Mood:",
+  "Настроим PowerLab":"Set up PowerLab",
+  "Начало — не задано":"Start — not set",
+  "Начать с этого упражнения":"Start from this exercise",
+  "Начать тренировку":"Start workout",
+  "Начать тренировку с этого упражнения":"Start the workout from this exercise",
+  "Не выполнялось — тренировка началась позже":"Not performed — the workout started later",
+  "Не дозвонились до облака":"Could not reach the cloud",
+  "Не отмечено":"Not logged",
+  "Не получилось открыть пересылку":"Could not open sharing",
+  "Нет связи · данные только на устройстве":"No connection · data stays on this device",
+  "Нет тренировки, которой можно поделиться":"No workout to share yet",
+  "Низ 2":"Lower 2",
+  "Низ A":"Lower A",
+  "Низ B":"Lower B",
+  "Номер ещё не получен":"The number is not here yet",
+  "Номер скопирован":"Number copied",
+  "Нормы пересчитаны:":"Targets recalculated:",
+  "Нормы посчитаны — можно менять в Целях":"Targets calculated — you can edit them in Goals",
+  "О приложении":"About",
+  "Облако отказало":"The cloud refused",
+  "Облако работает только внутри Telegram":"The cloud works inside Telegram only",
+  "Обновлено сегодня":"Updated today",
+  "Обратные отжимания":"Bench dips",
+  "Обратные отжимания от скамьи":"Bench dips",
+  "Общее время":"Total time",
+  "Объём по группам":"Volume by muscle group",
+  "Овсянка на воде":"Oatmeal on water",
+  "Одна группа мышц в день. Максимальный объём и проработка.":"One muscle group a day. Maximum volume and detail.",
+  "Оливковое масло":"Olive oil",
+  "Оплата в Stars — без привязки карты.":"Payment in Stars — no card needed.",
+  "Оплата через Telegram Stars":"Payment via Telegram Stars",
+  "Оплатить 149 ⭐":"Pay 149 ⭐",
+  "Отдых между подходами · 90 сек по умолчанию":"Rest between sets · 90 sec by default",
+  "Отжимания на брусьях":"Dips",
+  "Отжимания от пола":"Push-up",
+  "Отмеченные подходы не сохранятся.":"The sets you marked will not be saved.",
+  "Отмечено:":"Marked:",
+  "Отправить в чат":"Send to chat",
+  "Переводится весь интерфейс. Свои упражнения и блюда остаются как ты их записал.":"The whole interface is translated. Your own exercises and dishes stay as you wrote them.",
+  "Пересылка ссылки на бота доступа не даёт: у каждого свой номер, и подделать его нельзя.":"Forwarding the bot link does not grant access: everyone has their own number and it cannot be forged.",
+  "Подтягивания с весом":"Weighted pull-up",
+  "Подходы по этому упражнению начнутся заново.":"Sets for this exercise start over.",
+  "Подходы, повторы и вес":"Sets, reps and weight",
+  "Подъём ног в висе":"Hanging leg raise",
+  "Подъём штанги на бицепс":"Barbell curl",
+  "Подъёмы на носки":"Standing calf raise",
+  "Подъёмы на носки сидя":"Seated calf raise",
+  "Поиск продукта…":"Search food…",
+  "Пока нет замеров":"No measurements yet",
+  "Пока ни одной":"None yet",
+  "Пол, возраст, рост, вес, активность — пересчитаю калории":"Sex, age, height, weight, activity — I recalculate your calories",
+  "Полный вис, тянем локти вниз, подбородок выше перекладины, опускание подконтрольно.":"Hang fully, pull the elbows down, chin above the bar, lower under control.",
+  "Поменяй данные — калории и БЖУ пересчитаю":"Change your details and I recalculate calories and macros",
+  "Посмотреть программу":"View the program",
+  "Прервать тренировку?":"Stop the workout?",
+  "Пресс напряжён, гриф по линии носа, поясницу не прогибаем, локти чуть впереди.":"Core braced, bar along the nose line, no lower-back arch, elbows slightly forward.",
+  "Приложение не настроено":"The app is not configured",
+  "Приложение само отправляет копию данных на сервер через несколько секунд после изменений.":"The app uploads a copy of your data a few seconds after every change.",
+  "Пример данных":"Sample data",
+  "Принято сегодня":"Taken today",
+  "Приседания в Гакк-тренажёре":"Hack squat",
+  "Приседания со штангой":"Barbell squat",
+  "Проверить доступ":"Check access",
+  "Проверить снова":"Check again",
+  "Программа создана — добавь упражнения":"Program created — add some exercises",
+  "Программа удалена":"Program deleted",
+  "Пропущено — подходы не засчитаны":"Skipped — sets not counted",
+  "Пропущено:":"Skipped:",
+  "Профиль и нормы":"Profile and targets",
+  "Профиль сохранён":"Profile saved",
+  "Пулловер в блоке":"Cable pullover",
+  "Пульс 130–150":"Heart rate 130–150",
+  "Пять вопросов — и нормы посчитаются сами":"Five questions and your targets are calculated",
+  "Работает · сохранено":"Working · saved",
+  "Разведения в наклоне":"Bent-over reverse fly",
+  "Разводка гантелей":"Dumbbell fly",
+  "Разгибания на блоке":"Cable pushdown",
+  "Разгибания ног":"Leg extension",
+  "Разгибания рук в наклоне":"Bent-over triceps extension",
+  "Распознавание по снимку":"Photo recognition",
+  "Рацион: завтрак, обед, ужин, перекус":"Meals: breakfast, lunch, dinner, snack",
+  "Рис белый варёный":"White rice, cooked",
+  "Ролик для пресса":"Ab wheel",
+  "Румынская тяга":"Romanian deadlift",
+  "СЕГОДНЯ · ДЕНЬ":"TODAY · DAY",
+  "СОН ЗА СЕГОДНЯ":"SLEEP TODAY",
+  "Сбросить все данные":"Reset all data",
+  "Сбросить всё?":"Reset everything?",
+  "Светлая тема":"Light theme",
+  "Светлая тема днём на улице читается лучше.":"The light theme is easier to read outdoors.",
+  "Свои программы встанут в общий список на экране «Тренировка» — рядом с готовыми.":"Your custom programs join the shared list on the Workout screen, next to the ready-made ones.",
+  "Свои тренировки":"Custom workouts",
+  "Своя программа ·":"Custom program ·",
+  "Своё блюдо":"Custom dish",
+  "Своё блюдо ·":"Custom dish ·",
+  "Своё упражнение":"Custom exercise",
+  "Сгибания ног лёжа":"Lying leg curl",
+  "Сервер не ответил, попробуй позже":"The server did not answer, try later",
+  "Сервер не пустил эту учётную запись.":"The server did not let this account in.",
+  "Скамья Скотта":"Preacher bench",
+  "Сколько добавить?":"How much to add?",
+  "Скопировать в чат":"Copy to chat",
+  "Скопировать номер":"Copy the number",
+  "Собери программу под себя":"Build your own program",
+  "Собери программу под себя: упражнения, подходы, вес":"Build your own program: exercises, sets, weight",
+  "Создать тренировку":"Create a workout",
+  "Создать тренировку с нуля":"Create a workout from scratch",
+  "Сохранено:":"Saved:",
+  "Сохранить и пересчитать":"Save and recalculate",
+  "Сохранить сейчас":"Save now",
+  "Спокойный темп":"Slow tempo",
+  "Средний темп, полная амплитуда. Дыхание: усилие — выдох. Разминка перед рабочими подходами.":"Moderate tempo, full range. Exhale on effort. Warm up before your working sets.",
+  "Средняя продолжительность":"Average duration",
+  "Средняя продолжительность сна":"Average sleep",
+  "Становая тяга":"Deadlift",
+  "Стопы на ширине плеч, колени по направлению носков, спина прямая, до параллели.":"Feet shoulder-width, knees track over the toes, back straight, down to parallel.",
+  "ТВОЯ НОРМА":"YOUR TARGET",
+  "ТРЕНИРОВКА ЗАВЕРШЕНА":"WORKOUT FINISHED",
+  "ТРЕНИРОВКИ · ПИТАНИЕ · ПРОГРЕСС":"TRAINING · NUTRITION · PROGRESS",
+  "Тап по названию — техника и замена упражнения · тап по плану — переход":"Tap a name for form and swapping · tap the plan to jump to an exercise",
+  "Тап по упражнению — техника, история и":"Tap an exercise for form, history and",
+  "Твой вес":"Your weight",
+  "Твой вес, кг":"Your weight, kg",
+  "Творог 5%":"Cottage cheese 5%",
+  "Текущий вес":"Current weight",
+  "Тело и активность":"Body and activity",
+  "Тело одной линией, таз подкручен, дышим ровно, поясницу не проваливаем.":"Body in one straight line, pelvis tucked, steady breathing, no sagging lower back.",
+  "Тема и язык":"Theme and language",
+  "Тоннаж по неделям":"Tonnage by week",
+  "Тренировка закрыта":"Workout closed",
+  "Тренировка сохранена в историю":"Workout saved to history",
+  "Тренировки, еда, вес, замеры и цели удалятся навсегда. Это действие нельзя отменить.":"Workouts, food, weight, measurements and goals will be erased for good. This cannot be undone.",
+  "Тренировки, питание и прогресс в одном приложении.":"Training, nutrition and progress in one app.",
+  "Тяга Т-грифа":"T-bar row",
+  "Тяга в тренажёре Хаммер":"Hammer strength row",
+  "Тяга верхнего блока":"Lat pulldown",
+  "Тяга гантели одной рукой":"One-arm dumbbell row",
+  "Тяга штанги в наклоне":"Bent-over barbell row",
+  "Тяга штанги к подбородку":"Upright barbell row",
+  "Тёмная тема":"Dark theme",
+  "Удалено:":"Deleted:",
+  "Удалить программу?":"Delete the program?",
+  "Удалить тренировки, еду, вес и замеры — начать заново":"Delete workouts, food, weight and measurements — start over",
+  "Упражнение заменится в программе на всех тренировках этого дня.":"The exercise is swapped in every workout of this day.",
+  "Упражнения этого дня удалятся.":"The exercises of this day will be deleted.",
+  "Фото еды":"Food photo",
+  "Французский жим":"Skull crusher",
+  "Фронтальные приседания":"Front squat",
+  "Хлеб цельнозерновой":"Wholegrain bread",
+  "Цели сохранены":"Goals saved",
+  "Цель вручную":"Goals manually",
+  "Цель не задана — нажми, чтобы настроить":"No goal set — tap to configure",
+  "Цель по воде выполнена 💧":"Water goal reached 💧",
+  "ЧТО НЕ РАБОТАЕТ":"WHAT DOES NOT WORK YET",
+  "ЧТО УЖЕ РАБОТАЕТ":"WHAT ALREADY WORKS",
+  "Что вы пьёте":"What do you drink",
+  "Шраги с гантелями":"Dumbbell shrug",
+  "Этой программы больше нет":"This program no longer exists",
+  "Ягодичный мост":"Hip thrust",
+  "Яйцо куриное":"Chicken egg",
+  "вне Telegram":"outside Telegram",
+  "все тело":"full body",
+  "всё тело":"full body",
+  "г добавлено":"g added",
+  "дн назад":"days ago",
+  "добавлено в тренировку":"added to the workout",
+  "доступ закрыт":"access closed",
+  "ещё не сохраняли":"not saved yet",
+  "за 30 дней":"over 30 days",
+  "за неделю":"this week",
+  "записей нет":"no records",
+  "и все её дни удалятся навсегда.":"and all its days will be erased for good.",
+  "изменить или создать":"edit or create",
+  "мин назад":"min ago",
+  "настроение?":"mood?",
+  "не отмечено":"not logged",
+  "нет связи":"no connection",
+  "ниже старта":"below start",
+  "норма 7–9 ч":"target 7–9 h",
+  "общее время":"total time",
+  "оставлено как есть":"kept as is",
+  "повторы можно писать словами: 8-10, 12, 45 сек.":"you can write reps in words: 8-10, 12, 45 sec.",
+  "с активностью":"with activity",
+  "сбой проверки":"check failed",
+  "среднее за":"average over",
+  "твой номер:":"your number:",
+  "только что":"just now",
+  "тренировка была":"trained",
+  "ч назад":"h ago",
+  "что уже работает":"what already works",
+  "— начать тренировку с него · квадратики — отметить подход":"— start the workout from it · the squares — mark a set",
+  "• 5 программ тренировок и замена упражнений":"• 5 training programs and exercise swapping",
+  "• База продуктов с поиском и выбором порции":"• Food library with search and portion choice",
+  "• Ваши данные хранятся на устройстве и в облаке":"• Your data lives on the device and in the cloud",
+  "• Вес, сон, шаги, замеры и графики":"• Weight, sleep, steps, measurements and charts",
+  "• Дневник подходов с таймером отдыха":"• Set log with a rest timer",
+  "• Итог тренировки можно отправить в чат":"• Send the workout summary to a chat",
+  "• Копия данных в облаке — переживёт смену телефона":"• A copy in the cloud — survives a new phone",
+  "• Напоминания о тренировке":"• Workout reminders",
+  "• Публикация в магазинах приложений":"• Publishing to app stores",
+  "• Распознавание еды по фотографии":"• Food recognition by photo",
+  "• Расчёт калорий и БЖУ по формуле Миффлина":"• Calories and macros by the Mifflin formula",
+  "• Рацион: завтрак, обед, ужин, перекус":"• Meals: breakfast, lunch, dinner, snack",
+  "• Светлая и тёмная тема, английский язык":"• Light and dark theme, English language",
+  "• Свои тренировки: дни, упражнения, подходы и вес":"• Custom workouts: days, exercises, sets and weight",
+  "• Своя база упражнений — свои движения в общем списке":"• Your own exercise library — custom moves in the shared list",
+  "≈116 ⭐ / мес · выгода 398 ⭐":"≈116 ⭐ / mo · save 398 ⭐",
+  "≈126 ⭐ / мес · выгода 68 ⭐":"≈126 ⭐ / mo · save 68 ⭐",
+  "▲▼ — порядок · ✕ — убрать · тап по упражнению — подходы, повторы и вес":"▲▼ — order · ✕ — remove · tap an exercise — sets, reps and weight",
+  "▶ — начать тренировку с него · квадратики — отметить подход":"▶ — start the workout from it · the squares — mark a set",
+  "★ Мои блюда":"★ My dishes",
+  "⛁ Мой БЖУ":"⛁ My macros",
+  "✎ Изменить":"✎ Edit",
+  "✎ Изменить программу":"✎ Edit the program"
+};
+const I18N_TERMS = [
+  ["Владелец получил уведомление с кнопкой «Разрешить». Как только разрешит — нажми «Проверить снова».","The owner got a notification with an \"Allow\" button. Once approved, tap \"Check again\"."],
+  ["Если сменишь телефон — на новом устройстве открой «Восстановить из облака», и данные вернутся.","Switching phones? Open \"Restore from cloud\" on the new one and your data comes back."],
+  ["Средний темп, полная амплитуда. Дыхание: усилие — выдох. Разминка перед рабочими подходами.","Moderate tempo, full range. Exhale on effort. Warm up before your working sets."],
+  ["Приложение само отправляет копию данных на сервер через несколько секунд после изменений.","The app uploads a copy of your data a few seconds after every change."],
+  ["Пересылка ссылки на бота доступа не даёт: у каждого свой номер, и подделать его нельзя.","Forwarding the bot link does not grant access: everyone has their own number and it cannot be forged."],
+  ["Тренировки, еда, вес, замеры и цели удалятся навсегда. Это действие нельзя отменить.","Workouts, food, weight, measurements and goals will be erased for good. This cannot be undone."],
+  ["Полный вис, тянем локти вниз, подбородок выше перекладины, опускание подконтрольно.","Hang fully, pull the elbows down, chin above the bar, lower under control."],
+  ["Гриф у голени, спина нейтральная, толкаем пол ногами, корпус поднимается вместе.","Bar at the shin, neutral spine, push the floor away, torso rises as one."],
+  ["Свои программы встанут в общий список на экране «Тренировка» — рядом с готовыми.","Your custom programs join the shared list on the Workout screen, next to the ready-made ones."],
+  ["Переводится весь интерфейс. Свои упражнения и блюда остаются как ты их записал.","The whole interface is translated. Your own exercises and dishes stay as you wrote them."],
+  ["Стопы на ширине плеч, колени по направлению носков, спина прямая, до параллели.","Feet shoulder-width, knees track over the toes, back straight, down to parallel."],
+  ["Пресс напряжён, гриф по линии носа, поясницу не прогибаем, локти чуть впереди.","Core braced, bar along the nose line, no lower-back arch, elbows slightly forward."],
+  ["Доступ выдаёт владелец — кнопкой под уведомлением в чате с ботом (или командой","The owner grants access with the button under the bot notification (or with"],
+  ["Тело одной линией, таз подкручен, дышим ровно, поясницу не проваливаем.","Body in one straight line, pelvis tucked, steady breathing, no sagging lower back."],
+  ["Тап по названию — техника и замена упражнения · тап по плану — переход","Tap a name for form and swapping · tap the plan to jump to an exercise"],
+  ["▲▼ — порядок · ✕ — убрать · тап по упражнению — подходы, повторы и вес","▲▼ — order · ✕ — remove · tap an exercise — sets, reps and weight"],
+  ["Лопатки сведены, прогиб в пояснице, гриф к низу груди, локти под 45°.","Blades squeezed, slight arch, bar to the lower chest, elbows at 45°."],
+  ["Владелец не указан на сервере. Пусть проверит переменную OWNER_ID.","The owner is not set on the server. Check the OWNER_ID variable."],
+  ["Кольцо на главном экране и шкалы в рационе пересчитываются сразу.","The ring on the main screen and the bars in meals recalculate at once."],
+  ["Доступ выдаёт владелец — кнопкой под уведомлением в чате с ботом","The owner grants access with the button under the bot notification"],
+  ["Upper, Lower, Upper, Lower, Push, Pull — сила и объём за неделю.","Upper, Lower, Upper, Lower, Push, Pull — strength and volume across the week."],
+  ["Упражнение заменится в программе на всех тренировках этого дня.","The exercise is swapped in every workout of this day."],
+  ["Кольцо на главном экране и шкалы в рационе пересчитаются сразу.","The ring on the main screen and the bars in meals recalculate at once."],
+  ["Данные на этом устройстве заменятся, отменить будет нельзя.","Data on this device will be replaced and cannot be restored."],
+  ["▶ — начать тренировку с него · квадратики — отметить подход","▶ — start the workout from it · the squares — mark a set"],
+  ["Верх и низ тела через день. Баланс объёма и восстановления.","Upper and lower body every other day. Balanced volume and recovery."],
+  ["Всё тело за одну тренировку, 3 раза в неделю. Лучший старт.","The whole body in one session, 3 times a week. The best start."],
+  ["— начать тренировку с него · квадратики — отметить подход","— start the workout from it · the squares — mark a set"],
+  ["Одна группа мышц в день. Максимальный объём и проработка.","One muscle group a day. Maximum volume and detail."],
+  ["Пол, возраст, рост, вес, активность — пересчитаю калории","Sex, age, height, weight, activity — I recalculate your calories"],
+  ["Жим, тяга, ноги. Каждая группа работает 2 раза в неделю.","Push, pull, legs. Every group trained twice a week."],
+  ["Удалить тренировки, еду, вес и замеры — начать заново","Delete workouts, food, weight and measurements — start over"],
+  ["• Своя база упражнений — свои движения в общем списке","• Your own exercise library — custom moves in the shared list"],
+  ["Замеры раз в 2 недели — так виден реальный прогресс.","Measurements once every 2 weeks — that is how real progress shows."],
+  ["Собери программу под себя: упражнения, подходы, вес","Build your own program: exercises, sets, weight"],
+  ["Нажми на упражнение в плане, чтобы вернуться к нему","Tap an exercise in the plan to return to it"],
+  ["Тренировки, питание и прогресс в одном приложении.","Training, nutrition and progress in one app."],
+  ["• Копия данных в облаке — переживёт смену телефона","• A copy in the cloud — survives a new phone"],
+  ["• Свои тренировки: дни, упражнения, подходы и вес","• Custom workouts: days, exercises, sets and weight"],
+  ["Название, дни, упражнения, подходы и рабочий вес","Name, days, exercises, sets and working weight"],
+  ["Владелец закрыл доступ для этой учётной записи.","The owner has closed access for this account."],
+  ["База продуктов · нажми, чтобы добавить в рацион","Food library · tap to add to your day"],
+  ["• Ваши данные хранятся на устройстве и в облаке","• Your data lives on the device and in the cloud"],
+  ["повторы можно писать словами: 8-10, 12, 45 сек.","you can write reps in words: 8-10, 12, 45 sec."],
+  ["Заверши первую тренировку — она появится здесь","Finish your first workout and it will show up here"],
+  ["Подходы по этому упражнению начнутся заново.","Sets for this exercise start over."],
+  ["Отдых между подходами · 90 сек по умолчанию","Rest between sets · 90 sec by default"],
+  ["• 5 программ тренировок и замена упражнений","• 5 training programs and exercise swapping"],
+  ["• База продуктов с поиском и выбором порции","• Food library with search and portion choice"],
+  ["Светлая тема днём на улице читается лучше.","The light theme is easier to read outdoors."],
+  ["PowerLab · макет · демонстрация интерфейса","PowerLab · mockup · interface preview"],
+  ["Не выполнялось — тренировка началась позже","Not performed — the workout started later"],
+  ["• Расчёт калорий и БЖУ по формуле Миффлина","• Calories and macros by the Mifflin formula"],
+  ["5 программ тренировок и замена упражнений","5 training programs and exercise swapping"],
+  ["Поменяй данные — калории и БЖУ пересчитаю","Change your details and I recalculate calories and macros"],
+  ["База продуктов с поиском и выбором порции","Food library with search and portion choice"],
+  ["Нет тренировки, которой можно поделиться","No workout to share yet"],
+  ["Пять вопросов — и нормы посчитаются сами","Five questions and your targets are calculated"],
+  ["• Светлая и тёмная тема, английский язык","• Light and dark theme, English language"],
+  ["Нет связи · данные только на устройстве","No connection · data stays on this device"],
+  ["Цель не задана — нажми, чтобы настроить","No goal set — tap to configure"],
+  ["Данных мало, нормы оставил по умолчанию","Not enough data, targets left at defaults"],
+  ["• Итог тренировки можно отправить в чат","• Send the workout summary to a chat"],
+  ["Облако работает только внутри Telegram","The cloud works inside Telegram only"],
+  ["Тап по упражнению — техника, история и","Tap an exercise for form, history and"],
+  ["Нормы посчитаны — можно менять в Целях","Targets calculated — you can edit them in Goals"],
+  ["• Рацион: завтрак, обед, ужин, перекус","• Meals: breakfast, lunch, dinner, snack"],
+  ["В облаке пока пусто — сначала сохрани","The cloud is still empty — save something first"],
+  ["Программа создана — добавь упражнения","Program created — add some exercises"],
+  ["Сервер не пустил эту учётную запись.","The server did not let this account in."],
+  ["Начать тренировку с этого упражнения","Start the workout from this exercise"],
+  ["Рацион: завтрак, обед, ужин, перекус","Meals: breakfast, lunch, dinner, snack"],
+  ["База продуктов и добавление в рацион","Food library and adding to meals"],
+  ["• Дневник подходов с таймером отдыха","• Set log with a rest timer"],
+  ["Оплата в Stars — без привязки карты.","Payment in Stars — no card needed."],
+  ["• Публикация в магазинах приложений","• Publishing to app stores"],
+  ["Дневник подходов с таймером отдыха","Set log with a rest timer"],
+  ["• Вес, сон, шаги, замеры и графики","• Weight, sleep, steps, measurements and charts"],
+  ["Сервер не ответил, попробуй позже","The server did not answer, try later"],
+  ["Отмеченные подходы не сохранятся.","The sets you marked will not be saved."],
+  ["• Распознавание еды по фотографии","• Food recognition by photo"],
+  ["Готовые программы · 6 групп мышц","Ready-made programs · 6 muscle groups"],
+  ["Пропущено — подходы не засчитаны","Skipped — sets not counted"],
+  ["Вес, сон, шаги, замеры и графики","Weight, sleep, steps, measurements and charts"],
+  ["ТРЕНИРОВКИ · ПИТАНИЕ · ПРОГРЕСС","TRAINING · NUTRITION · PROGRESS"],
+  ["Не получилось открыть пересылку","Could not open sharing"],
+  ["и все её дни удалятся навсегда.","and all its days will be erased for good."],
+  ["В базе нет другой альтернативы","No other alternative in the library"],
+  ["Добавится в базу и в этот день","Added to the library and to this day"],
+  ["Тренировка сохранена в историю","Workout saved to history"],
+  ["Итог скопирован — вставь в чат","Summary copied — paste it into the chat"],
+  ["В этом дне пока нет упражнений","No exercises in this day yet"],
+  ["Упражнения этого дня удалятся.","The exercises of this day will be deleted."],
+  ["Дальше спросим, сколько грамм.","Then we ask how many grams."],
+  ["PowerLab · кликабельный макет","PowerLab · clickable mockup"],
+  ["Средняя продолжительность сна","Average sleep"],
+  ["Обратные отжимания от скамьи","Bench dips"],
+  ["Оплата через Telegram Stars","Payment via Telegram Stars"],
+  ["≈116 ⭐ / мес · выгода 398 ⭐","≈116 ⭐ / mo · save 398 ⭐"],
+  ["Значения на 100 г продукта.","Values per 100 g of the food."],
+  ["Горизонтальная тяга в блоке","Seated cable row"],
+  ["Приседания в Гакк-тренажёре","Hack squat"],
+  ["≈126 ⭐ / мес · выгода 68 ⭐","≈126 ⭐ / mo · save 68 ⭐"],
+  ["• Напоминания о тренировке","• Workout reminders"],
+  ["Впиши название упражнения","Enter an exercise name"],
+  ["Собери программу под себя","Build your own program"],
+  ["Начать с этого упражнения","Start from this exercise"],
+  ["Этой программы больше нет","This program no longer exists"],
+  ["Средняя продолжительность","Average duration"],
+  ["Калории, БЖУ, вода и шаги","Calories, macros, water and steps"],
+  ["Создать тренировку с нуля","Create a workout from scratch"],
+  ["Жим гантелей на наклонной","Incline dumbbell press"],
+  ["Не дозвонились до облака","Could not reach the cloud"],
+  ["Доступно внутри Telegram","Available inside Telegram"],
+  ["Введи хотя бы один замер","Enter at least one measurement"],
+  ["Цель по воде выполнена 💧","Water goal reached 💧"],
+  ["Напоминания о тренировке","Workout reminders"],
+  ["Жим в Смите на наклонной","Incline Smith machine press"],
+  ["Жим в тренажёре на плечи","Machine shoulder press"],
+  ["Концентрированный подъём","Concentration curl"],
+  ["Махи гантелями в стороны","Dumbbell lateral raise"],
+  ["Разгибания рук в наклоне","Bent-over triceps extension"],
+  ["Тяга гантели одной рукой","One-arm dumbbell row"],
+  ["Тяга штанги к подбородку","Upright barbell row"],
+  ["Взять данные из облака?","Take the data from the cloud?"],
+  ["Копия данных на сервере","A copy of the data on the server"],
+  ["Приложение не настроено","The app is not configured"],
+  ["Как выглядит приложение","How the app looks"],
+  ["Распознавание по снимку","Photo recognition"],
+  ["Сохранить и пересчитать","Save and recalculate"],
+  ["Подъём штанги на бицепс","Barbell curl"],
+  ["Тяга в тренажёре Хаммер","Hammer strength row"],
+  ["(или командой /allow).","(or with the /allow command)."],
+  ["Доступ к облаку закрыт","Cloud access is closed"],
+  ["Например: Тяга к поясу","For example: Seated row"],
+  ["Подходы, повторы и вес","Sets, reps and weight"],
+  ["ВСЕ УПРАЖНЕНИЯ ЗАКРЫТЫ","ALL EXERCISES CLOSED"],
+  ["добавлено в тренировку","added to the workout"],
+  ["Восстановить из облака","Restore from cloud"],
+  ["Фронтальные приседания","Front squat"],
+  ["В этом дне пока пусто","Nothing in this day yet"],
+  ["Грудь · Талия · Бёдра","Chest · Waist · Hips"],
+  ["Добавьте шаги за день","Add the steps for the day"],
+  ["Добавить в тренировку","Add to the workout"],
+  ["Подъёмы на носки сидя","Seated calf raise"],
+  ["Приседания со штангой","Barbell squat"],
+  ["Тяга штанги в наклоне","Bent-over barbell row"],
+  ["Pull — Спина / Бицепс","Pull — Back / Biceps"],
+  ["Работает · сохранено","Working · saved"],
+  ["Номер ещё не получен","The number is not here yet"],
+  ["Прервать тренировку?","Stop the workout?"],
+  ["изменить или создать","edit or create"],
+  ["ТРЕНИРОВКА ЗАВЕРШЕНА","WORKOUT FINISHED"],
+  ["Посмотреть программу","View the program"],
+  ["10 упражнений в базе","10 exercises in the library"],
+  ["✎ Изменить программу","✎ Edit the program"],
+  ["Отжимания на брусьях","Dips"],
+  ["Подтягивания с весом","Weighted pull-up"],
+  ["Разведения в наклоне","Bent-over reverse fly"],
+  ["Сбросить все данные","Reset all data"],
+  ["Добавить упражнение","Add exercise"],
+  ["Заменить упражнение","Swap exercise"],
+  ["Горизонтальная тяга","Seated row"],
+  ["Разгибания на блоке","Cable pushdown"],
+  ["Тяга верхнего блока","Lat pulldown"],
+  ["Хлеб цельнозерновой","Wholegrain bread"],
+  ["Удалить программу?","Delete the program?"],
+  ["Тренировка закрыта","Workout closed"],
+  ["30 дней наблюдений","30 days of tracking"],
+  ["Начало — не задано","Start — not set"],
+  ["оставлено как есть","kept as is"],
+  ["Нормы пересчитаны:","Targets recalculated:"],
+  ["Создать тренировку","Create a workout"],
+  ["Обратные отжимания","Bench dips"],
+  ["Скопировать номер","Copy the number"],
+  ["Заявка отправлена","Request sent"],
+  ["Сколько добавить?","How much to add?"],
+  ["Выбери упражнение","Pick an exercise"],
+  ["Начать тренировку","Start workout"],
+  ["Программа удалена","Program deleted"],
+  ["Тоннаж по неделям","Tonnage by week"],
+  ["Обновлено сегодня","Updated today"],
+  ["Настроим PowerLab","Set up PowerLab"],
+  ["Тело и активность","Body and activity"],
+  ["Другие активности","Other activities"],
+  ["Скопировать в чат","Copy to chat"],
+  ["Назад в настройки","Back to settings"],
+  ["Разводка гантелей","Dumbbell fly"],
+  ["Сгибания ног лёжа","Lying leg curl"],
+  ["Шраги с гантелями","Dumbbell shrug"],
+  ["Отжимания от пола","Push-up"],
+  ["Подъём ног в висе","Hanging leg raise"],
+  ["Кроссовер в блоке","Cable crossover"],
+  ["Жим гантелей лёжа","Dumbbell bench press"],
+  ["Жим гантелей сидя","Seated dumbbell press"],
+  ["Жим гантелей стоя","Standing dumbbell press"],
+  ["Рис белый варёный","White rice, cooked"],
+  ["ещё не сохраняли","not saved yet"],
+  ["Номер скопирован","Number copied"],
+  ["Как это работает","How it works"],
+  ["КАК ЭТО РАБОТАЕТ","HOW IT WORKS"],
+  ["149 ⭐ за 1 месяц","149 ⭐ for 1 month"],
+  ["ЧТО УЖЕ РАБОТАЕТ","WHAT ALREADY WORKS"],
+  ["Своя программа ·","Custom program ·"],
+  ["Объём по группам","Volume by muscle group"],
+  ["Профиль сохранён","Profile saved"],
+  ["Замеры сохранены","Measurements saved"],
+  ["Пока нет замеров","No measurements yet"],
+  ["Сохранить сейчас","Save now"],
+  ["Проверить доступ","Check access"],
+  ["что уже работает","what already works"],
+  ["Подъёмы на носки","Standing calf raise"],
+  ["Болгарский выпад","Bulgarian split squat"],
+  ["Жим узким хватом","Close-grip bench press"],
+  ["Пулловер в блоке","Cable pullover"],
+  ["Ролик для пресса","Ab wheel"],
+  ["Облако отказало","The cloud refused"],
+  ["Проверить снова","Check again"],
+  ["Профиль и нормы","Profile and targets"],
+  ["Свои тренировки","Custom workouts"],
+  ["ЧТО НЕ РАБОТАЕТ","WHAT DOES NOT WORK YET"],
+  ["Выбрать продукт","Choose a food"],
+  ["Поиск продукта…","Search food…"],
+  ["Своё упражнение","Custom exercise"],
+  ["База упражнений","Exercise library"],
+  ["тренировка была","trained"],
+  ["Принято сегодня","Taken today"],
+  ["Отправить в чат","Send to chat"],
+  ["Жим в тренажёре","Machine press"],
+  ["Жим штанги лёжа","Barbell bench press"],
+  ["Жим штанги стоя","Standing barbell press"],
+  ["Французский жим","Skull crusher"],
+  ["Овсянка на воде","Oatmeal on water"],
+  ["Оливковое масло","Olive oil"],
+  ["Куда добавить?","Where to add?"],
+  ["СЕГОДНЯ · ДЕНЬ","TODAY · DAY"],
+  ["Личные рекорды","Personal records"],
+  ["Цели сохранены","Goals saved"],
+  ["СОН ЗА СЕГОДНЯ","SLEEP TODAY"],
+  ["Оплатить 149 ⭐","Pay 149 ⭐"],
+  ["Боковая планка","Side plank"],
+  ["Махи в наклоне","Reverse fly"],
+  ["Разгибания ног","Leg extension"],
+  ["Румынская тяга","Romanian deadlift"],
+  ["Ягодичный мост","Hip thrust"],
+  ["Гречка варёная","Buckwheat, cooked"],
+  ["Куриная грудка","Chicken breast"],
+  ["Спокойный темп","Slow tempo"],
+  ["доступ закрыт","access closed"],
+  ["сбой проверки","check failed"],
+  ["Доступ открыт","Access open"],
+  ["Доступ закрыт","Access closed"],
+  ["Сбросить всё?","Reset everything?"],
+  ["День добавлен","Day added"],
+  ["Личный рекорд","Personal record"],
+  ["Пока ни одной","None yet"],
+  ["Пример данных","Sample data"],
+  ["Пульс 130–150","Heart rate 130–150"],
+  ["Базовый обмен","Basal metabolic rate"],
+  ["с активностью","with activity"],
+  ["Скамья Скотта","Preacher bench"],
+  ["Становая тяга","Deadlift"],
+  ["вне Telegram","outside Telegram"],
+  ["Цель вручную","Goals manually"],
+  ["О приложении","About"],
+  ["Светлая тема","Light theme"],
+  ["Своё блюдо ·","Custom dish ·"],
+  ["Твой вес, кг","Your weight, kg"],
+  ["Добавить еду","Add food"],
+  ["Что вы пьёте","What do you drink"],
+  ["Жим Арнольда","Arnold press"],
+  ["Тяга Т-грифа","T-bar row"],
+  ["Яйцо куриное","Chicken egg"],
+  ["твой номер:","your number:"],
+  ["Тема и язык","Theme and language"],
+  ["Тёмная тема","Dark theme"],
+  ["Общее время","Total time"],
+  ["общее время","total time"],
+  ["День удалён","Day deleted"],
+  ["Группы мышц","Muscle groups"],
+  ["ГРУППА МЫШЦ","MUSCLE GROUP"],
+  ["записей нет","no records"],
+  ["ниже старта","below start"],
+  ["Какое у вас","How is your"],
+  ["настроение?","mood?"],
+  ["Настроение:","Mood:"],
+  ["Не отмечено","Not logged"],
+  ["не отмечено","not logged"],
+  ["Текущий вес","Current weight"],
+  ["Замеры тела","Body measurements"],
+  ["★ Мои блюда","★ My dishes"],
+  ["г добавлено","g added"],
+  ["норма 7–9 ч","target 7–9 h"],
+  ["только что","just now"],
+  ["за 30 дней","over 30 days"],
+  ["ТВОЯ НОРМА","YOUR TARGET"],
+  ["Сохранено:","Saved:"],
+  ["Пропущено:","Skipped:"],
+  ["Своё блюдо","Custom dish"],
+  ["среднее за","average over"],
+  ["✎ Изменить","✎ Edit"],
+  ["Жим ногами","Leg press"],
+  ["Витамин D3","Vitamin D3"],
+  ["Верх / Низ","Upper / Lower"],
+  ["мин назад","min ago"],
+  ["нет связи","no connection"],
+  ["за неделю","this week"],
+  ["Отмечено:","Marked:"],
+  ["⛁ Мой БЖУ","⛁ My macros"],
+  ["Мои блюда","My dishes"],
+  ["Творог 5%","Cottage cheese 5%"],
+  ["дн назад","days ago"],
+  ["Копия от","Copy from"],
+  ["В ПЛАНАХ","PLANNED"],
+  ["Удалено:","Deleted:"],
+  ["Твой вес","Your weight"],
+  ["Фото еды","Food photo"],
+  ["всё тело","full body"],
+  ["все тело","full body"],
+  ["Жим лёжа","Bench press"],
+  ["Жим стоя","Overhead press"],
+  ["Всё тело","Full body"],
+  ["ч назад","h ago"],
+  ["Верх 2","Upper 2"],
+  ["Верх A","Upper A"],
+  ["Верх B","Upper B"],
+  ["День 1","Day 1"],
+  ["День A","Day A"],
+  ["День B","Day B"],
+  ["День C","Day C"],
+  ["Низ 2","Lower 2"],
+  ["Низ A","Lower A"],
+  ["Низ B","Lower B"]
+];
+const I18N_WORDS = {
+  "АКТИВНОСТЬ":"ACTIVITY",
+  "Август":"August",
+  "Авокадо":"Avocado",
+  "Активность":"Activity",
+  "Апрель":"April",
+  "Б":"P",
+  "Банан":"Banana",
+  "Белки":"Protein",
+  "Бёдра":"Hips",
+  "Вернуться":"Back",
+  "Версия":"Version",
+  "Верх":"Upper",
+  "Вес":"Weight",
+  "Вода":"Water",
+  "Возраст":"Age",
+  "Восстановить":"Restore",
+  "Вручную":"Manual",
+  "Вс":"Sun",
+  "Все":"All",
+  "Вт":"Tue",
+  "Готово":"Done",
+  "Грудь":"Chest",
+  "ДНИ":"DAYS",
+  "Да":"Yes",
+  "Далее":"Next",
+  "Дальше":"Next",
+  "Декабрь":"December",
+  "День":"Day",
+  "Держать":"Maintain",
+  "Добавить":"Add",
+  "Добавки":"Supplements",
+  "Еда":"Food",
+  "Ж":"F",
+  "Женщина":"Female",
+  "Жиры":"Fat",
+  "ЗА":"for",
+  "Завтрак":"Breakfast",
+  "Закрыто":"Closed",
+  "Закрыть":"Close",
+  "Заменить":"Swap",
+  "Замеры":"Measurements",
+  "ИТОГО":"TOTAL",
+  "Изменить":"Edit",
+  "Индейка":"Turkey",
+  "История":"History",
+  "Июль":"July",
+  "Июнь":"June",
+  "КБ":"KB",
+  "Калории":"Calories",
+  "Кардио":"Cardio",
+  "Креатин":"Creatine",
+  "Лосось":"Salmon",
+  "Магний":"Magnesium",
+  "Май":"May",
+  "Март":"March",
+  "Миндаль":"Almonds",
+  "Мои":"My",
+  "Мой":"My",
+  "Молотки":"Hammer curl",
+  "Моя":"My",
+  "Мужчина":"Male",
+  "НАЗВАНИЕ":"NAME",
+  "Набрать":"Gain",
+  "Назад":"Back",
+  "Напоминания":"Reminders",
+  "Настроение":"Mood",
+  "Настройки":"Settings",
+  "Начать":"Start",
+  "Низ":"Lower",
+  "Новичок":"Beginner",
+  "Ноги":"Legs",
+  "Номер":"Number",
+  "Норма":"Target",
+  "Нормально":"Okay",
+  "Нормы":"Targets",
+  "Ноябрь":"November",
+  "Обед":"Lunch",
+  "Облако":"Cloud",
+  "Октябрь":"October",
+  "Омега-3":"Omega-3",
+  "Оплата":"Payment",
+  "Осталось":"Left",
+  "Отлично":"Great",
+  "Отмена":"Cancel",
+  "Отчёт":"Report",
+  "ПОЛ":"SEX",
+  "Перекус":"Snack",
+  "Пересылка":"Forwarding",
+  "Планка":"Plank",
+  "Плечи":"Shoulders",
+  "Пн":"Mon",
+  "Подписка":"Subscription",
+  "Подтягивания":"Pull-up",
+  "Пока":"Nothing",
+  "Пол":"Sex",
+  "Порция":"Portion",
+  "Порядок":"Order",
+  "Похудеть":"Lose weight",
+  "Прервать":"Stop",
+  "Пресс":"Abs",
+  "Приседания":"Squat",
+  "Проверить":"Check",
+  "Программа":"Program",
+  "Программу":"Program",
+  "Программы":"Programs",
+  "Прогресс":"Progress",
+  "Продвинутый":"Advanced",
+  "Продолжить":"Continue",
+  "Пропустить":"Skip",
+  "Пропущено":"Skipped",
+  "Пт":"Fri",
+  "Разбитый":"Wrecked",
+  "Разминка":"Warm-up",
+  "Растяжка":"Stretching",
+  "Рацион":"Meals",
+  "Роль":"Role",
+  "Рост":"Height",
+  "Руки":"Arms",
+  "Русский":"Russian",
+  "Сб":"Sat",
+  "Сбросить":"Reset",
+  "Светлая":"Light",
+  "Своя":"Custom",
+  "Своё":"Custom",
+  "Сегодня":"Today",
+  "Сейчас":"Now",
+  "Сентябрь":"September",
+  "Сидячий":"Sedentary",
+  "Скручивания":"Crunch",
+  "Создать":"Create",
+  "Сон":"Sleep",
+  "Сонный":"Sleepy",
+  "Состояние":"Status",
+  "Сохранено":"Saved",
+  "Сохранить":"Save",
+  "Спина":"Back",
+  "Ср":"Wed",
+  "Средний":"Moderate",
+  "ТЕМА":"THEME",
+  "ТЕХНИКА":"TECHNIQUE",
+  "Талия":"Waist",
+  "Твой":"Your",
+  "Техника":"Technique",
+  "Тоннаж":"Tonnage",
+  "Тёмная":"Dark",
+  "У":"C",
+  "Углеводы":"Carbs",
+  "Удалить":"Delete",
+  "Ужин":"Dinner",
+  "Февраль":"February",
+  "Форма":"Body",
+  "Фото":"Photo",
+  "Фулбоди":"Full body",
+  "Цели":"Goals",
+  "Цель":"Goal",
+  "Чт":"Thu",
+  "Шаги":"Steps",
+  "ЯЗЫК":"LANGUAGE",
+  "Январь":"January",
+  "а":"and",
+  "август":"august",
+  "августа":"august",
+  "активностью":"activity",
+  "апрель":"april",
+  "апреля":"april",
+  "базе":"library",
+  "базовый":"basal",
+  "базы":"library",
+  "бег":"running",
+  "без":"without",
+  "белки":"protein",
+  "бесплатно":"free",
+  "блюд":"dishes",
+  "блюда":"dishes",
+  "блюдо":"dish",
+  "больше":"more",
+  "бота":"bot",
+  "быстро":"fast",
+  "бёдра":"hips",
+  "в":"in",
+  "введи":"enter",
+  "верх":"upper",
+  "вес":"weight",
+  "веса":"weight",
+  "вода":"water",
+  "все":"all",
+  "встанут":"join",
+  "всё":"all",
+  "вчера":"yesterday",
+  "выбери":"choose",
+  "выше":"up",
+  "г":"g",
+  "главном":"main",
+  "год":"year",
+  "года":"years",
+  "грамм":"grams",
+  "грамма":"grams",
+  "граммов":"grams",
+  "грудь":"chest",
+  "даёт":"gives",
+  "декабрь":"december",
+  "декабря":"december",
+  "день":"day",
+  "для":"for",
+  "дн":"d",
+  "дней":"days",
+  "дней/нед":"days/week",
+  "дни":"days",
+  "дня":"days",
+  "дня/нед":"days/week",
+  "до":"to",
+  "добавки":"supplements",
+  "добавлен":"added",
+  "добавлено":"added",
+  "доступ":"access",
+  "доступа":"access",
+  "его":"it",
+  "еда":"food",
+  "есть":"is",
+  "еще":"yet",
+  "ещё":"more",
+  "жиры":"fat",
+  "за":"for",
+  "завтрак":"breakfast",
+  "замена":"swap",
+  "замены":"swap",
+  "замеры":"measurements",
+  "заминка":"cool-down",
+  "записей":"records",
+  "здесь":"here",
+  "и":"and",
+  "из":"of",
+  "изменить":"edit",
+  "или":"or",
+  "июль":"july",
+  "июля":"july",
+  "июнь":"june",
+  "июня":"june",
+  "каждого":"every",
+  "каждый":"every",
+  "как":"as",
+  "калории":"calories",
+  "кб":"kb",
+  "кг":"kg",
+  "ккал":"kcal",
+  "командой":"command",
+  "л":"L",
+  "лет":"years",
+  "лучше":"better",
+  "май":"may",
+  "мало":"little",
+  "март":"march",
+  "марта":"march",
+  "мая":"may",
+  "меньше":"less",
+  "мес":"mo",
+  "месяц":"month",
+  "месяца":"months",
+  "месяцев":"months",
+  "мин":"min",
+  "мл":"ml",
+  "можно":"you can",
+  "н":"w",
+  "на":"on",
+  "нажми":"tap",
+  "назад":"ago",
+  "начало":"start",
+  "не":"not",
+  "нед":"wk",
+  "нед.":"wk",
+  "нельзя":"impossible",
+  "нет":"no",
+  "ни":"not",
+  "ниже":"down",
+  "низ":"lower",
+  "ноги":"legs",
+  "номер":"number",
+  "норма":"target",
+  "ноябрь":"november",
+  "ноября":"november",
+  "нужно":"you need",
+  "обед":"lunch",
+  "облака":"cloud",
+  "обмен":"metabolism",
+  "одной":"one",
+  "октябрь":"october",
+  "октября":"october",
+  "оставлено":"left",
+  "от":"from",
+  "первую":"the first",
+  "перекус":"snack",
+  "пересчитать":"recalculate",
+  "пересчитаю":"recalculate",
+  "писать":"write",
+  "плечи":"shoulders",
+  "по":"by",
+  "повтор":"rep",
+  "повторов":"reps",
+  "повторы":"reps",
+  "подделать":"forge",
+  "подключено":"connected",
+  "подх.":"sets",
+  "подход":"set",
+  "подхода":"sets",
+  "подходов":"sets",
+  "подходы":"sets",
+  "порций":"portions",
+  "порция":"portion",
+  "порядок":"order",
+  "посмотреть":"view",
+  "появится":"appears",
+  "пресс":"abs",
+  "проверки":"check",
+  "программ":"programs",
+  "программа":"program",
+  "программу":"program",
+  "программы":"programs",
+  "прогресс":"progress",
+  "продукт":"food",
+  "пропущено":"skipped",
+  "пусто":"empty",
+  "работает":"works",
+  "работают":"work",
+  "рабочий":"working",
+  "раз":"once",
+  "раза":"times",
+  "разы":"times",
+  "рацион":"meals",
+  "рационе":"meals",
+  "реальный":"real",
+  "руки":"arms",
+  "с":"with",
+  "сам":"itself",
+  "сама":"itself",
+  "само":"itself",
+  "самостоятельно":"on its own",
+  "самый":"the most",
+  "сбой":"failure",
+  "свое":"custom",
+  "свои":"custom",
+  "своих":"custom",
+  "свой":"own",
+  "своя":"custom",
+  "своё":"custom",
+  "связи":"connection",
+  "сегодня":"today",
+  "сейчас":"now",
+  "сек":"sec",
+  "сек.":"sec",
+  "сентябрь":"september",
+  "сентября":"september",
+  "сколько":"how many",
+  "словами":"in words",
+  "см":"cm",
+  "сон":"sleep",
+  "сохрани":"save",
+  "спина":"back",
+  "сразу":"at once",
+  "среднее":"average",
+  "ссылки":"link",
+  "талия":"waist",
+  "тап":"tap",
+  "твой":"your",
+  "тело":"body",
+  "только":"only",
+  "трен.":"sessions",
+  "тренировка":"workout",
+  "тренировке":"workout",
+  "тренировки":"workouts",
+  "тренировок":"workouts",
+  "у":"at",
+  "убрано":"removed",
+  "убрать":"remove",
+  "углеводы":"carbs",
+  "удалить":"delete",
+  "уже":"already",
+  "ужин":"dinner",
+  "упражнение":"exercise",
+  "упражнений":"exercises",
+  "упражнения":"exercises",
+  "февраль":"february",
+  "февраля":"february",
+  "цели":"goals",
+  "цель":"goal",
+  "ч":"h",
+  "шаги":"steps",
+  "шагов":"steps",
+  "шкалы":"bars",
+  "шт":"pcs",
+  "экране":"screen",
+  "это":"this",
+  "этого":"this",
+  "этой":"this",
+  "январь":"january",
+  "января":"january"
+};
+/* @@I18N_END@@ */
+
+function t(s){ return state.lang === 'en' ? (I18N_EN[s] || s) : s; }
+
+/* перевод строки:
+   1) точное совпадение — самый частый случай,
+   2) замена целых фраз (в том числе внутри собранных предложений),
+   3) замена отдельных слов: кг, мин назад, подходов и так далее. */
+function locText(core){
+  if(I18N_EN[core]) return I18N_EN[core];
+  let out = core;
+  for(const p of I18N_TERMS){
+    if(p[0].length <= out.length && out.indexOf(p[0]) >= 0) out = out.split(p[0]).join(p[1]);
+  }
+  /* цифры продолжают слово, но не начинают его: «Омега-3» переводится целиком,
+     а «1ч» разбирается как число плюс единица измерения */
+  out = out.replace(/[А-Яа-яЁё][А-Яа-яЁё0-9.\/-]*/g, function(m){
+    return I18N_WORDS[m] || I18N_WORDS[m.toLowerCase()] || m;
+  });
+  return out;
+}
+function trNode(node){
+  const raw = node.nodeValue;
+  if(!raw || !/[А-Яа-яЁё]/.test(raw)) return;
+  /* пробелы нормализуем: в числах приходит неразрывный, а в словаре обычный */
+  const core = raw.replace(/\u00a0/g, ' ').replace(/\s+/g, ' ').trim();
+  if(!core) return;
+  const out = locText(core);
+  if(out === core) return;
+  node.nodeValue = raw.match(/^\s*/)[0] + out + raw.match(/\s*$/)[0];
+}
+/* узлы скриптов переводить нельзя — там код */
+function langSkip(el){
+  return !el || el.nodeType !== 1 ? false
+    : /^(SCRIPT|STYLE|TEXTAREA)$/.test(el.tagName) || el.hasAttribute('data-no-i18n');
+}
+function applyLang(root){
+  if(state.lang !== 'en' || !root || langBusy) return;
+  langBusy = true;
+  try{
+    if(root.nodeType === 3){ trNode(root); return; }
+    if(langSkip(root)) return;
+    const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
+    const list = [];
+    let n;
+    while((n = w.nextNode())){ if(!langSkip(n.parentNode)) list.push(n); }
+    for(const node of list) trNode(node);
+    root.querySelectorAll('[placeholder],[title],[aria-label]').forEach(function(el){
+      ['placeholder','title','aria-label'].forEach(function(a){
+        const v = el.getAttribute(a);
+        if(v && /[А-Яа-яЁё]/.test(v)){
+          const tr = locText(v.trim());
+          if(tr !== v.trim()) el.setAttribute(a, tr);
+        }
+      });
+    });
+  } finally { langBusy = false; }
+}
+/* всё, что рисуется позже, переводится сразу после появления */
+/* защита от повторного входа: перевод меняет текст, а это снова будит наблюдателя */
+let langBusy = false;
+let langObs = null;
+function watchLang(){
+  if(langObs || !window.MutationObserver) return;
+  langObs = new MutationObserver(function(muts){
+    if(state.lang !== 'en') return;
+    for(const m of muts){
+      if(m.type === 'childList'){
+        m.addedNodes.forEach(function(nd){
+          if(nd.nodeType === 1) applyLang(nd);
+          else if(nd.nodeType === 3) applyLang(nd);
+        });
+      } else if(m.type === 'characterData'){
+        applyLang(m.target);
+      }
+    }
+  });
+  langObs.observe(document.body, { childList:true, subtree:true, characterData:true });
+}
+function installLang(){
+  applyLang(document.body);
+  watchLang();
+}
+function setLang(v){
+  const next = v === 'en' ? 'en' : 'ru';
+  if(next === state.lang) return;
+  state.lang = next;
+  save();
+  /* Английский — это перевод поверх готового текста, он накладывается сразу.
+     Русский — исходник: надёжнее всего перезагрузить страницу, тогда ни один
+     статичный заголовок не останется английским. Обложку пропускаем. */
+  if(next === 'ru'){
+    try{ sessionStorage.setItem('forge.nosplash', '1'); }catch(e){}
+    location.reload();
+    return;
+  }
+  document.documentElement.lang = 'en';
+  boot();
+  openSettings();
+  toast('English');
+  applyLang(document.body);
+}
 function shiftMonth(d){ calDate = new Date(calDate.getFullYear(), calDate.getMonth()+d, 1); renderCalendar(); }
 function renderCalendar(){
   const y=calDate.getFullYear(), m=calDate.getMonth();
-  document.getElementById('calTitle').textContent = MONTHS[m]+' '+y;
+  document.getElementById('calTitle').textContent = months()[m]+' '+y;
   const days = new Date(y,m+1,0).getDate(), lead = (new Date(y,m,1).getDay()+6)%7;
   const done=[2,5,7,9,12,14,16,18];
   let html = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'].map(w=>`<div class="wd">${w}</div>`).join('');
@@ -1288,7 +2551,7 @@ function renderCalendar(){
   for(let d=1; d<=days; d++){
     const isToday = d===20 && m===8 && y===2026;
     const cls = isToday ? 'today' : (m===8 && y===2026 && done.includes(d) ? 'done' : '');
-    html += `<div class="dd ${cls}" onclick="toast('${d} ${MONTHS[m].toLowerCase()} · ${done.includes(d)&&m===8?'тренировка была':'записей нет'}')">${d}</div>`;
+    html += `<div class="dd ${cls}" onclick="toast('${d} ${months()[m].toLowerCase()} · ${done.includes(d)&&m===8?'тренировка была':'записей нет'}')">${d}</div>`;
   }
   document.getElementById('calGrid').innerHTML = html;
 }
@@ -1340,9 +2603,9 @@ function saveMeasures(){
 let tempSteps = 0;
 function openSteps(){
   tempSteps = state.steps;
-  openOverlay('Шаги','Цель '+state.goals.steps.toLocaleString('ru-RU')+' за день',
+  openOverlay('Шаги','Цель '+state.goals.steps.toLocaleString(LOC())+' за день',
     `<div class="card" style="text-align:center;padding:24px 16px">
-      <div class="statbig" style="font-size:42px" id="stepBig">${tempSteps.toLocaleString('ru-RU')}</div>
+      <div class="statbig" style="font-size:42px" id="stepBig">${tempSteps.toLocaleString(LOC())}</div>
       <div class="stat-sub">шагов сегодня</div>
       <div class="bar" style="margin-top:16px"><i id="stepBar" style="width:${pct(tempSteps,state.goals.steps)}%"></i></div>
     </div>
@@ -1353,13 +2616,13 @@ function openSteps(){
 }
 function addSteps(n){
   tempSteps += n;
-  document.getElementById('stepBig').textContent = tempSteps.toLocaleString('ru-RU');
+  document.getElementById('stepBig').textContent = tempSteps.toLocaleString(LOC());
   document.getElementById('stepBar').style.width = pct(tempSteps,state.goals.steps)+'%';
 }
 function saveSteps(){
   state.steps = tempSteps;
   logPush('stepsLog', {n: tempSteps});
-  save(); closeOverlay(); renderForma(); toast('Шаги: '+tempSteps.toLocaleString('ru-RU'));
+  save(); closeOverlay(); renderForma(); toast('Шаги: '+tempSteps.toLocaleString(LOC()));
 }
 function openSupps(){
   openOverlay('Добавки','Что вы пьёте',
@@ -1380,7 +2643,7 @@ function openReport(){
       <span class="stat-sub">${pct(t.k,g.kcal)}%</span></div></div>
     <div class="grid2" style="margin-top:11px">
       <div class="card"><div class="stat-sub">Тренировок</div><div class="stat-val" style="font-size:22px">4</div><div class="stat-sub">за неделю</div></div>
-      <div class="card"><div class="stat-sub">Шаги</div><div class="stat-val" style="font-size:22px">${state.steps.toLocaleString('ru-RU')}</div><div class="stat-sub">сегодня</div></div>
+      <div class="card"><div class="stat-sub">Шаги</div><div class="stat-val" style="font-size:22px">${state.steps.toLocaleString(LOC())}</div><div class="stat-sub">сегодня</div></div>
     </div>
     <div class="card" style="margin-top:11px">
       <div class="spread"><span>Вода</span><b class="mono" style="color:var(--lime)">${state.water} мл</b></div>
@@ -1616,7 +2879,7 @@ function relDay(d){
   if(d === t) return 'сегодня';
   if(d === y) return 'вчера';
   const p = d.split('-');
-  return +p[2]+' '+MONTHS[+p[1]-1].toLowerCase();
+  return +p[2]+' '+months()[+p[1]-1].toLowerCase();
 }
 function renderHistory(){
   const el = document.getElementById('history');
@@ -1630,7 +2893,7 @@ function renderHistory(){
   el.innerHTML = state.workouts.slice(0,6).map((h,i)=>`
     <div class="item clickable" onclick="openWorkoutLog(${i})"><div class="ico">✓</div>
       <div class="body"><div class="tt" style="font-size:14px">${h.n}</div>
-      <div class="ss">${h.sets} подходов · ${h.tonnage.toLocaleString('ru-RU')} кг</div></div>
+      <div class="ss">${h.sets} подходов · ${h.tonnage.toLocaleString(LOC())} кг</div></div>
       <span class="vv" style="font-size:11px">${relDay(h.d)}</span></div>`).join('')
     + (state.workouts.length > 6 ? `<div class="stat-sub" style="padding:12px 14px">и ещё ${state.workouts.length-6} тренировок в разделе Прогресс</div>` : '');
 }
@@ -1641,7 +2904,7 @@ function openWorkoutLog(i){
   openOverlay(h.n, relDay(h.d)+' · '+h.time,
     `<div class="grid2">
        <div class="card"><div class="stat-sub">Подходов</div><div class="stat-val" style="font-size:24px">${h.sets}</div></div>
-       <div class="card"><div class="stat-sub">Тоннаж</div><div class="stat-val" style="font-size:24px">${h.tonnage.toLocaleString('ru-RU')}</div></div>
+       <div class="card"><div class="stat-sub">Тоннаж</div><div class="stat-val" style="font-size:24px">${h.tonnage.toLocaleString(LOC())}</div></div>
      </div>
      <div class="section"><span class="t">Упражнения</span><span class="l">${exs.length}</span></div>
      <div class="card soft" style="padding:0">${exs.map(e=>`
@@ -1696,7 +2959,7 @@ function openExercise(name, reps, kg, group){
        <div class="bar" style="margin-top:12px"><i style="width:${kg?Math.min(100,kg/120*100):0}%"></i></div>
      </div>
      <div class="section"><span class="t">Техника</span></div>
-     <div class="card"><div class="stat-sub" style="line-height:1.65;color:#c2c9d1">${techFor(name)}</div></div>
+     <div class="card"><div class="stat-sub" style="line-height:1.65;color:var(--dim-3)">${techFor(name)}</div></div>
      <div class="section"><span class="t">Прогресс веса</span><span class="l">6 тренировок</span></div>
      <div class="card"><div class="bars" style="height:86px">${bars.map((b,i)=>
         `<div class="bcol"><i style="height:${b}%"></i><span>${i+1}</span></div>`).join('')}</div></div>
@@ -1762,7 +3025,7 @@ function applySwap(i){
 function openActivity(id){
   const a = ACTIVITIES.find(x=>x.id===id);
   openOverlay(a.name, a.sub,
-    `<div style="position:relative;height:230px;border-radius:24px;overflow:hidden;border:1px solid var(--line);background:#0c0e13;margin-bottom:12px">
+    `<div style="position:relative;height:230px;border-radius:24px;overflow:hidden;border:1px solid var(--line);background:var(--deep-2);margin-bottom:12px">
        <img src="${a.img}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;mix-blend-mode:screen"></div>
      <div class="card">
        <div class="spread"><span class="muted">Длительность</span><b class="mono">${a.sub.split(' · ')[0]}</b></div>
@@ -1773,7 +3036,7 @@ function openActivity(id){
 function openMuscle(id){
   const m = MUSCLES.find(x=>x.id===id);
   openOverlay(m.name, m.count+' упражнений в базе',
-    `<div style="position:relative;height:190px;border-radius:24px;overflow:hidden;border:1px solid var(--line);background:#0c0e13;margin-bottom:12px">
+    `<div style="position:relative;height:190px;border-radius:24px;overflow:hidden;border:1px solid var(--line);background:var(--deep-2);margin-bottom:12px">
        <img src="${m.img}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;mix-blend-mode:screen"></div>
      <div class="card" style="padding:0">${m.ex.map((e,i)=>exRow(e,i)).join('')}</div>`,
     `<button class="bigbtn" onclick="openExercisePool()">Добавить упражнение</button>`);
@@ -1847,7 +3110,7 @@ function openMyPrograms(back){
      <div class="card" style="padding:0">${list.map(p=>{
        const exs = p.plan.reduce((a,d)=> a + d.ex.length, 0);
        return `<div class="item clickable" onclick="openProgEdit('${p.id}', openMyPrograms)">
-         <div class="ico" style="border-color:rgba(139,124,255,.5);color:#bfb4ff">◆</div>
+         <div class="ico" style="border-color:rgba(139,124,255,.5);color:var(--violet)">◆</div>
          <div class="body"><div class="tt">${p.name}</div>
            <div class="ss">${p.plan.length} ${plural(p.plan.length,['день','дня','дней'])} · ${exs} ${plural(exs,['упражнение','упражнения','упражнений'])}${exs?'':' · пусто'}</div></div>
          <span class="chev">›</span></div>`;
@@ -2284,8 +3547,8 @@ function sessionHTML(){
       <div class="restdial">
         <svg viewBox="0 0 100 100" style="width:100%;height:100%">
           <g transform="rotate(-90 50 50)" fill="none" stroke-linecap="round">
-            <circle cx="50" cy="50" r="44" stroke="rgba(255,255,255,.08)" stroke-width="6"/>
-            <circle id="restRing" cx="50" cy="50" r="44" stroke="#cdff3e" stroke-width="6"
+            <circle cx="50" cy="50" r="44" stroke="var(--w8)" stroke-width="6"/>
+            <circle id="restRing" cx="50" cy="50" r="44" stroke="var(--lime)" stroke-width="6"
               stroke-dasharray="276.5" stroke-dashoffset="${276.5*(1-S.restLeft/REST)}"/>
           </g>
         </svg>
@@ -2448,7 +3711,7 @@ function finishWorkout(){
     </div>
     <div class="grid2" style="margin-top:11px">
       <div class="card"><div class="stat-sub">Подходов</div><div class="stat-val" style="font-size:24px">${sets}</div><div class="stat-sub">из ${S.day.ex.reduce((a,e)=>a+setsOf(e[1]),0)}</div></div>
-      <div class="card"><div class="stat-sub">Тоннаж</div><div class="stat-val" style="font-size:24px">${tonnage.toLocaleString('ru-RU')}</div><div class="stat-sub">кг поднято</div></div>
+      <div class="card"><div class="stat-sub">Тоннаж</div><div class="stat-val" style="font-size:24px">${tonnage.toLocaleString(LOC())}</div><div class="stat-sub">кг поднято</div></div>
     </div>
     <div class="card" style="margin-top:11px">
       <div class="spread"><span>Упражнений выполнено</span><b class="mono" style="color:var(--lime)">${exDone} / ${S.day.ex.length}</b></div>
@@ -2491,7 +3754,7 @@ function shareText(w){
   L.push('🏋️ PowerLab — тренировка закрыта');
   L.push('');
   L.push(w.n);
-  L.push('⏱ '+w.time+'  ·  '+w.sets+' подходов  ·  '+w.tonnage.toLocaleString('ru-RU')+' кг');
+  L.push('⏱ '+w.time+'  ·  '+w.sets+' подходов  ·  '+w.tonnage.toLocaleString(LOC())+' кг');
   if(exs.length){
     L.push('');
     exs.slice(0, 8).forEach(e=> L.push('• '+e.name+' — '+e.done+' подх.'+(e.kg ? ' × '+e.kg+' кг' : '')));
@@ -2582,11 +3845,11 @@ function renderProgress(){
   const c = document.getElementById('weightChart');
   c.setAttribute('viewBox',`0 0 ${W} ${H}`);
   c.innerHTML = `<defs><linearGradient id="wg" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#cdff3e" stop-opacity=".32"/>
-      <stop offset="100%" stop-color="#cdff3e" stop-opacity="0"/></linearGradient></defs>
+      <stop offset="0%" stop-color="var(--lime)" stop-opacity=".32"/>
+      <stop offset="100%" stop-color="var(--lime)" stop-opacity="0"/></linearGradient></defs>
     <path d="${area}" fill="url(#wg)"/>
-    <path d="${line}" fill="none" stroke="#cdff3e" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>
-    <circle cx="${pts[pts.length-1][0].toFixed(1)}" cy="${pts[pts.length-1][1].toFixed(1)}" r="4.5" fill="#cdff3e"/>`;
+    <path d="${line}" fill="none" stroke="var(--lime)" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>
+    <circle cx="${pts[pts.length-1][0].toFixed(1)}" cy="${pts[pts.length-1][1].toFixed(1)}" r="4.5" fill="var(--lime)"/>`;
 
   /* тоннаж по неделям — из сохранённых тренировок */
   const ton = weeklyTonnage();
@@ -2610,7 +3873,7 @@ function renderProgress(){
 }
 
 /* ================== НАСТРОЙКИ ================== */
-const APP_VER = '1.2';
+const APP_VER = '1.3';
 /* открыть под-экран настроек так, чтобы «назад» возвращал в сами настройки */
 function openSub(fn){ fn(); ovStep = openSettings; }
 function openSettings(){
@@ -2618,7 +3881,7 @@ function openSettings(){
   openOverlay('Настройки', 'PowerLab',
     `<div class="card" style="padding:0">
       <div class="item clickable" onclick="openSub(openMyPrograms)">
-        <div class="ico" style="background:rgba(139,124,255,.14);color:#bfb4ff">◆</div>
+        <div class="ico" style="background:rgba(139,124,255,.14);color:var(--violet)">◆</div>
         <div class="body"><div class="tt">Свои тренировки</div>
           <div class="ss">${(state.myProgs||[]).length
             ? (state.myProgs.length+' '+plural(state.myProgs.length,['программа','программы','программ'])+' · изменить или создать')
@@ -2638,6 +3901,14 @@ function openSettings(){
         <div class="ico">★</div>
         <div class="body"><div class="tt">Мои блюда</div>
           <div class="ss">База продуктов и добавление в рацион</div></div>
+        <span class="chev">›</span></div>
+    </div>
+
+    <div class="card" style="padding:0;margin-top:12px">
+      <div class="item clickable" onclick="openSub(openLook)">
+        <div class="ico">◐</div>
+        <div class="body"><div class="tt">Тема и язык</div>
+          <div class="ss">${state.theme==='light'?'Светлая':'Тёмная'} тема · ${state.lang==='en'?'English':'Русский'}</div></div>
         <span class="chev">›</span></div>
     </div>
 
@@ -2666,6 +3937,27 @@ function openSettings(){
     </div>`,
     `<button class="bigbtn ghost" onclick="closeOverlay()">Закрыть</button>`);
 }
+function openLook(){
+  const pick = (cur, val, label, fn) =>
+    `<button class="chip ${cur===val?'on':''}" style="flex:0 0 auto" onclick="${fn}('${val}')">${label}</button>`;
+  openOverlay('Тема и язык', 'Как выглядит приложение',
+    `<div class="card">
+       <div class="lbl">ТЕМА</div>
+       <div class="row" style="gap:7px;margin-top:9px">
+         ${pick(state.theme,'dark','Тёмная','setTheme')}${pick(state.theme,'light','Светлая','setTheme')}
+       </div>
+       <div class="stat-sub" style="margin-top:11px">Светлая тема днём на улице читается лучше.</div>
+     </div>
+     <div class="card" style="margin-top:11px">
+       <div class="lbl">ЯЗЫК</div>
+       <div class="row" style="gap:7px;margin-top:9px">
+         ${pick(state.lang,'ru','Русский','setLang')}${pick(state.lang,'en','English','setLang')}
+       </div>
+       <div class="stat-sub" style="margin-top:11px">Переводится весь интерфейс. Свои упражнения и блюда остаются как ты их записал.</div>
+     </div>`,
+    `<button class="bigbtn ghost" onclick="ovBack()">Назад</button>`);
+  ovStep = openSettings;
+}
 function openAbout(){
   openOverlay('О приложении', 'PowerLab '+APP_VER,
     `<div class="card">
@@ -2685,6 +3977,7 @@ function openAbout(){
         • База продуктов с поиском и выбором порции<br>
         • Вес, сон, шаги, замеры и графики<br>
         • Итог тренировки можно отправить в чат<br>
+        • Светлая и тёмная тема, английский язык<br>
         • Копия данных в облаке — переживёт смену телефона<br>
         • Ваши данные хранятся на устройстве и в облаке
       </div>
@@ -2692,7 +3985,9 @@ function openAbout(){
     <div class="card" style="margin-top:11px">
       <div class="lbl">В ПЛАНАХ</div>
       <div class="stat-sub" style="margin-top:10px;line-height:1.9">
-        • Напоминания о тренировке
+        • Напоминания о тренировке<br>
+        • Распознавание еды по фотографии<br>
+        • Публикация в магазинах приложений
       </div>
     </div>`,
     `<button class="bigbtn ghost" onclick="openSettings()">Назад в настройки</button>`);
@@ -2722,7 +4017,7 @@ function saveProfile(){
   state.onboarded = true;
   save(); closeOverlay();
   renderForma(); renderRation(); renderProgress();
-  toast(calc ? 'Нормы пересчитаны: '+calc.kcal.toLocaleString('ru-RU')+' ккал' : 'Профиль сохранён');
+  toast(calc ? 'Нормы пересчитаны: '+calc.kcal.toLocaleString(LOC())+' ккал' : 'Профиль сохранён');
 }
 
 /* ================== НОРМА КБЖУ (Mifflin-St Jeor) ================== */
@@ -2798,13 +4093,13 @@ function renderOnboarding(){
      </div>
      ${calc ? `<div class="card" style="margin-top:11px">
        <div class="lbl" style="color:var(--lime)">ТВОЯ НОРМА</div>
-       <div class="intake" style="margin:8px 0 6px">${calc.kcal.toLocaleString('ru-RU')} <span style="font-size:14px">ккал</span></div>
+       <div class="intake" style="margin:8px 0 6px">${calc.kcal.toLocaleString(LOC())} <span style="font-size:14px">ккал</span></div>
        <div class="macro3">
          ${[['Белки',calc.p,'г'],['Жиры',calc.f,'г'],['Углеводы',calc.c,'г']].map(x=>
            `<div><div class="g">${x[1]} <span style="font-size:12px">${x[2]}</span></div><div class="of">${x[0]}</div></div>`).join('')}
        </div>
-       <div class="stat-sub" style="margin-top:12px">Базовый обмен ${calc.bmr.toLocaleString('ru-RU')} ккал · с активностью ${calc.tdee.toLocaleString('ru-RU')} ккал</div>
-       <div class="stat-sub" style="margin-top:6px">Вода ${calc.water} л · Шаги ${calc.steps.toLocaleString('ru-RU')}</div>
+       <div class="stat-sub" style="margin-top:12px">Базовый обмен ${calc.bmr.toLocaleString(LOC())} ккал · с активностью ${calc.tdee.toLocaleString(LOC())} ккал</div>
+       <div class="stat-sub" style="margin-top:6px">Вода ${calc.water} л · Шаги ${calc.steps.toLocaleString(LOC())}</div>
      </div>` : `<div class="stat-sub" style="margin:14px 4px">Заполни рост, вес и возраст — посчитаю норму.</div>`}`,
     `<button class="bigbtn" onclick="${isEdit?'saveProfile()':'finishOnboarding()'}">${
       isEdit ? (calc ? 'Сохранить и пересчитать' : 'Сохранить') : (calc?'Начать':'Пропустить')}</button>`);
@@ -2845,10 +4140,40 @@ function boot(){
   go(state.tab || 'workout');
 }
 load();
+/* тему ставим до первой отрисовки: иначе на светлой теме успеет мелькнуть тёмный экран */
+document.documentElement.setAttribute('data-theme', state.theme === 'light' ? 'light' : 'dark');
 rollover();
 if(state.profile && state.profile.weight > 0 && !(state.weight > 0)) state.weight = state.profile.weight;
 boot();
 if(!state.onboarded) openOnboarding();
+
+/* ================== ТЕМА ==================
+   Оформление целиком на токенах, поэтому переключение — это одна
+   строка в html плюс цвет шапки Телеграма. */
+function themeBg(){
+  const v = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim();
+  return v || '#08090d';
+}
+function applyTheme(){
+  const light = state.theme === 'light';
+  document.documentElement.setAttribute('data-theme', light ? 'light' : 'dark');
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if(meta) meta.setAttribute('content', themeBg());
+  if(typeof TG !== 'undefined' && TG && IN_TG){
+    try{
+      if(TG.setHeaderColor) TG.setHeaderColor(themeBg());
+      if(TG.setBackgroundColor) TG.setBackgroundColor(themeBg());
+      if(TG.setBottomBarColor) TG.setBottomBarColor(themeBg());
+    }catch(e){}
+  }
+}
+function setTheme(v){
+  state.theme = v === 'light' ? 'light' : 'dark';
+  applyTheme();
+  save();
+  openSettings();
+  toast(state.theme === 'light' ? 'Светлая тема' : 'Тёмная тема');
+}
 
 /* ================== TELEGRAM MINI APP ==================
    Открыто внутри Telegram — снимаем макетную рамку и живём по размерам вебвью.
@@ -2876,9 +4201,12 @@ function initTelegram(){
   try{
     TG.ready();
     TG.expand();
-    if(TG.setHeaderColor) TG.setHeaderColor('#08090d');
-    if(TG.setBackgroundColor) TG.setBackgroundColor('#08090d');
-    if(TG.setBottomBarColor) TG.setBottomBarColor('#08090d');
+    /* свайп вниз больше не сворачивает окно: раньше из-за него приложение
+       «съезжало» вниз на половину и обратно */
+    if(TG.isVersionAtLeast && TG.isVersionAtLeast('8.0') && TG.disableVerticalSwipes){
+      TG.disableVerticalSwipes();
+    }
+    applyTheme();
   }catch(e){}
   tgViewport();
   if(TG.onEvent){
@@ -2907,6 +4235,10 @@ function initTelegram(){
   }
 }
 initTelegram();
+/* вне Телеграма цвета шапки задавать некому, но атрибут темы выставить нужно */
+applyTheme();
+document.documentElement.lang = state.lang === 'en' ? 'en' : 'ru';
+installLang();
 
 /* облако проверяем после Телеграма: подпись выдаётся только внутри него */
 cloudLoadMeta();
@@ -2921,6 +4253,15 @@ cloudCheck();
   const SPLASH_MS = 4000;
   const sp = document.getElementById('splash');
   if(!sp) return;
+  /* смену языка делаем через перезагрузку — обложку в этом случае не показываем,
+     иначе человек будет ждать её четыре секунды на ровном месте */
+  try{
+    if(sessionStorage.getItem('forge.nosplash')){
+      sessionStorage.removeItem('forge.nosplash');
+      sp.remove();
+      return;
+    }
+  }catch(e){}
   /* performance.now() отсчитывает от начала навигации — именно то, что нужно.
      Если его нет, падаем на Date.now() от момента запуска этого скрипта. */
   const t0 = Date.now();
