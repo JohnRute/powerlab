@@ -49,6 +49,13 @@
   --faint-2:#454b54;
   --faint-3:#4a5058;
   --on-lime:#141a02;
+  /* второй цвет градиента кнопок: в тёмной теме совпадает с --lime, поэтому ничего не меняет */
+  --lime-2:#cdff3e;
+  --card-shadow:none;
+  --btn-shadow:none;
+  --tab-shadow:0 -10px 34px var(--shadow);
+  --phone-border:rgba(255,255,255,.10);
+  --phone-shadow:0 40px 100px rgba(0,0,0,.8),0 0 0 9px rgba(255,255,255,.022);
   /* картинки мышц: на тёмной теме светятся (screen), на светлой — становятся тёмным силуэтом (invert+multiply) */
   --img-blend:screen;
   --img-filter:none;
@@ -68,47 +75,55 @@
    мгновенно и не может «потерять» какой-то экран.
    Обложка остаётся тёмной: под ней фотография. */
 html[data-theme="light"]{
-  --bg:#f1f2f5;
+  --bg:#e7ebf1;
   --surface:#ffffff;
-  --surface-2:#f7f8fa;
-  --line:rgba(12,16,26,.10);
-  --line-strong:rgba(12,16,26,.20);
+  --surface-2:#f4f6fa;
+  --line:rgba(16,24,40,.09);
+  --line-strong:rgba(16,24,40,.18);
   --lime:#5f8b00;
-  --lime-dim:rgba(120,170,0,.14);
-  --ember:#d0491c;
-  --violet:#6a57ee;
-  --text:#11151c;
-  --muted:#6b7280;
-  --page:#f1f2f5;
-  --deep-1:#f1f2f5;
-  --deep-2:#eceef2;
+  --lime-2:#8ec026;
+  --lime-dim:rgba(95,139,0,.13);
+  --ember:#c9451a;
+  --violet:#6455e0;
+  --text:#0c1016;
+  --muted:#5f6875;
+  --page:#e7ebf1;
+  --deep-1:#e7ebf1;
+  --deep-2:#f2f4f8;
   --deep-3:#ffffff;
-  --ring:#eceef2;
-  --sheet:rgba(255,255,255,.97);
+  --ring:#eef1f5;
+  --sheet:rgba(255,255,255,.98);
   --sheet-2:#ffffff;
-  --toast-bg:rgba(255,255,255,.98);
-  --veil:rgba(20,24,32,.34);
-  --shadow:rgba(16,20,30,.14);
-  --shadow-lg:rgba(16,20,30,.20);
-  --w2:rgba(12,16,26,.025);
-  --w3:rgba(12,16,26,.04);
-  --w5:rgba(12,16,26,.06);
-  --w8:rgba(12,16,26,.09);
-  --w12:rgba(12,16,26,.13);
-  --status:#454c56;
-  --strong:#141922;
-  --dim:#3f4650;
-  --dim-2:#454c56;
-  --dim-3:#3a4048;
-  --faint:#9aa1ab;
-  --faint-2:#9aa1ab;
-  --faint-3:#a4abb4;
+  --toast-bg:rgba(255,255,255,.99);
+  --veil:rgba(16,24,40,.38);
+  --shadow:rgba(16,24,40,.16);
+  --shadow-lg:rgba(16,24,40,.24);
+  --w2:rgba(16,24,40,.03);
+  --w3:rgba(16,24,40,.05);
+  --w5:rgba(16,24,40,.08);
+  --w8:rgba(16,24,40,.12);
+  --w12:rgba(16,24,40,.17);
+  --status:#5b6472;
+  --strong:#0a0e14;
+  --dim:#3d4653;
+  --dim-2:#464f5c;
+  --dim-3:#39414d;
+  --faint:#8b93a0;
+  --faint-2:#8b93a0;
+  --faint-3:#949cab;
   /* на светлой теме картинка оборачивается по яркости, но оттенок сохраняется:
-     invert + hue-rotate(180°) возвращает лаймовый цвет, saturate/brightness его проявляют */
+     invert + hue-rotate(180°) возвращает зелёный цвет, saturate его проявляет.
+     Без sepia: она давала желтизну, из-за которой картинки выглядели выцветшими. */
   --img-blend:multiply;
-  --img-filter:invert(1) hue-rotate(180deg) sepia(.5) saturate(1.8) brightness(1.65);
-  --img-opacity:.8;
-  --card-fade:rgba(255,255,255,.95);
+  --img-filter:invert(1) hue-rotate(180deg) saturate(1.9) brightness(1.25);
+  --img-opacity:.85;
+  --card-fade:rgba(255,255,255,.96);
+  /* глубина: тени вместо плоской белизны */
+  --card-shadow:0 1px 2px rgba(16,24,40,.04),0 12px 28px -14px rgba(16,24,40,.22);
+  --btn-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 10px 22px -12px rgba(95,139,0,.55);
+  --tab-shadow:0 -8px 28px -12px rgba(16,24,40,.28);
+  --phone-border:rgba(16,24,40,.10);
+  --phone-shadow:0 40px 100px rgba(16,24,40,.35);
   --accent-line:rgba(95,139,0,.42);
   --accent-line-2:rgba(95,139,0,.30);
   --accent-fill:rgba(120,170,0,.12);
@@ -132,8 +147,8 @@ body{
 
 .phone{
   position:relative;width:400px;height:858px;border-radius:44px;overflow:hidden;
-  background:var(--bg);border:1px solid rgba(255,255,255,.10);
-  box-shadow:0 40px 100px rgba(0,0,0,.8),0 0 0 9px rgba(255,255,255,.022);
+  background:var(--bg);border:1px solid var(--phone-border);
+  box-shadow:var(--phone-shadow);
   display:flex;flex-direction:column;
 }
 .phone::before{
@@ -160,7 +175,7 @@ h2{font-size:17px;margin:0;font-weight:800}
 .mono{font-family:var(--mono)}
 .muted{color:var(--muted)}
 
-.card{background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:16px;position:relative;overflow:hidden}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:16px;position:relative;overflow:hidden;box-shadow:var(--card-shadow)}
 .card.soft{background:var(--surface-2);border-color:var(--line)}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:11px}
 .stack{display:flex;flex-direction:column;gap:11px}
@@ -170,7 +185,7 @@ h2{font-size:17px;margin:0;font-weight:800}
 button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:none}
 .pill{border:1px solid var(--line-strong);border-radius:999px;padding:9px 16px;font-size:12.5px;font-weight:700;color:var(--text);background:var(--w3);transition:.18s;letter-spacing:.3px}
 .pill:hover{border-color:var(--lime);color:var(--lime)}
-.pill.solid{background:var(--lime);color:var(--on-lime);border-color:transparent;text-transform:uppercase;letter-spacing:1px;font-weight:800}
+.pill.solid{background:linear-gradient(180deg,var(--lime-2),var(--lime));color:var(--on-lime);border-color:transparent;text-transform:uppercase;letter-spacing:1px;font-weight:800;box-shadow:var(--btn-shadow)}
 .pill.danger{border-color:rgba(255,106,61,.35);color:var(--ember)}
 .pill.danger:hover{border-color:var(--ember);color:var(--ember);background:rgba(255,106,61,.09)}
 .pill.solid:hover{filter:brightness(1.08)}
@@ -284,7 +299,7 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 
 .muscle{
   position:relative;height:152px;border-radius:24px;overflow:hidden;border:1px solid var(--line);
-  background:var(--deep-2);padding:0;transition:.22s;
+  background:var(--deep-2);padding:0;transition:.22s;box-shadow:var(--card-shadow);
 }
 .muscle:hover{border-color:var(--accent-glow);transform:translateY(-3px)}
 .muscle .mimg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;mix-blend-mode:var(--img-blend);filter:var(--img-filter);transition:.35s;opacity:var(--img-opacity)}
@@ -313,7 +328,7 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .tabbar{
   position:relative;z-index:5;flex:0 0 auto;margin:0 10px 10px;height:74px;border-radius:26px;
   border:1px solid var(--line);background:linear-gradient(180deg,var(--sheet),var(--page));
-  display:flex;align-items:center;justify-content:space-around;box-shadow:0 -10px 34px var(--shadow);
+  display:flex;align-items:center;justify-content:space-around;box-shadow:var(--tab-shadow);
 }
 .tab{display:flex;flex-direction:column;align-items:center;gap:5px;font-size:9.5px;color:var(--muted);flex:1;letter-spacing:.2px;transition:.2s}
 .tab .tic{width:32px;height:32px;display:grid;place-items:center;border-radius:12px;transition:.2s}
@@ -336,7 +351,7 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .daytabs{display:flex;gap:8px;overflow-x:auto;padding:10px 0 4px;scrollbar-width:none;overscroll-behavior-x:contain;touch-action:pan-x}
 .daytabs::-webkit-scrollbar{display:none}
 .planlist{display:flex;flex-direction:column;gap:11px}
-.plan{border-radius:20px;padding:15px;border:1px solid var(--line);text-align:left;background:var(--surface)}
+.plan{border-radius:20px;padding:15px;border:1px solid var(--line);text-align:left;background:var(--surface);box-shadow:var(--card-shadow)}
 .plan.on{border-color:var(--lime);background:linear-gradient(140deg,var(--accent-fill),var(--surface))}
 .plan .spread .nm{font-family:var(--disp);font-size:16px;letter-spacing:.8px;text-transform:uppercase}
 .plan .p2{font-family:var(--mono);font-size:24px;font-weight:700;margin:6px 0 2px;color:var(--lime)}
@@ -348,9 +363,9 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 
 /* ---------- активная тренировка ---------- */
 .timer{font-family:var(--mono);font-size:13px;color:var(--lime);background:var(--lime-dim);padding:6px 12px;border-radius:10px}
-.bigbtn{width:100%;padding:19px;border-radius:20px;font-size:14.5px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;background:var(--lime);color:var(--on-lime);transition:.18s}
+.bigbtn{width:100%;padding:19px;border-radius:20px;font-size:14.5px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;background:linear-gradient(180deg,var(--lime-2),var(--lime));color:var(--on-lime);transition:.18s;box-shadow:var(--btn-shadow)}
 .bigbtn:hover{filter:brightness(1.08)}
-.bigbtn.ghost{background:var(--w3);color:var(--text);border:1px solid var(--line-strong)}
+.bigbtn.ghost{background:var(--w3);color:var(--text);border:1px solid var(--line-strong);box-shadow:none}
 .bigbtn.ghost:hover{border-color:var(--lime);color:var(--lime);filter:none}
 .now{border-radius:24px;padding:18px;border:1px solid var(--accent-line-2);background:linear-gradient(140deg,var(--accent-fill),var(--surface) 60%)}
 .now .lbl{font-size:10px;letter-spacing:2px;color:var(--lime);font-weight:800}
@@ -1525,7 +1540,10 @@ const I18N_EN = {
   "О приложении":"About",
   "Облако отказало":"The cloud refused",
   "Облако работает только внутри Telegram":"The cloud works inside Telegram only",
+  "Обновить приложение":"Update the app",
   "Обновлено сегодня":"Updated today",
+  "Обновляю приложение...":"Updating the app...",
+  "Обновляю приложение…":"Updating the app…",
   "Обратные отжимания":"Bench dips",
   "Обратные отжимания от скамьи":"Bench dips",
   "Общее время":"Total time",
@@ -1859,6 +1877,7 @@ const I18N_TERMS = [
   ["ВСЕ УПРАЖНЕНИЯ ЗАКРЫТЫ","ALL EXERCISES CLOSED"],
   ["добавлено в тренировку","added to the workout"],
   ["Восстановить из облака","Restore from cloud"],
+  ["Обновляю приложение...","Updating the app..."],
   ["Фронтальные приседания","Front squat"],
   ["В этом дне пока пусто","Nothing in this day yet"],
   ["Грудь · Талия · Бёдра","Chest · Waist · Hips"],
@@ -1873,6 +1892,7 @@ const I18N_TERMS = [
   ["Прервать тренировку?","Stop the workout?"],
   ["изменить или создать","edit or create"],
   ["ТРЕНИРОВКА ЗАВЕРШЕНА","WORKOUT FINISHED"],
+  ["Обновляю приложение…","Updating the app…"],
   ["Посмотреть программу","View the program"],
   ["10 упражнений в базе","10 exercises in the library"],
   ["✎ Изменить программу","✎ Edit the program"],
@@ -1882,6 +1902,7 @@ const I18N_TERMS = [
   ["Сбросить все данные","Reset all data"],
   ["Добавить упражнение","Add exercise"],
   ["Заменить упражнение","Swap exercise"],
+  ["Обновить приложение","Update the app"],
   ["Горизонтальная тяга","Seated row"],
   ["Разгибания на блоке","Cable pushdown"],
   ["Тяга верхнего блока","Lat pulldown"],
@@ -2393,6 +2414,7 @@ const I18N_WORDS = {
   "самостоятельно":"on its own",
   "самый":"the most",
   "сбой":"failure",
+  "сборка":"build",
   "свое":"custom",
   "свои":"custom",
   "своих":"custom",
@@ -3886,7 +3908,8 @@ function renderProgress(){
 }
 
 /* ================== НАСТРОЙКИ ================== */
-const APP_VER = '1.3';
+const APP_VER = '1.5';
+const APP_BUILD = '24.09.2026';
 /* открыть под-экран настроек так, чтобы «назад» возвращал в сами настройки */
 function openSub(fn){ fn(); ovStep = openSettings; }
 function openSettings(){
@@ -3937,7 +3960,7 @@ function openSettings(){
       <div class="item clickable" onclick="openSub(openAbout)">
         <div class="ico">ⓘ</div>
         <div class="body"><div class="tt">О приложении</div>
-          <div class="ss">Версия ${APP_VER} · что уже работает</div></div>
+          <div class="ss">Версия ${APP_VER} · сборка ${APP_BUILD}</div></div>
         <span class="chev">›</span></div>
     </div>
 
@@ -3976,7 +3999,7 @@ function openAbout(){
     `<div class="card">
       <div class="lbl" style="color:var(--lime)">POWERLAB</div>
       <div class="stat-sub" style="margin-top:8px">Тренировки, питание и прогресс в одном приложении.</div>
-      <div class="stat-sub" style="margin-top:12px">Версия ${APP_VER}</div>
+      <div class="stat-sub" style="margin-top:12px">Версия ${APP_VER} · сборка ${APP_BUILD}</div>
     </div>
     <div class="card" style="margin-top:11px">
       <div class="lbl">ЧТО УЖЕ РАБОТАЕТ</div>
@@ -4003,12 +4026,40 @@ function openAbout(){
         • Публикация в магазинах приложений
       </div>
     </div>`,
-    `<button class="bigbtn ghost" onclick="openSettings()">Назад в настройки</button>`);
+    `<button class="bigbtn" onclick="forceUpdate()">Обновить приложение</button>
+     <button class="bigbtn ghost" onclick="openSettings()">Назад в настройки</button>`);
 }
 function confirmReset(){
   askConfirm('Сбросить всё?', 'Тренировки, еда, вес, замеры и цели удалятся навсегда. Это действие нельзя отменить.', 'Сбросить', function(){
     resetAll();
   });
+}
+/* ================== ОБНОВЛЕНИЕ ФАЙЛА ==================
+   Телеграм держит свою копию страницы и после обновления на GitHub может
+   показывать старую сборку. Кнопка перезагружает страницу с меткой, из-за
+   которой Телеграм обязан взять файл с сервера заново. Данные не пропадают:
+   они лежат в localStorage и в облаке. */
+function forceUpdate(){
+  try{ sessionStorage.removeItem('powerlab.fresh'); }catch(_){}
+  toast('Обновляю приложение…');
+  setTimeout(function(){ location.replace(location.pathname + '?build=' + Date.now()); }, 500);
+}
+/* один раз за сессию сверяем свою версию с той, что лежит на сервере */
+function checkFresh(){
+  var tries = 0;
+  try{ tries = parseInt(sessionStorage.getItem('powerlab.fresh') || '0', 10) || 0; }catch(_){ return; }
+  if(tries >= 2) return;
+  if(navigator.onLine === false) return;
+  try{ sessionStorage.setItem('powerlab.fresh', String(tries + 1)); }catch(_){}
+  fetch(location.pathname + '?fresh=' + Date.now(), {cache:'no-store'})
+    .then(function(r){ return (r && r.ok) ? r.text() : ''; })
+    .then(function(html){
+      var m = /APP_VER\s*=\s*'([^']+)'/.exec(html || '');
+      if(!m || m[1] === APP_VER) return;
+      if(S) return;                      /* посреди тренировки не прерываем — обновимся позже */
+      location.replace(location.pathname + '?build=' + encodeURIComponent(m[1]));
+    })
+    .catch(function(){});
 }
 function openProfile(){
   obMode = 'edit';
@@ -4256,6 +4307,8 @@ installLang();
 /* облако проверяем после Телеграма: подпись выдаётся только внутри него */
 cloudLoadMeta();
 cloudCheck();
+/* и сверяем, не показывают ли нам старую сборку из кеша Телеграма */
+checkFresh();
 
 /* ================== ЭКРАН ЗАГРУЗКИ ==================
    Обложка держится SPLASH_MS от начала открытия страницы и потом плавно
