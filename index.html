@@ -49,6 +49,11 @@
   --faint-2:#454b54;
   --faint-3:#4a5058;
   --on-lime:#141a02;
+  /* картинки мышц: на тёмной теме светятся (screen), на светлой — становятся тёмным силуэтом (invert+multiply) */
+  --img-blend:screen;
+  --img-filter:none;
+  --img-opacity:.95;
+  --card-fade:rgba(6,7,10,.92);
   --accent-line:rgba(205,255,62,.45);
   --accent-line-2:rgba(205,255,62,.3);
   --accent-fill:rgba(205,255,62,.13);
@@ -98,6 +103,10 @@ html[data-theme="light"]{
   --faint:#9aa1ab;
   --faint-2:#9aa1ab;
   --faint-3:#a4abb4;
+  --img-blend:multiply;
+  --img-filter:grayscale(1) invert(1);
+  --img-opacity:.55;
+  --card-fade:rgba(255,255,255,.95);
   --accent-line:rgba(95,139,0,.42);
   --accent-line-2:rgba(95,139,0,.30);
   --accent-fill:rgba(120,170,0,.12);
@@ -276,12 +285,14 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
   background:var(--deep-2);padding:0;transition:.22s;
 }
 .muscle:hover{border-color:var(--accent-glow);transform:translateY(-3px)}
-.muscle .mimg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;mix-blend-mode:screen;transition:.35s;opacity:.95}
+.muscle .mimg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;mix-blend-mode:var(--img-blend);filter:var(--img-filter);transition:.35s;opacity:var(--img-opacity)}
 .muscle:hover .mimg{transform:scale(1.07)}
-.muscle::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 42%,rgba(6,7,10,.92));pointer-events:none}
+.muscle::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 42%,var(--card-fade));pointer-events:none}
 .muscle .mtxt{position:absolute;left:13px;right:13px;bottom:11px;z-index:2;text-align:left}
 .muscle .mn{display:block;font-family:var(--disp);font-size:16px;letter-spacing:1.4px;text-transform:uppercase}
 .muscle .mc{display:block;font-size:10.5px;color:var(--lime);font-family:var(--mono);margin-top:2px}
+/* та же картинка, но внутри карточки на экране упражнений */
+.blendimg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;mix-blend-mode:var(--img-blend);filter:var(--img-filter);opacity:var(--img-opacity)}
 
 .ex{display:flex;align-items:center;gap:11px;padding:13px 14px;border-bottom:1px solid var(--line)}
 .ex:last-child{border-bottom:none}
@@ -3026,7 +3037,7 @@ function openActivity(id){
   const a = ACTIVITIES.find(x=>x.id===id);
   openOverlay(a.name, a.sub,
     `<div style="position:relative;height:230px;border-radius:24px;overflow:hidden;border:1px solid var(--line);background:var(--deep-2);margin-bottom:12px">
-       <img src="${a.img}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;mix-blend-mode:screen"></div>
+       <img src="${a.img}" alt="" class="blendimg"></div>
      <div class="card">
        <div class="spread"><span class="muted">Длительность</span><b class="mono">${a.sub.split(' · ')[0]}</b></div>
        <div class="spread" style="margin-top:10px"><span class="muted">Зона</span><b>${a.id==='cardio'?'Пульс 130–150':'Спокойный темп'}</b></div>
@@ -3037,7 +3048,7 @@ function openMuscle(id){
   const m = MUSCLES.find(x=>x.id===id);
   openOverlay(m.name, m.count+' упражнений в базе',
     `<div style="position:relative;height:190px;border-radius:24px;overflow:hidden;border:1px solid var(--line);background:var(--deep-2);margin-bottom:12px">
-       <img src="${m.img}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;mix-blend-mode:screen"></div>
+       <img src="${m.img}" alt="" class="blendimg"></div>
      <div class="card" style="padding:0">${m.ex.map((e,i)=>exRow(e,i)).join('')}</div>`,
     `<button class="bigbtn" onclick="openExercisePool()">Добавить упражнение</button>`);
 }
