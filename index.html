@@ -182,8 +182,14 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .prog .pmeta{display:flex;gap:6px;flex-wrap:wrap;margin-top:11px}
 .tag{font-size:10px;font-family:var(--mono);padding:4px 8px;border-radius:7px;background:rgba(255,255,255,.06);color:#b7bec7;letter-spacing:.3px}
 .tag.acc{background:var(--lime-dim);color:var(--lime)}
+.tag.own{background:rgba(139,124,255,.18);color:#bfb4ff}
 .prog .lines{display:flex;gap:3px;margin-top:11px}
 .prog .lines i{height:3px;flex:1;border-radius:99px;background:rgba(205,255,62,.5)}
+.prog.own{border-color:rgba(139,124,255,.42)}
+.prog.own .lines i{background:rgba(139,124,255,.7)}
+.prog.add{border-style:dashed;background:rgba(205,255,62,.045)}
+.prog.add .pn{color:var(--lime)}
+.prog.add .lines{display:none}
 
 .muscle{
   position:relative;height:152px;border-radius:24px;overflow:hidden;border:1px solid var(--line);
@@ -229,7 +235,9 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .overlay.open{transform:none}
 .ov-head{display:flex;align-items:center;gap:12px;padding:18px 16px 10px;flex:0 0 auto}
 .ov-head h2{font-family:var(--disp);font-size:22px;letter-spacing:1px;text-transform:uppercase}
-.ov-body{flex:1;overflow-y:auto;padding:4px 16px 108px;scrollbar-width:none}
+/* --foot-h подставляет openOverlay по фактической высоте подвала:
+   иначе кнопки разной высоты перекрывают низ контента */
+.ov-body{flex:1;overflow-y:auto;padding:4px 16px calc(var(--foot-h,108px) + var(--safe-b,0px));scrollbar-width:none}
 .ov-body::-webkit-scrollbar{display:none}
 .ov-foot{position:absolute;bottom:0;left:0;right:0;padding:14px 16px 22px;background:linear-gradient(180deg,transparent,#040508 42%)}
 .daytabs{display:flex;gap:8px;overflow-x:auto;padding:10px 0 4px;scrollbar-width:none}
@@ -326,6 +334,16 @@ button:active{transform:scale(.985)}
 .cf-s{font-size:12.5px;color:var(--muted);margin-top:8px;line-height:1.5}
 .cf-row{display:flex;flex-direction:column;gap:8px;margin-top:18px}
 .cf-row .pill{width:100%;padding:13px}
+.gate{position:absolute;inset:0;z-index:80;display:flex;align-items:center;justify-content:center;padding:26px;
+  text-align:center;background:linear-gradient(180deg,#0b0d12,#040508);opacity:0;visibility:hidden;transition:.24s}
+.gate.open{opacity:1;visibility:visible}
+.gate-in{max-width:330px}
+.gate-ico{font-size:40px;line-height:1}
+.gate-t{font-family:var(--disp);font-size:23px;letter-spacing:1.4px;text-transform:uppercase;margin-top:14px;line-height:1.15}
+.gate-s{font-size:13px;color:var(--muted);margin-top:10px;line-height:1.6}
+.gate-id{font-family:var(--mono);font-size:14px;color:var(--lime);margin-top:14px;letter-spacing:.4px}
+.gate-btns{display:flex;flex-direction:column;gap:9px;margin-top:22px}
+.gate-btns .pill{width:100%;padding:13px}
 
 /* ---------- экран загрузки ---------- */
 .splash{position:absolute;inset:0;z-index:60;background:#08090d;display:flex;align-items:center;justify-content:center;
@@ -360,7 +378,6 @@ body.tg .phone::before{display:none}
 body.tg .screen{padding-top:calc(8px + var(--safe-t,0px))}
 body.tg .tabbar{margin-bottom:calc(10px + var(--safe-b,0px))}
 body.tg .toast{bottom:calc(98px + var(--safe-b,0px))}
-body.tg .ov-body{padding-bottom:calc(108px + var(--safe-b,0px))}
 body.tg .ov-foot{padding-bottom:calc(22px + var(--safe-b,0px))}
 /* вернуть выделение и каретку полям ввода — иначе на телефоне
    в них нельзя ни встать курсором, ни стереть символ */
@@ -381,6 +398,11 @@ body.tg input,body.tg textarea{-webkit-user-select:text;user-select:text;-webkit
 .prange::-moz-range-thumb{width:23px;height:23px;border:none;border-radius:50%;background:var(--lime);
   box-shadow:0 0 0 5px rgba(205,255,62,.16)}
 .prow{display:flex;gap:7px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.tinput{width:100%;margin-top:9px;padding:12px 14px;border-radius:14px;border:1px solid var(--line-strong);
+  background:#0c0e13;color:var(--text);font-family:var(--sans);font-size:15px;font-weight:700;outline:none;appearance:none}
+.tinput:focus{border-color:rgba(205,255,62,.55)}
+.tinput::placeholder{color:var(--muted);font-weight:500}
+.tinput.sm{margin-top:0;padding:8px 12px;text-align:center;font-family:var(--mono);font-size:14px;max-width:112px}
 </style>
 </head>
 <body>
@@ -392,7 +414,10 @@ body.tg input,body.tg textarea{-webkit-user-select:text;user-select:text;-webkit
 
     <!-- ============ ТРЕНИРОВКА ============ -->
     <section class="screen active" id="s-workout">
-      <h1>Тренировка</h1>
+      <div class="row" style="justify-content:space-between;align-items:center">
+        <h1>Тренировка</h1>
+        <button class="icon-btn" onclick="openSettings()" title="Настройки">⚙</button>
+      </div>
       <p class="sub">Готовые программы · 6 групп мышц</p>
 
       <div class="card soft today" style="margin-top:16px;padding:20px">
@@ -404,7 +429,7 @@ body.tg input,body.tg textarea{-webkit-user-select:text;user-select:text;-webkit
         <button class="pill solid cta" onclick="startWorkout('ppl',1)">Начать тренировку</button>
       </div>
 
-      <div class="section"><span class="t">Мои программы</span><span class="l">5 программ</span></div>
+      <div class="section"><span class="t">Программы</span><span class="l" id="progCount">5 программ</span></div>
       <div class="scroller" id="progRow"></div>
 
       <div class="section"><span class="t">Группы мышц</span><span class="l">все</span></div>
@@ -577,7 +602,21 @@ body.tg input,body.tg textarea{-webkit-user-select:text;user-select:text;-webkit
     <div class="ov-foot" id="ovFoot"></div>
   </div>
 
+  <div class="gate" id="gate">
+    <div class="gate-in">
+      <div class="gate-ico">🔒</div>
+      <div class="gate-t" id="gateTitle">Доступ закрыт</div>
+      <div class="gate-s" id="gateSub"></div>
+      <div class="gate-id" id="gateId"></div>
+      <div class="gate-btns">
+        <button class="pill solid" onclick="cloudRetry()">Проверить снова</button>
+        <button class="pill" onclick="copyGateId()">Скопировать номер</button>
+      </div>
+    </div>
+  </div>
+
   <div class="toast" id="toast"></div>
+
 
   <div class="confirm" id="confirm">
     <div class="cf-box">
@@ -698,7 +737,32 @@ const PROGRAMS = [
      {n:'Низ 2', ex:[['Фронтальные приседания','4 × 8-10',45],['Болгарский выпад','4 × 10-12',22],['Сгибания ног лёжа','4 × 12-15',32],['Ягодичный мост','3 × 12',65],['Подъёмы на носки','4 × 15',40]]},
      {n:'Push', ex:[['Жим штанги лёжа','4 × 6-8',55],['Жим гантелей на наклонной','4 × 8-10',45],['Кроссовер в блоке','3 × 15',15],['Жим штанги стоя','3 × 10',32],['Разгибания на блоке','3 × 12',22]]},
      {n:'Pull', ex:[['Становая тяга','3 × 6',80],['Подтягивания','4 × 8-12',0],['Тяга верхнего блока','4 × 10-12',50],['Молотки','4 × 10-12',16],['Шраги с гантелями','3 × 12-15',30]]}]}
-];
+ ];
+
+/* ---- свои программы и свои упражнения: живут в state, чтобы уехать на сервер вместе с данными ---- */
+function allProgs(){ return PROGRAMS.concat(state.myProgs || []); }
+function findProg(id){ return allProgs().find(x=> x.id === id); }
+function newId(){ return 'my' + Date.now().toString(36) + Math.floor(Math.random()*1296).toString(36); }
+function plural(n, f){
+  const a = Math.abs(n) % 100, b = a % 10;
+  if(a > 10 && a < 20) return f[2];
+  if(b > 1 && b < 5) return f[1];
+  if(b === 1) return f[0];
+  return f[2];
+}
+/* всё, что можно поставить в тренировку: база + свои упражнения */
+function exPool(){
+  return MUSCLES.flatMap(m=> m.ex.map(e=>({n:e[0], r:e[1], k:e[2], g:m.name})))
+    .concat((state.myEx||[]).map(e=>({n:e.n, r:e.r, k:e.k, g:e.g, mine:true})));
+}
+const DEF_SET = 4, DEF_REPS = '8-10';
+function parseSets(reps){
+  const m = String(reps||'').match(/^\s*(\d+)\s*[×x]\s*(.+?)\s*$/);
+  return m ? {s:+m[1], r:m[2]} : {s:3, r:String(reps||DEF_REPS)};
+}
+function buildReps(s, r){ return (s||DEF_SET)+' × '+((r||'').trim() || DEF_REPS); }
+/* пользовательский текст идёт в onclick-атрибуты, поэтому вырезаем кавычки и угловые скобки */
+function cleanName(s){ return String(s||'').replace(/[<>"'`]/g,'').trim(); }
 
 const FOODS = [
   {n:'Куриная грудка',      k:165, p:31,  f:3.6, c:0,   cat:'Белки'},
@@ -745,6 +809,7 @@ const state = {
   calOffset:0, sub:0, foodCat:'Все',
   workouts:[], weightLog:[], sleepLog:[], stepsLog:[], measLog:[],
   day:'', onboarded:false,
+  myProgs:[], myEx:[],
   profile:{sex:'m', age:0, height:0, weight:0, activity:1.375, goal:'cut'}
 };
 const MOODS = ['🙂','😐','😴','😖'];
@@ -757,8 +822,11 @@ function dayKey(d){
   return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0');
 }
 function save(){
-  try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); return true; }
-  catch(e){ return false; }
+  let ok = true;
+  try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }
+  catch(e){ ok = false; }
+  cloudTouch();
+  return ok;
 }
 function load(){
   try{
@@ -799,9 +867,202 @@ function logSeries(key, mapFn){
   return state[key].slice().sort((a,b)=> a.d < b.d ? -1 : 1).map(mapFn);
 }
 
+/* ================== ОБЛАКО ==================
+   Данные уезжают на сервер Cloudflare. Сервер сам проверяет подпись Телеграма,
+   поэтому чужой номер подделать нельзя: без токена бота подпись не собрать.
+   Устройство остаётся главным: нет связи или нет доступа — приложение
+   работает как раньше, только копия не уезжает. */
+const CLOUD = 'https://powerlab-cloud.ilya-denisovich95.workers.dev';
+const CLOUD_META = 'forge.cloud';
+let cloudRole = '';            /* owner, friend или причина отказа */
+let cloudAllowed = null;       /* null — не знаем, true — пускает, false — нет */
+let cloudLast = 0;             /* когда последний раз сохранились */
+let cloudId = null;            /* номер пользователя, как его назвал сервер */
+let cloudTimer = null, cloudBusy = false, cloudAgain = false;
+
+/* Подпись живёт только внутри Телеграма. Читаем прямо из window, чтобы не
+   зависеть от порядка инициализации TG: save() может сработать раньше него. */
+function initData(){
+  try{
+    const w = window.Telegram && window.Telegram.WebApp;
+    return (w && w.initData) || '';
+  }catch(e){ return ''; }
+}
+function cloudReady(){ return !!(CLOUD && initData()); }
+function agoText(ts){
+  if(!ts) return 'ещё не сохраняли';
+  const s = Math.round((Date.now() - ts) / 1000);
+  if(s < 60) return 'только что';
+  if(s < 3600) return Math.round(s/60) + ' мин назад';
+  const h = Math.round(s/3600);
+  if(h < 24) return h + ' ч назад';
+  return Math.round(h/24) + ' дн назад';
+}
+function cloudLoadMeta(){
+  try{
+    const d = JSON.parse(localStorage.getItem(CLOUD_META) || 'null');
+    if(d){ cloudLast = d.ts || 0; cloudRole = d.role || ''; cloudId = d.id || null; }
+  }catch(e){}
+}
+function cloudSaveMeta(){
+  try{ localStorage.setItem(CLOUD_META, JSON.stringify({ts:cloudLast, role:cloudRole, id:cloudId})); }catch(e){}
+}
+async function cloudCall(path, body){
+  const r = await fetch(CLOUD + path, {
+    method:'POST',
+    headers:{'content-type':'application/json'},
+    body: JSON.stringify(Object.assign({ initData: initData() }, body || {}))
+  });
+  if(!r.ok) throw new Error('сервер ответил ' + r.status);
+  return await r.json();
+}
+/* проверка доступа при запуске. Сбой связи не запирает человека в его же данных. */
+async function cloudCheck(){
+  if(!cloudReady()){ cloudAllowed = false; cloudRole = 'вне Telegram'; return; }
+  try{
+    const r = await cloudCall('/api/whoami');
+    if(r.yourId) cloudId = r.yourId;
+    if(!r.ok){ cloudAllowed = null; cloudRole = 'сбой проверки'; cloudSaveMeta(); return; }
+    cloudAllowed = !!r.allowed;
+    cloudRole = r.role || r.reason || '';
+    cloudSaveMeta();
+    if(!r.allowed) showGate(r.reason, r.yourId);
+    else hideGate();
+  }catch(e){
+    cloudAllowed = null; cloudRole = 'нет связи';
+  }
+}
+/* сохранение с задержкой: правки идут пачкой, сервер не дёргается на каждую */
+function cloudTouch(){
+  try{
+    if(cloudAllowed !== true || !cloudReady()) return;
+    clearTimeout(cloudTimer);
+    cloudTimer = setTimeout(function(){ cloudSave(true); }, 4000);
+  }catch(e){}
+}
+async function cloudSave(quiet){
+  if(!cloudReady()){ if(!quiet) toast('Облако работает только внутри Telegram'); return false; }
+  if(cloudAllowed !== true){ if(!quiet) toast('Доступ к облаку закрыт'); return false; }
+  if(cloudBusy){ cloudAgain = true; return false; }
+  cloudBusy = true;
+  try{
+    const r = await cloudCall('/api/sync', { state: state });
+    if(r.ok){
+      cloudLast = r.ts; cloudSaveMeta();
+      if(!quiet) toast('Сохранено в облако · ' + Math.round(r.bytes/1024) + ' КБ');
+      return true;
+    }
+    if(r.reason){
+      cloudAllowed = false; cloudRole = r.reason;
+      if(r.yourId) cloudId = r.yourId;
+      cloudSaveMeta();
+      showGate(r.reason, r.yourId);
+    }
+    if(!quiet) toast('Облако отказало');
+    return false;
+  }catch(e){
+    if(!quiet) toast('Не дозвонились до облака');
+    return false;
+  }finally{
+    cloudBusy = false;
+    if(cloudAgain){ cloudAgain = false; setTimeout(function(){ cloudSave(true); }, 900); }
+  }
+}
+async function cloudRestore(){
+  if(!cloudReady()){ toast('Облако работает только внутри Telegram'); return; }
+  let r;
+  try{ r = await cloudCall('/api/load'); }
+  catch(e){ toast('Не дозвонились до облака'); return; }
+  if(!r.ok){ toast('Облако отказало'); return; }
+  if(!r.state){ toast('В облаке пока пусто — сначала сохрани'); return; }
+  const copy = r.state;
+  askConfirm('Взять данные из облака?',
+    'Копия от ' + agoText(r.ts) + '. Данные на этом устройстве заменятся, отменить будет нельзя.',
+    'Восстановить', function(){
+      mergeCloud(copy);
+      location.reload();
+    });
+}
+/* Переносим только те поля, которые есть у нас: чужие ключи из облака игнорируем,
+   чтобы копия не могла подсунуть приложению ничего лишнего. */
+function mergeCloud(copy){
+  let n = 0;
+  Object.keys(state).forEach(function(k){ if(k in copy){ state[k] = copy[k]; n++; } });
+  try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }catch(e){}
+  return n;
+}
+/* Экран отказа. Показываем только когда сервер прямо сказал «нет»:
+   если связи нет, человек остаётся в своём приложении. */
+const GATE_TEXT = {
+  no_access: ['Заявка отправлена', 'Владелец получил уведомление в Телеграме. Как только разрешит — нажми «Проверить снова».'],
+  blocked:   ['Доступ закрыт', 'Владелец закрыл доступ для этой учётной записи.'],
+  no_owner:  ['Приложение не настроено', 'Владелец не указан на сервере. Пусть проверит переменную OWNER_ID.']
+};
+function showGate(reason, id){
+  const g = GATE_TEXT[reason] || ['Доступ закрыт', 'Сервер не пустил эту учётную запись.'];
+  document.getElementById('gateTitle').textContent = g[0];
+  document.getElementById('gateSub').textContent = g[1];
+  document.getElementById('gateId').textContent = id ? ('твой номер: ' + id) : '';
+  document.getElementById('gate').classList.add('open');
+}
+function hideGate(){ document.getElementById('gate').classList.remove('open'); }
+async function cloudRetry(){
+  hideGate();
+  cloudAllowed = null;
+  await cloudCheck();
+  if(cloudAllowed === true){ hideGate(); boot(); toast('Доступ открыт'); }
+  else if(cloudAllowed === null) toast('Сервер не ответил, попробуй позже');
+}
+function copyGateId(){
+  const t = (document.getElementById('gateId').textContent || '').replace('твой номер:', '').trim();
+  if(!t){ toast('Номер ещё не получен'); return; }
+  if(copyText(t)) toast('Номер скопирован');
+}
+function cloudStatusText(){
+  if(!cloudReady()) return 'Доступно внутри Telegram';
+  if(cloudAllowed === true) return 'Работает · сохранено ' + agoText(cloudLast);
+  if(cloudAllowed === null) return 'Нет связи · данные только на устройстве';
+  return 'Доступ закрыт';
+}
+function openCloud(){
+  const rows = [
+    ['Состояние', cloudReady() ? (cloudAllowed === true ? 'подключено' : (cloudAllowed === null ? 'нет связи' : 'доступ закрыт')) : 'вне Telegram'],
+    ['Роль', cloudRole || '—'],
+    ['Твой номер', cloudId ? String(cloudId) : '—'],
+    ['Сохранено', agoText(cloudLast)]
+  ];
+  openOverlay('Облако', 'Копия данных на сервере',
+    `<div class="card">${rows.map(r=>`
+       <div class="spread" style="padding:10px 0;border-bottom:1px solid var(--line)">
+         <span class="muted">${r[0]}</span><b class="mono" style="font-size:13px">${r[1]}</b></div>`).join('')}
+     </div>
+     <div class="card" style="margin-top:11px">
+       <div class="lbl">КАК ЭТО РАБОТАЕТ</div>
+       <div class="stat-sub" style="margin-top:9px;line-height:1.7">
+         Приложение само отправляет копию данных на сервер через несколько секунд после изменений.
+         Если сменишь телефон — на новом устройстве открой «Восстановить из облака», и данные вернутся.
+       </div>
+       <div class="stat-sub" style="margin-top:11px;line-height:1.7">
+         Доступ выдаёт владелец командой <b class="mono" style="color:var(--lime)">/allow</b> в чате с ботом.
+         Пересылка ссылки на бота доступа не даёт: у каждого свой номер, и подделать его нельзя.
+       </div>
+     </div>
+     <button class="pill" style="width:100%;margin-top:11px;padding:12px" onclick="cloudSave(false)">☁ Сохранить сейчас</button>
+     <button class="pill" style="width:100%;margin-top:9px;padding:12px" onclick="cloudRestore()">⤓ Восстановить из облака</button>
+     <button class="pill" style="width:100%;margin-top:9px;padding:12px" onclick="cloudRetry()">↻ Проверить доступ</button>`,
+    `<button class="bigbtn ghost" onclick="ovBack()">Назад</button>`);
+  ovStep = openSettings;
+}
+
+
 let toastTimer = null;
 function toast(msg){
   const t = document.getElementById('toast');
+  /* над открытым окном поднимаем подсказку выше подвала, иначе она накрывает кнопки */
+  const ov = document.getElementById('overlay');
+  const open = !!ov && ov.classList.contains('open');
+  const ft = open ? (parseFloat(ov.style.getPropertyValue('--foot-h')) || 108) : 0;
+  t.style.bottom = open ? (ft + 22) + 'px' : '';
   t.textContent = msg; t.classList.add('show');
   clearTimeout(toastTimer);
   toastTimer = setTimeout(()=>t.classList.remove('show'), 2200);
@@ -840,6 +1101,15 @@ function openOverlay(title, sub, bodyHTML, footHTML){
   document.getElementById('ovFoot').innerHTML = footHTML || '';
   document.getElementById('overlay').classList.add('open');
   document.getElementById('ovBody').scrollTop = 0;
+  fitOverlayFoot();
+}
+/* высота подвала меняется от числа кнопок — подгоняем отступ контента */
+function fitOverlayFoot(){
+  const ov = document.getElementById('overlay');
+  const ft = document.getElementById('ovFoot');
+  if(!ov || !ft) return;
+  const h = ft.offsetHeight;
+  ov.style.setProperty('--foot-h', (h > 0 ? h + 18 : 108) + 'px');
 }
 function closeOverlay(){
   ovKind = null; ovPrev = null; ovStep = null;
@@ -1312,13 +1582,20 @@ function scanPhoto(){
 
 /* ================== ТРЕНИРОВКА ================== */
 function renderPrograms(){
-  document.getElementById('progRow').innerHTML = PROGRAMS.map(p=>`
-    <button class="prog" onclick="openProgram('${p.id}')">
+  document.getElementById('progRow').innerHTML = allProgs().map(p=>`
+    <button class="prog ${p.custom?'own':''}" onclick="openProgram('${p.id}')">
       <div class="pn">${p.name}</div>
       <div class="pd">${p.desc}</div>
-      <div class="pmeta"><span class="tag acc">${p.meta}</span><span class="tag">${p.level}</span></div>
+      <div class="pmeta"><span class="tag ${p.custom?'own':'acc'}">${p.custom?'своя':p.meta}</span><span class="tag">${p.level}</span></div>
       <div class="lines">${p.plan.map(()=>'<i></i>').join('')}</div>
-    </button>`).join('');
+    </button>`).join('')
+    + `<button class="prog add" onclick="openMyPrograms()">
+        <div class="pn">＋ Своя</div>
+        <div class="pd">Собери программу под себя: упражнения, подходы, вес</div>
+        <div class="pmeta"><span class="tag acc">Создать</span></div>
+      </button>`;
+  const c = document.getElementById('progCount');
+  if(c){ const n = allProgs().length; c.textContent = n+' '+plural(n,['программа','программы','программ']); }
 }
 function renderMuscles(){
   document.getElementById('muscleGrid').innerHTML = MUSCLES.map(m=>`
@@ -1372,9 +1649,15 @@ function openWorkoutLog(i){
          <div class="body"><div class="tt" style="font-size:13.5px">${e.name}</div>
          <div class="ss">${e.skipped?'пропущено':e.done+' из '+e.target+' подходов'} · ${e.kg||0} кг</div></div></div>`).join('')}</div>`,
     `<button class="bigbtn" onclick="closeOverlay();startWorkout('${h.plan}',${h.dayIdx||0})">Повторить тренировку</button>
+     <button class="pill" style="width:100%;margin-top:10px;padding:12px" onclick="shareWorkout(state.workouts[${i}])">📤 Поделиться</button>
      <button class="pill" style="width:100%;margin-top:10px;padding:12px" onclick="closeOverlay()">Закрыть</button>`);
 }
-function musOf(name){ return MUSCLES.find(m=> m.ex.some(e=> e[0]===name)); }
+function musOf(name){
+  const m = MUSCLES.find(g=> g.ex.some(e=> e[0]===name));
+  if(m) return m;
+  const own = (state.myEx||[]).find(e=> e.n===name);
+  return own ? (MUSCLES.find(g=> g.name===own.g) || null) : null;
+}
 
 /* ctx: откуда открыта карточка упражнения, чтобы предложить замену */
 let swapCtx = null, activeSwap = null, swapList = [];
@@ -1431,6 +1714,7 @@ function openSwap(){
   const m = musOf(activeSwap.name);
   const pool = [];
   MUSCLES.forEach(g=>{ if(!m || g.id===m.id) g.ex.forEach(e=> pool.push(e)); });
+  (state.myEx||[]).forEach(e=>{ if(!m || e.g===m.name) pool.push([e.n, e.r, e.k]); });
   swapList = pool.filter(e=> e[0] !== activeSwap.name);
   if(!swapList.length){ toast('В базе нет другой альтернативы'); return; }
   const inSession = activeSwap.kind === 'session';
@@ -1466,8 +1750,11 @@ function applySwap(i){
     toast(`Заменено на «${e[0]}»`);
     renderSession();
   } else {
-    const p = PROGRAMS.find(x=> x.id === progId);
-    if(p) p.plan[dayIdx].ex[k] = [e[0], e[1], e[2]];
+    const p = findProg(progId);
+    if(p){
+      p.plan[dayIdx].ex[k] = [e[0], e[1], e[2]];
+      if(p.custom){ save(); renderPrograms(); }
+    }
     toast(`Заменено на «${e[0]}»`);
     openProgram(progId, dayIdx);
   }
@@ -1492,7 +1779,7 @@ function openMuscle(id){
     `<button class="bigbtn" onclick="openExercisePool()">Добавить упражнение</button>`);
 }
 function openExercisePool(){
-  const pool = MUSCLES.flatMap(m=>m.ex.map(e=>({n:e[0],r:e[1],k:e[2],g:m.name})));
+  const pool = exPool();
   openOverlay('База упражнений','Выбери упражнение',
     `<div class="card" style="padding:0">${pool.map((p,i)=>`
       <div class="ex" onclick="openExercise('${esc(p.n)}','${p.r}',${p.k},'${p.g}')">
@@ -1503,24 +1790,356 @@ function openExercisePool(){
 }
 let activeDay = 0;
 function openProgram(id, dayIndex){
-  const p = PROGRAMS.find(x=>x.id===id);
-  activeDay = dayIndex || 0;
-  const tabs = p.plan.map((d,i)=>
-    `<button class="chip ${i===activeDay?'on':''}" onclick="selectDay(this,'${id}',${i})">${d.n}</button>`).join('');
+  const p = findProg(id);
+  if(!p) return;
+  activeDay = parseInt(dayIndex, 10) || 0;
+  if(!(activeDay >= 0 && activeDay < p.plan.length)) activeDay = 0;
+  const d = p.plan[activeDay];
+  const empty = !d.ex.length;
+  const tabs = p.plan.map((x,i)=>
+    `<button class="chip ${i===activeDay?'on':''}" onclick="selectDay(this,'${id}',${i})">${x.n}</button>`).join('');
+  const editBtn = `<button class="pill" style="width:100%;margin-top:10px;padding:12px"
+      onclick="openProgEdit('${id}',function(){openProgram('${id}',${activeDay})})">✎ Изменить программу</button>`;
   openOverlay(p.name, p.meta+' · '+p.level,
     `<p class="sub" style="margin-bottom:6px">${p.desc}</p>
      <div class="daytabs">${tabs}</div>
-     <div class="card" style="padding:0" id="dayBox">${p.plan[activeDay].ex.map((e,i)=>exRow(e,i,id)).join('')}</div>
-     <div class="stat-sub" style="margin:14px 4px">Тап по упражнению — техника, история и <b style="color:var(--lime)">замена</b> · <b class="mono" style="color:var(--lime)">▶</b> — начать тренировку с него · квадратики — отметить подход</div>`,
-    `<button class="bigbtn" onclick="startWorkout('${id}', activeDay)">Начать тренировку</button>`);
+     <div class="card" style="padding:0" id="dayBox">${empty
+        ? `<div class="item"><div class="ico">＋</div>
+             <div class="body"><div class="tt" style="font-size:14px">В этом дне пока пусто</div>
+             <div class="ss">Нажми «Изменить программу» и добавь упражнения</div></div></div>`
+        : d.ex.map((e,i)=>exRow(e,i,id)).join('')}</div>
+     ${empty ? '' : `<div class="stat-sub" style="margin:14px 4px">Тап по упражнению — техника, история и <b style="color:var(--lime)">замена</b> · <b class="mono" style="color:var(--lime)">▶</b> — начать тренировку с него · квадратики — отметить подход</div>`}`,
+    (empty
+      ? `<button class="bigbtn" onclick="openProgEdit('${id}',function(){openProgram('${id}',${activeDay})})">Добавить упражнения</button>`
+      : `<button class="bigbtn" onclick="startWorkout('${id}', activeDay)">Начать тренировку</button>`)
+    + (p.custom && !empty ? editBtn : ''));
 }
 function selectDay(btn, id, idx){
-  const p = PROGRAMS.find(x=>x.id===id);
+  const p = findProg(id);
+  if(!p) return;
   activeDay = idx;
   btn.parentElement.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
   btn.classList.add('on');
   document.getElementById('dayBox').innerHTML = p.plan[idx].ex.map((e,i)=>exRow(e,i,id)).join('');
 }
+/* ================== СВОИ ТРЕНИРОВКИ ================== */
+/* Что где лежит:
+   state.myProgs — массив программ той же формы, что и PROGRAMS, поэтому старт тренировки,
+   замена упражнения и отчёты работают без правок. state.myEx — свои упражнения,
+   они подмешиваются в базу при выборе и замене. */
+let editProg = null, editDi = 0, editBack = null;
+let pickGroup = 'Все';
+let newEx = null, editExI = null, editExBuf = null;
+
+function openMyPrograms(back){
+  const list = state.myProgs || [];
+  openOverlay('Свои тренировки', list.length
+      ? list.length+' '+plural(list.length,['программа','программы','программ'])
+      : 'Пока ни одной',
+    `<div class="card" style="padding:0">
+       <div class="item clickable" onclick="newProg()">
+         <div class="ico" style="background:var(--lime-dim);color:var(--lime)">＋</div>
+         <div class="body"><div class="tt">Создать тренировку</div>
+           <div class="ss">Название, дни, упражнения, подходы и рабочий вес</div></div>
+         <span class="chev">›</span></div>
+     </div>
+     ${list.length ? `<div class="section"><span class="t">Мои программы</span><span class="l">${list.length}</span></div>
+     <div class="card" style="padding:0">${list.map(p=>{
+       const exs = p.plan.reduce((a,d)=> a + d.ex.length, 0);
+       return `<div class="item clickable" onclick="openProgEdit('${p.id}', openMyPrograms)">
+         <div class="ico" style="border-color:rgba(139,124,255,.5);color:#bfb4ff">◆</div>
+         <div class="body"><div class="tt">${p.name}</div>
+           <div class="ss">${p.plan.length} ${plural(p.plan.length,['день','дня','дней'])} · ${exs} ${plural(exs,['упражнение','упражнения','упражнений'])}${exs?'':' · пусто'}</div></div>
+         <span class="chev">›</span></div>`;
+     }).join('')}</div>` : ''}
+     <div class="stat-sub" style="margin:14px 4px">Свои программы встанут в общий список на экране «Тренировка» — рядом с готовыми.</div>`,
+    `<button class="bigbtn ghost" onclick="ovBack()">Назад</button>`);
+  ovStep = back || null;
+}
+
+function newProg(){
+  const p = { id:newId(), custom:true, name:'Моя тренировка', meta:'своя', level:'Своя',
+              desc:'Своя программа', plan:[{ n:'День 1', ex:[] }] };
+  state.myProgs = state.myProgs || [];
+  state.myProgs.push(p);
+  save(); renderPrograms();
+  editDi = 0;
+  openProgEdit(p.id, openMyPrograms);
+  toast('Программа создана — добавь упражнения');
+}
+
+function openProgEdit(id, back){
+  const p = findProg(id);
+  if(!p || !p.custom){ return; }
+  editProg = id;
+  if(back) editBack = back;
+  if(!(editDi >= 0 && editDi < p.plan.length)) editDi = 0;
+  const d = p.plan[editDi];
+  const days = p.plan.length;
+  openOverlay(p.name, 'Своя программа · '+days+' '+plural(days,['день','дня','дней']),
+    `<div class="card">
+       <div class="lbl">НАЗВАНИЕ</div>
+       <input class="tinput" value="${p.name}" maxlength="28" placeholder="Моя тренировка" oninput="renameProg(this.value)">
+     </div>
+     <div class="card" style="margin-top:11px">
+       <div class="lbl">ДНИ</div>
+       <div class="row" style="gap:7px;margin-top:9px;flex-wrap:wrap">
+         ${p.plan.map((x,i)=>`<button class="chip ${i===editDi?'on':''}" style="flex:0 0 auto" onclick="pickDayEdit(${i})">${x.n}</button>`).join('')}
+         <button class="chip" style="flex:0 0 auto" onclick="addProgDay()">＋ день</button>
+       </div>
+       ${days > 1 ? `<button class="pill" style="width:100%;margin-top:11px;padding:11px;color:var(--ember)" onclick="delProgDay()">Удалить «${d.n}»</button>` : ''}
+     </div>
+     <div class="card" style="margin-top:11px">
+       <div class="lbl">НАЗВАНИЕ ДНЯ</div>
+       <input class="tinput" value="${d.n}" maxlength="22" oninput="renameProgDay(this.value)">
+     </div>
+     <div class="section"><span class="t">Упражнения дня</span><span class="l" id="peCount">${d.ex.length}</span></div>
+     <div class="card" style="padding:0" id="peList">${editExList()}</div>
+     <div class="row" style="gap:8px;margin-top:11px">
+       <button class="pill solid" style="flex:1;padding:13px" onclick="openExPick()">＋ Из базы</button>
+       <button class="pill" style="flex:1;padding:13px" onclick="openExNew()">＋ Своё</button>
+     </div>
+     <div class="stat-sub" style="margin:14px 4px">▲▼ — порядок · ✕ — убрать · тап по упражнению — подходы, повторы и вес</div>`,
+    `<button class="bigbtn" onclick="openProgram('${p.id}', ${editDi})">Посмотреть программу</button>
+     <button class="pill" style="width:100%;margin-top:10px;padding:12px;color:var(--ember)" onclick="askDelProg()">Удалить программу</button>
+     <button class="pill" style="width:100%;margin-top:10px;padding:12px" onclick="closeOverlay();renderPrograms()">Готово</button>`);
+  ovStep = editBack || openMyPrograms;
+}
+
+function editExList(){
+  const p = findProg(editProg);
+  if(!p) return '';
+  const d = p.plan[editDi];
+  if(!d.ex.length) return `<div class="item"><div class="ico">＋</div>
+    <div class="body"><div class="tt" style="font-size:14px">Пока пусто</div>
+    <div class="ss">Добавь упражнения кнопками ниже</div></div></div>`;
+  return d.ex.map((e,i)=>`
+    <div class="ex" onclick="openExEdit(${i})">
+      <div class="num">${i+1}</div>
+      <div style="min-width:0">
+        <div class="en">${e[0]}</div>
+        <div class="er">${e[1]} · ${e[2]||0} кг</div>
+      </div>
+      <div class="row" style="gap:5px">
+        <button class="icon-btn sm" title="выше" onclick="event.stopPropagation();moveEx(${i},-1)">▲</button>
+        <button class="icon-btn sm" title="ниже" onclick="event.stopPropagation();moveEx(${i},1)">▼</button>
+        <button class="icon-btn sm" style="color:var(--ember)" title="убрать" onclick="event.stopPropagation();delEx(${i})">✕</button>
+      </div></div>`).join('');
+}
+function refreshEditList(){
+  const p = findProg(editProg);
+  if(!p) return;
+  const box = document.getElementById('peList'), c = document.getElementById('peCount');
+  if(box) box.innerHTML = editExList();
+  if(c) c.textContent = p.plan[editDi].ex.length;
+}
+function renameProg(v){
+  const p = findProg(editProg);
+  if(!p) return;
+  p.name = cleanName(v) || 'Моя тренировка';
+  save(); renderPrograms();
+  document.getElementById('ovTitle').textContent = p.name;
+  document.getElementById('ovSub').textContent = 'Своя программа · '+p.plan.length+' '+plural(p.plan.length,['день','дня','дней']);
+}
+function renameProgDay(v){
+  const p = findProg(editProg);
+  if(!p) return;
+  p.plan[editDi].n = cleanName(v) || ('День '+(editDi+1));
+  save();
+}
+function pickDayEdit(i){ editDi = i; openProgEdit(editProg); }
+function addProgDay(){
+  const p = findProg(editProg);
+  if(!p) return;
+  p.plan.push({ n:'День '+(p.plan.length+1), ex:[] });
+  editDi = p.plan.length-1;
+  save(); renderPrograms(); openProgEdit(editProg);
+  toast('День добавлен');
+}
+function delProgDay(){
+  const p = findProg(editProg);
+  if(!p || p.plan.length < 2) return;
+  askConfirm('Удалить «'+p.plan[editDi].n+'»?', 'Упражнения этого дня удалятся.', 'Удалить', function(){
+    p.plan.splice(editDi,1);
+    editDi = Math.max(0, editDi-1);
+    save(); renderPrograms(); openProgEdit(editProg);
+    toast('День удалён');
+  });
+}
+function moveEx(i, d){
+  const p = findProg(editProg);
+  if(!p) return;
+  const ex = p.plan[editDi].ex, j = i+d;
+  if(j < 0 || j >= ex.length) return;
+  const t = ex[i]; ex[i] = ex[j]; ex[j] = t;
+  save(); refreshEditList();
+}
+function delEx(i){
+  const p = findProg(editProg);
+  if(!p) return;
+  const name = p.plan[editDi].ex[i][0];
+  p.plan[editDi].ex.splice(i,1);
+  save(); renderPrograms(); refreshEditList();
+  toast('«'+name+'» убрано');
+}
+function askDelProg(){
+  const p = findProg(editProg);
+  if(!p) return;
+  askConfirm('Удалить программу?', '«'+p.name+'» и все её дни удалятся навсегда.', 'Удалить', function(){
+    state.myProgs = (state.myProgs||[]).filter(x=> x.id !== editProg);
+    editProg = null;
+    save(); renderPrograms();
+    openMyPrograms(editBack);
+    toast('Программа удалена');
+  });
+}
+
+/* ---- выбор упражнения из базы ---- */
+function exPickHTML(){
+  const groups = ['Все'].concat(MUSCLES.map(m=>m.name));
+  const pool = exPool().filter(x=> (pickGroup==='Все' || x.g===pickGroup));
+  return `<div class="row" style="gap:7px;flex-wrap:wrap">${groups.map(g=>
+      `<button class="chip ${pickGroup===g?'on':''}" style="flex:0 0 auto" onclick="pickGroupSet('${g}')">${g}</button>`).join('')}</div>
+    <div class="card" style="padding:0;margin-top:11px">${pool.length ? pool.map(p=>`
+      <div class="ex" onclick="addExToDay('${esc(p.n)}','${esc(p.r)}',${p.k||0})">
+        <div class="num">＋</div>
+        <div style="min-width:0"><div class="en">${p.n}</div>
+          <div class="er">${p.g} · ${p.r}${p.mine?' · своё':''}</div></div>
+        <div class="ctrl"><span class="tag acc">${p.k||0} кг</span></div></div>`).join('')
+      : `<div class="item"><div class="ico">🔍</div><div class="body"><div class="ss">В этой группе пусто</div></div></div>`}</div>`;
+}
+function openExPick(){
+  openOverlay('Добавить упражнение', 'Из базы · '+exPool().length+' упражнений',
+    `<div id="pickBox">${exPickHTML()}</div>`, '');
+  ovStep = function(){ openProgEdit(editProg); };
+}
+function pickGroupSet(g){
+  pickGroup = g;
+  const b = document.getElementById('pickBox');
+  if(b) b.innerHTML = exPickHTML();
+}
+function addExToDay(n, r, k){
+  const p = findProg(editProg);
+  if(!p) return;
+  p.plan[editDi].ex.push([n, r || (DEF_SET+' × '+DEF_REPS), k||0]);
+  save(); renderPrograms();
+  toast('«'+n+'» добавлено · '+p.plan[editDi].ex.length);
+}
+
+/* ---- своё упражнение ---- */
+function openExNew(){
+  newEx = { n:'', g:'Грудь', s:DEF_SET, r:DEF_REPS, k:20 };
+  renderExNew();
+}
+function renderExNew(){
+  const sc = document.getElementById('ovBody').scrollTop;
+  openOverlay('Своё упражнение', 'Добавится в базу и в этот день',
+    `<div class="card">
+       <div class="lbl">НАЗВАНИЕ</div>
+       <input class="tinput" id="neName" maxlength="34" placeholder="Например: Тяга к поясу"
+         value="${newEx.n}" oninput="newEx.n=this.value">
+     </div>
+     <div class="card" style="margin-top:11px">
+       <div class="lbl">ГРУППА МЫШЦ</div>
+       <div class="row" style="gap:7px;margin-top:9px;flex-wrap:wrap">
+         ${MUSCLES.map(m=>`<button class="chip ${newEx.g===m.name?'on':''}" style="flex:0 0 auto"
+            onclick="newExSet('g','${m.name}')">${m.name}</button>`).join('')}
+       </div>
+     </div>
+     <div class="card" style="margin-top:11px">
+       <div class="spread" style="padding:11px 0;border-bottom:1px solid var(--line)">
+         <span>Подходы</span><div class="row" style="gap:8px">
+           <button class="icon-btn sm" onclick="newExStep('s',-1)">−</button>
+           <b class="mono" style="min-width:64px;text-align:center;color:var(--lime)">${newEx.s}</b>
+           <button class="icon-btn sm" onclick="newExStep('s',1)">+</button></div></div>
+       <div class="spread" style="padding:11px 0;border-bottom:1px solid var(--line)">
+         <span>Повторы</span>
+         <input class="tinput sm" maxlength="12" value="${newEx.r}" oninput="newEx.r=this.value"></div>
+       <div class="spread" style="padding:11px 0">
+         <span>Рабочий вес</span><div class="row" style="gap:8px">
+           <button class="icon-btn sm" onclick="newExStep('k',-2.5)">−</button>
+           <b class="mono" style="min-width:64px;text-align:center;color:var(--lime)">${newEx.k} кг</b>
+           <button class="icon-btn sm" onclick="newExStep('k',2.5)">+</button></div></div>
+     </div>
+     <div class="stat-sub" style="margin:14px 4px">Повторы можно писать словами: 8-10, 12, 45 сек.</div>`,
+    `<button class="bigbtn" onclick="saveNewEx()">Добавить в тренировку</button>`);
+  document.getElementById('ovBody').scrollTop = sc;
+  ovStep = function(){ openProgEdit(editProg); };
+}
+function newExSet(k, v){ newEx[k] = v; renderExNew(); }
+function newExStep(k, d){
+  newEx[k] = (k === 's')
+    ? Math.max(1, Math.min(12, newEx[k] + d))
+    : Math.max(0, Math.round((newEx[k] + d) * 10) / 10);
+  renderExNew();
+}
+function saveNewEx(){
+  const n = cleanName(newEx.n);
+  if(!n){ toast('Впиши название упражнения'); return; }
+  const r = buildReps(newEx.s, newEx.r);
+  state.myEx = state.myEx || [];
+  if(!state.myEx.some(x=> x.n === n)) state.myEx.push({ n:n, r:r, k:newEx.k||0, g:newEx.g });
+  const p = findProg(editProg);
+  if(!p) return closeOverlay();
+  p.plan[editDi].ex.push([n, r, newEx.k||0]);
+  save(); renderPrograms();
+  openProgEdit(editProg);
+  toast('«'+n+'» добавлено');
+}
+
+/* ---- подходы, повторы и вес у упражнения в программе ---- */
+function openExEdit(i){
+  const p = findProg(editProg);
+  if(!p) return;
+  const e = p.plan[editDi].ex[i];
+  if(!e) return;
+  editExI = i;
+  const ps = parseSets(e[1]);
+  editExBuf = { s:ps.s, r:ps.r, k:e[2]||0 };
+  renderExEdit(e[0]);
+}
+function renderExEdit(name){
+  const sc = document.getElementById('ovBody').scrollTop;
+  openOverlay(name, 'Подходы, повторы и вес',
+    `<div class="card">
+       <div class="spread" style="padding:11px 0;border-bottom:1px solid var(--line)">
+         <span>Подходы</span><div class="row" style="gap:8px">
+           <button class="icon-btn sm" onclick="eeStep('s',-1)">−</button>
+           <b class="mono" style="min-width:64px;text-align:center;color:var(--lime)">${editExBuf.s}</b>
+           <button class="icon-btn sm" onclick="eeStep('s',1)">+</button></div></div>
+       <div class="spread" style="padding:11px 0;border-bottom:1px solid var(--line)">
+         <span>Повторы</span>
+         <input class="tinput sm" maxlength="12" value="${editExBuf.r}" oninput="editExBuf.r=this.value"></div>
+       <div class="spread" style="padding:11px 0">
+         <span>Рабочий вес</span><div class="row" style="gap:8px">
+           <button class="icon-btn sm" onclick="eeStep('k',-2.5)">−</button>
+           <b class="mono" style="min-width:64px;text-align:center;color:var(--lime)">${editExBuf.k} кг</b>
+           <button class="icon-btn sm" onclick="eeStep('k',2.5)">+</button></div></div>
+     </div>
+     <div class="stat-sub" style="margin:14px 4px">Это план: в самой тренировке вес можно менять на ходу.</div>`,
+    `<button class="bigbtn" onclick="saveExEdit()">Сохранить</button>`);
+  document.getElementById('ovBody').scrollTop = sc;
+  ovStep = function(){ openProgEdit(editProg); };
+}
+function eeStep(k, d){
+  editExBuf[k] = (k === 's')
+    ? Math.max(1, Math.min(12, editExBuf[k] + d))
+    : Math.max(0, Math.round((editExBuf[k] + d) * 10) / 10);
+  const p = findProg(editProg);
+  renderExEdit(p.plan[editDi].ex[editExI][0]);
+}
+function saveExEdit(){
+  const p = findProg(editProg);
+  if(!p) return;
+  const e = p.plan[editDi].ex[editExI];
+  if(!e) return;
+  e[1] = buildReps(editExBuf.s, editExBuf.r);
+  e[2] = editExBuf.k||0;
+  save(); renderPrograms();
+  openProgEdit(editProg);
+  toast('Сохранено: '+e[0]+' · '+e[1]);
+}
+
 /* ================== ПОДПИСКА ================== */
 const SUB_PLANS = [
   ['1 месяц',149,'149 ⭐ за 1 месяц',''],
@@ -1609,8 +2228,10 @@ function setsOf(reps){ const m = String(reps).match(/(\d+)/); return m ? +m[1] :
 function fmt(t){ const m=Math.floor(t/60), s=t%60; return (m<10?'0':'')+m+':'+(s<10?'0':'')+s; }
 
 function startWorkout(id, dayIdx, startEx){
-  const p = PROGRAMS.find(x=>x.id===id);
+  const p = findProg(id);
+  if(!p){ toast('Этой программы больше нет'); return; }
   const src = p.plan[dayIdx || 0];
+  if(!src || !src.ex.length){ toast('В этом дне пока нет упражнений'); return; }
   const day = { n: src.n, ex: src.ex.map(e=> e.slice()) };
   let start = parseInt(startEx, 10);
   if(!(start >= 0 && start < day.ex.length)) start = 0;
@@ -1742,6 +2363,7 @@ function renderSession(){
   body.innerHTML = sessionHTML();
   body.scrollTop = sc;
   document.getElementById('ovFoot').innerHTML = `<button class="bigbtn ghost" onclick="finishWorkout()">Завершить тренировку</button>`;
+  fitOverlayFoot();
 }
 function sessW(d){ S.w[S.exIdx] = Math.max(0, S.w[S.exIdx] + d); renderSession(); }
 
@@ -1837,7 +2459,9 @@ function finishWorkout(){
     </div>`;
   document.getElementById('ovFoot').innerHTML =
     `<button class="bigbtn" onclick="saveWorkout()">Сохранить</button>
+     <button class="pill" style="width:100%;margin-top:10px;padding:12px" onclick="shareWorkout()">📤 Поделиться результатом</button>
      <button class="pill" style="width:100%;margin-top:10px;padding:12px" onclick="saveWorkout(true)">Сохранить и закрыть</button>`;
+  fitOverlayFoot();
   S = null;
 }
 function saveWorkout(quiet){
@@ -1850,8 +2474,64 @@ function saveWorkout(quiet){
   window._lastWorkout = null;
   renderHistory(); renderProgress(); renderCalendar(); renderForma();
   closeOverlay();
+  cloudSave(true);          /* тренировку отправляем сразу, не ждём задержки */
   if(!quiet) toast('Тренировка сохранена в историю');
   else go('progress');
+}
+
+/* ================== ПОДЕЛИТЬСЯ РЕЗУЛЬТАТОМ ==================
+   Когда узнаешь имя бота, впиши сюда ссылку вида 'https://t.me/имя_бота' —
+   она добавится к сообщению. Пока пусто — делимся только текстом. */
+const APP_LINK = 'https://t.me/PowerLab_FitBot';
+
+function shareText(w){
+  const exs = (w.exercises || []).filter(e=> !e.skipped);
+  const sk = (w.exercises || []).filter(e=> e.skipped).length;
+  const L = [];
+  L.push('🏋️ PowerLab — тренировка закрыта');
+  L.push('');
+  L.push(w.n);
+  L.push('⏱ '+w.time+'  ·  '+w.sets+' подходов  ·  '+w.tonnage.toLocaleString('ru-RU')+' кг');
+  if(exs.length){
+    L.push('');
+    exs.slice(0, 8).forEach(e=> L.push('• '+e.name+' — '+e.done+' подх.'+(e.kg ? ' × '+e.kg+' кг' : '')));
+    if(exs.length > 8) L.push('• и ещё '+(exs.length-8));
+  }
+  if(sk){ L.push(''); L.push('Пропущено: '+sk); }
+  return L.join('\n');
+}
+function copyText(s){
+  try{
+    if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(s); return true; }
+    const ta = document.createElement('textarea');
+    ta.value = s; ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0';
+    document.body.appendChild(ta); ta.select();
+    const ok = document.execCommand('copy');
+    document.body.removeChild(ta);
+    return ok;
+  }catch(e){ return false; }
+}
+function shareLink(text){
+  return 'https://t.me/share/url?' + (APP_LINK ? 'url=' + encodeURIComponent(APP_LINK) + '&' : '')
+       + 'text=' + encodeURIComponent(text);
+}
+function shareWorkout(w){
+  w = w || window._lastWorkout || state.workouts[0];
+  if(!w){ toast('Нет тренировки, которой можно поделиться'); return; }
+  const text = shareText(w);
+  const link = shareLink(text);
+  /* окно пересылки Telegram открываем только когда реально внутри Telegram:
+     в обычном браузере window.Telegram тоже существует, и без этой проверки
+     кнопка уводила бы со страницы на сайт Telegram */
+  if(IN_TG && TG){
+    try{
+      if(TG.openTelegramLink){ TG.openTelegramLink(link); return; }
+      if(TG.openLink){ TG.openLink(link); return; }
+    }catch(e){}
+  }
+  try{ if(navigator.share){ navigator.share({text:text}).catch(function(){}); return; } }catch(e){}
+  if(copyText(text)) toast('Итог скопирован — вставь в чат');
+  else toast('Не получилось открыть пересылку');
 }
 
 /* ================== ПРОГРЕСС ================== */
@@ -1929,6 +2609,122 @@ function renderProgress(){
       <div class="bar"><i style="width:${v[1]}%"></i></div></div>`).join('');
 }
 
+/* ================== НАСТРОЙКИ ================== */
+const APP_VER = '1.2';
+/* открыть под-экран настроек так, чтобы «назад» возвращал в сами настройки */
+function openSub(fn){ fn(); ovStep = openSettings; }
+function openSettings(){
+  const g = state.goals;
+  openOverlay('Настройки', 'PowerLab',
+    `<div class="card" style="padding:0">
+      <div class="item clickable" onclick="openSub(openMyPrograms)">
+        <div class="ico" style="background:rgba(139,124,255,.14);color:#bfb4ff">◆</div>
+        <div class="body"><div class="tt">Свои тренировки</div>
+          <div class="ss">${(state.myProgs||[]).length
+            ? (state.myProgs.length+' '+plural(state.myProgs.length,['программа','программы','программ'])+' · изменить или создать')
+            : 'Собери программу под себя'}</div></div>
+        <span class="chev">›</span></div>
+      <div class="item clickable" onclick="openSub(openProfile)">
+        <div class="ico">👤</div>
+        <div class="body"><div class="tt">Профиль и нормы</div>
+          <div class="ss">Пол, возраст, рост, вес, активность — пересчитаю калории</div></div>
+        <span class="chev">›</span></div>
+      <div class="item clickable" onclick="openSub(openGoals)">
+        <div class="ico">⛁</div>
+        <div class="body"><div class="tt">Цель вручную</div>
+          <div class="ss">${g.kcal} ккал · Б ${g.p} · Ж ${g.f} · У ${g.c} · вода ${g.water} л</div></div>
+        <span class="chev">›</span></div>
+      <div class="item clickable" onclick="closeOverlay();go('food')">
+        <div class="ico">★</div>
+        <div class="body"><div class="tt">Мои блюда</div>
+          <div class="ss">База продуктов и добавление в рацион</div></div>
+        <span class="chev">›</span></div>
+    </div>
+
+    <div class="card" style="padding:0;margin-top:12px">
+      <div class="item clickable" onclick="openSub(openCloud)">
+        <div class="ico">☁</div>
+        <div class="body"><div class="tt">Облако</div>
+          <div class="ss">${cloudStatusText()}</div></div>
+        <span class="chev">›</span></div>
+    </div>
+
+    <div class="card" style="padding:0;margin-top:12px">
+      <div class="item clickable" onclick="openSub(openAbout)">
+        <div class="ico">ⓘ</div>
+        <div class="body"><div class="tt">О приложении</div>
+          <div class="ss">Версия ${APP_VER} · что уже работает</div></div>
+        <span class="chev">›</span></div>
+    </div>
+
+    <div class="card" style="padding:0;margin-top:12px;border-color:rgba(255,106,61,.32)">
+      <div class="item clickable" onclick="confirmReset()">
+        <div class="ico" style="background:rgba(255,106,61,.12);color:var(--ember)">✕</div>
+        <div class="body"><div class="tt" style="color:var(--ember)">Сбросить все данные</div>
+          <div class="ss">Удалить тренировки, еду, вес и замеры — начать заново</div></div>
+        <span class="chev">›</span></div>
+    </div>`,
+    `<button class="bigbtn ghost" onclick="closeOverlay()">Закрыть</button>`);
+}
+function openAbout(){
+  openOverlay('О приложении', 'PowerLab '+APP_VER,
+    `<div class="card">
+      <div class="lbl" style="color:var(--lime)">POWERLAB</div>
+      <div class="stat-sub" style="margin-top:8px">Тренировки, питание и прогресс в одном приложении.</div>
+      <div class="stat-sub" style="margin-top:12px">Версия ${APP_VER}</div>
+    </div>
+    <div class="card" style="margin-top:11px">
+      <div class="lbl">ЧТО УЖЕ РАБОТАЕТ</div>
+      <div class="stat-sub" style="margin-top:10px;line-height:1.9">
+        • 5 программ тренировок и замена упражнений<br>
+        • Свои тренировки: дни, упражнения, подходы и вес<br>
+        • Своя база упражнений — свои движения в общем списке<br>
+        • Дневник подходов с таймером отдыха<br>
+        • Расчёт калорий и БЖУ по формуле Миффлина<br>
+        • Рацион: завтрак, обед, ужин, перекус<br>
+        • База продуктов с поиском и выбором порции<br>
+        • Вес, сон, шаги, замеры и графики<br>
+        • Итог тренировки можно отправить в чат<br>
+        • Копия данных в облаке — переживёт смену телефона<br>
+        • Ваши данные хранятся на устройстве и в облаке
+      </div>
+    </div>
+    <div class="card" style="margin-top:11px">
+      <div class="lbl">В ПЛАНАХ</div>
+      <div class="stat-sub" style="margin-top:10px;line-height:1.9">
+        • Напоминания о тренировке
+      </div>
+    </div>`,
+    `<button class="bigbtn ghost" onclick="openSettings()">Назад в настройки</button>`);
+}
+function confirmReset(){
+  askConfirm('Сбросить всё?', 'Тренировки, еда, вес, замеры и цели удалятся навсегда. Это действие нельзя отменить.', 'Сбросить', function(){
+    resetAll();
+  });
+}
+function openProfile(){
+  obMode = 'edit';
+  ob = Object.assign({}, state.profile);
+  if(!(ob.age > 0)) ob.age = 28;
+  if(!(ob.height > 0)) ob.height = 178;
+  if(!(ob.weight > 0)) ob.weight = state.weight > 0 ? state.weight : 80;
+  renderOnboarding();
+}
+function saveProfile(){
+  const calc = calcMacros(ob);
+  state.profile = Object.assign({}, ob);
+  if(calc){
+    if(!(state.profile.startWeight > 0)) state.profile.startWeight = ob.weight;
+    state.profile.targetWeight = Math.round(ob.weight * ({cut:0.92, keep:1, bulk:1.08}[ob.goal] || 1) * 10) / 10;
+    if(+state.weight !== +ob.weight){ state.weight = ob.weight; logPush('weightLog', {kg:ob.weight}); }
+    applyMacros();
+  }
+  state.onboarded = true;
+  save(); closeOverlay();
+  renderForma(); renderRation(); renderProgress();
+  toast(calc ? 'Нормы пересчитаны: '+calc.kcal.toLocaleString('ru-RU')+' ккал' : 'Профиль сохранён');
+}
+
 /* ================== НОРМА КБЖУ (Mifflin-St Jeor) ================== */
 const ACTIVITY = [[1.2,'Сидячий'],[1.375,'1–2 трен.'],[1.55,'3–4 трен.'],[1.725,'5–6 трен.']];
 const GOALS3 = [['cut','Похудеть'],['keep','Держать'],['bulk','Набрать']];
@@ -1953,7 +2749,11 @@ function applyMacros(){
 
 /* ================== ОНБОРДИНГ ================== */
 let ob = null;
+/* один и тот же редактор работает при первом запуске и из настроек:
+   'onboard' — с приветствием, 'edit' — с пересчётом норм */
+let obMode = 'onboard';
 function openOnboarding(){
+  obMode = 'onboard';
   ob = Object.assign({}, state.profile);
   if(!(ob.age > 0)) ob.age = 28;
   if(!(ob.height > 0)) ob.height = 178;
@@ -1965,7 +2765,9 @@ function renderOnboarding(){
   const calc = calcMacros(ob);
   const chip = (cur, val, label, fn) =>
     `<button class="chip ${cur===val?'on':''}" style="flex:0 0 auto" onclick="${fn}('${val}')">${label}</button>`;
-  openOverlay('Настроим PowerLab', 'Пять вопросов — и нормы посчитаются сами',
+  const isEdit = obMode === 'edit';
+  openOverlay(isEdit ? 'Профиль и нормы' : 'Настроим PowerLab',
+    isEdit ? 'Поменяй данные — калории и БЖУ пересчитаю' : 'Пять вопросов — и нормы посчитаются сами',
     `<div class="card">
        <div class="lbl">ПОЛ</div>
        <div class="row" style="gap:7px;margin-top:9px">
@@ -2004,7 +2806,8 @@ function renderOnboarding(){
        <div class="stat-sub" style="margin-top:12px">Базовый обмен ${calc.bmr.toLocaleString('ru-RU')} ккал · с активностью ${calc.tdee.toLocaleString('ru-RU')} ккал</div>
        <div class="stat-sub" style="margin-top:6px">Вода ${calc.water} л · Шаги ${calc.steps.toLocaleString('ru-RU')}</div>
      </div>` : `<div class="stat-sub" style="margin:14px 4px">Заполни рост, вес и возраст — посчитаю норму.</div>`}`,
-    `<button class="bigbtn" onclick="finishOnboarding()">${calc?'Начать':'Пропустить'}</button>`);
+    `<button class="bigbtn" onclick="${isEdit?'saveProfile()':'finishOnboarding()'}">${
+      isEdit ? (calc ? 'Сохранить и пересчитать' : 'Сохранить') : (calc?'Начать':'Пропустить')}</button>`);
   document.getElementById('ovBody').scrollTop = sc;
 }
 function obSet(k, v){ ob.sex = v; renderOnboarding(); }
@@ -2104,6 +2907,10 @@ function initTelegram(){
   }
 }
 initTelegram();
+
+/* облако проверяем после Телеграма: подпись выдаётся только внутри него */
+cloudLoadMeta();
+cloudCheck();
 
 /* ================== ЭКРАН ЗАГРУЗКИ ==================
    Обложка держится SPLASH_MS от начала открытия страницы и потом плавно
