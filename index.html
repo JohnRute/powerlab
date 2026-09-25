@@ -555,27 +555,29 @@ html[data-theme="light"] .section .t{
 html[data-theme="light"] .section .l{color:var(--lime);font-weight:700;font-size:12.5px}
 html[data-theme="light"] .section .l::after{content:'›';margin-left:5px;font-weight:700}
 
-/* плитки мышц: картинка сверху, название и стрелка снизу */
+/* плитки мышц: фигура во всю карточку, название и стрелка поверх снизу */
 html[data-theme="light"] .muscle,
 html[data-theme="light"] .muscle.act{
-  height:auto;display:flex;flex-direction:column;background:#fff;border:1px solid var(--line);
-  border-radius:22px;padding:8px 8px 0;overflow:hidden}
+  position:relative;height:196px;display:block;background:#fff;border:1px solid var(--line);
+  border-radius:22px;padding:0;overflow:hidden}
 html[data-theme="light"] .muscle::after{display:none}
+html[data-theme="light"] .muscle::before{
+  content:'';position:absolute;left:0;right:0;bottom:0;height:52%;z-index:1;pointer-events:none;
+  background:linear-gradient(180deg,rgba(255,255,255,0) 0%,rgba(255,255,255,.86) 46%,#fff 78%)}
 html[data-theme="light"] .muscle .mimg{
-  position:static;width:100%;height:134px;object-fit:contain;object-position:center center;
-  mix-blend-mode:normal;filter:none;opacity:1;transform:scale(1.12);transform-origin:center top;transition:none}
-html[data-theme="light"] .muscle.act .mimg{height:108px}
+  position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center top;
+  mix-blend-mode:normal;filter:none;opacity:1;transform:scale(1.04);transform-origin:center top;transition:none}
 html[data-theme="light"] .muscle:hover{transform:none;border-color:var(--line-strong)}
-html[data-theme="light"] .muscle:hover .mimg{transform:scale(1.12)}
-html[data-theme="light"] .muscle .mtxt{position:static;left:auto;right:auto;bottom:auto;margin-top:4px;padding:0 4px 12px}
+html[data-theme="light"] .muscle:hover .mimg{transform:scale(1.06)}
+html[data-theme="light"] .muscle .mtxt{position:absolute;left:13px;right:11px;bottom:11px;z-index:2;text-align:left}
 html[data-theme="light"] .muscle .mrow{display:flex;align-items:center;justify-content:space-between;gap:8px}
 html[data-theme="light"] .muscle .mn{
   font-family:var(--sans);font-weight:800;font-size:16.5px;letter-spacing:.2px;color:var(--text)}
 html[data-theme="light"] .muscle .mc{
-  font-family:var(--sans);font-size:12.5px;color:var(--muted);margin-top:5px}
+  display:block;font-family:var(--sans);font-size:12.5px;color:var(--muted);margin-top:3px}
 html[data-theme="light"] .muscle .mgo{
   display:grid;place-items:center;width:34px;height:34px;border-radius:50%;flex:0 0 auto;
-  border:1px solid var(--line);color:var(--text);font-size:16px;line-height:1}
+  border:1px solid var(--line);color:var(--text);font-size:16px;line-height:1;background:#fff}
 
 /* герой «сегодня»: лаймовый блок с фотографией справа */
 html[data-theme="light"] .card.soft.today{
@@ -584,7 +586,7 @@ html[data-theme="light"] .card.soft.today{
   box-shadow:0 18px 34px -26px rgba(120,160,0,.9)}
 html[data-theme="light"] .card.soft.today::after{
   content:'';position:absolute;right:0;top:0;bottom:0;width:42%;pointer-events:none;
-  background:url(assets/photo_4_2026-09-09_11-28-24.jpg) center 18%/cover no-repeat;
+  background:url(assets/covers/hero.jpg) center 30%/cover no-repeat;
   filter:brightness(.9) contrast(1.06) saturate(1.02);
   -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 62%);
   mask-image:linear-gradient(90deg,transparent 0,#000 62%)}
@@ -3013,9 +3015,9 @@ function scanPhoto(){
 
 /* ================== ТРЕНИРОВКА ================== */
 function renderPrograms(){
-  const covers = ['assets/photo_4_2026-09-09_11-28-24.jpg','assets/photo_1_2026-09-09_11-28-24.jpg',
-                  'assets/splash.jpg','assets/photo_4_2026-09-09_11-28-24.jpg',
-                  'assets/photo_1_2026-09-09_11-28-24.jpg'];
+  const covers = ['assets/covers/cover-1.jpg','assets/covers/cover-2.jpg',
+                  'assets/covers/cover-3.jpg','assets/covers/cover-4.jpg',
+                  'assets/covers/cover-5.jpg'];
   document.getElementById('progRow').innerHTML = allProgs().map((p,i)=>`
     <button class="prog ${p.custom?'own':''}" onclick="openProgram('${p.id}')">
       <div class="pcov"><img src="${covers[i%covers.length]}" alt=""></div>
@@ -4067,8 +4069,8 @@ function renderProgress(){
 }
 
 /* ================== НАСТРОЙКИ ================== */
-const APP_VER = '1.6';
-const APP_BUILD = '24.09.2026';
+const APP_VER ='1.6.1';
+const APP_BUILD = '25.09.2026';
 /* открыть под-экран настроек так, чтобы «назад» возвращал в сами настройки */
 function openSub(fn){ fn(); ovStep = openSettings; }
 function openSettings(){
