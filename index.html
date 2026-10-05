@@ -310,11 +310,10 @@ button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:n
 .muscle .mc{display:block;font-size:10.5px;color:var(--lime);font-family:var(--mono);margin-top:2px}
 /* та же картинка, но внутри карточки на экране упражнений */
 .blendimg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;mix-blend-mode:var(--img-blend);filter:var(--img-filter);opacity:var(--img-opacity)}
-/* надстройка для светлой темы: стрелка в плитке и обложка программы (в тёмной теме скрыты) */
+/* надстройка для светлой темы: стрелка в плитке мышцы (в тёмной теме скрыта) */
 .mgo{display:none}
 .mrow{display:block}
 .muscle.act{height:132px}
-.pcov{display:none}
 
 .ex{display:flex;align-items:center;gap:11px;padding:13px 14px;border-bottom:1px solid var(--line)}
 .ex:last-child{border-bottom:none}
@@ -585,32 +584,30 @@ html[data-theme="light"] .card.soft.today{
   background:linear-gradient(104deg,#eafcc6 0%,#dcf88a 46%,#cdf35e 100%);
   box-shadow:0 18px 34px -26px rgba(120,160,0,.9)}
 html[data-theme="light"] .card.soft.today::after{
-  content:'';position:absolute;right:0;top:0;bottom:0;width:42%;pointer-events:none;
-  background:url(assets/covers/hero.jpg) center 30%/cover no-repeat;
-  filter:brightness(.9) contrast(1.06) saturate(1.02);
-  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 62%);
-  mask-image:linear-gradient(90deg,transparent 0,#000 62%)}
+  content:'';position:absolute;right:0;top:-6%;bottom:-6%;width:52%;pointer-events:none;
+  background:url(assets/covers/hero.jpg) center 34%/cover no-repeat;
+  filter:brightness(.92) contrast(1.06) saturate(1.02);
+  -webkit-mask-image:linear-gradient(106deg,transparent 16%,rgba(0,0,0,.55) 42%,#000 66%);
+  mask-image:linear-gradient(106deg,transparent 16%,rgba(0,0,0,.55) 42%,#000 66%)}
 html[data-theme="light"] .card.soft.today>*{position:relative;z-index:1}
 html[data-theme="light"] .today .tl{color:#4d6b00}
 html[data-theme="light"] .today .tn{color:#0f1210;font-size:27px}
 html[data-theme="light"] .today .tm{color:#3f4a12}
 html[data-theme="light"] .today .tm b{color:#0f1210}
-html[data-theme="light"] .today .cta{
-  width:auto;display:inline-flex;align-items:center;gap:10px;padding:15px 24px;border-radius:999px;
-  background:#101310;color:#fff;border-color:transparent;box-shadow:none;letter-spacing:.8px}
-html[data-theme="light"] .today .cta::after{content:'→';font-size:15px;line-height:1}
+html[data-theme="light"] .today .cta,
+html[data-theme="light"] .today .pill.cta{
+  width:auto;display:inline-flex;align-items:center;gap:10px;padding:15px 26px;border-radius:999px;
+  background:#101310;color:#fff;border-color:transparent;box-shadow:none;letter-spacing:1.2px;
+  font-family:var(--sans);font-weight:800;font-size:14px;text-transform:uppercase}
+html[data-theme="light"] .today .cta:hover,
+html[data-theme="light"] .today .pill.cta:hover{filter:brightness(1.18)}
+html[data-theme="light"] .today .cta::after{content:'→';font-size:15px;line-height:1;color:#fff}
 
-/* программы: сетка из двух колонок с обложками */
-html[data-theme="light"] .scroller{
-  display:grid;grid-template-columns:1fr 1fr;gap:11px;overflow:visible;padding:0}
+/* программы: та же горизонтальная лента, что и в тёмной теме, без фотографий */
 html[data-theme="light"] .prog{
-  flex:none;width:auto;padding:0;border-radius:20px;border-color:var(--line);background:#fff;overflow:hidden}
-html[data-theme="light"] .prog .pcov{display:block;width:100%;height:94px;overflow:hidden;background:var(--deep-2)}
-html[data-theme="light"] .prog .pcov img{width:100%;height:100%;object-fit:cover;display:block}
-html[data-theme="light"] .prog .pn{margin:12px 14px 0;font-family:var(--sans);font-weight:800;font-size:15.5px;letter-spacing:.2px}
-html[data-theme="light"] .prog .pd{margin:5px 14px 0;font-size:11.5px;color:var(--muted);min-height:0}
-html[data-theme="light"] .prog .pmeta{margin:10px 14px 14px}
-html[data-theme="light"] .prog .lines{display:none}
+  flex:0 0 208px;padding:15px;border-radius:22px;border-color:var(--line);background:#fff}
+html[data-theme="light"] .prog .pn{font-family:var(--sans);font-weight:800;font-size:15.5px;letter-spacing:.2px}
+html[data-theme="light"] .prog .pd{font-size:11.5px;color:var(--muted)}
 html[data-theme="light"] .prog:hover{transform:none;border-color:var(--line-strong)}
 html[data-theme="light"] .prog.add{border-style:dashed;background:#fff}
 html[data-theme="light"] .prog.add .pn{color:var(--text)}
@@ -3015,12 +3012,8 @@ function scanPhoto(){
 
 /* ================== ТРЕНИРОВКА ================== */
 function renderPrograms(){
-  const covers = ['assets/covers/cover-1.jpg','assets/covers/cover-2.jpg',
-                  'assets/covers/cover-3.jpg','assets/covers/cover-4.jpg',
-                  'assets/covers/cover-5.jpg'];
   document.getElementById('progRow').innerHTML = allProgs().map((p,i)=>`
     <button class="prog ${p.custom?'own':''}" onclick="openProgram('${p.id}')">
-      <div class="pcov"><img src="${covers[i%covers.length]}" alt=""></div>
       <div class="pn">${p.name}</div>
       <div class="pd">${p.desc}</div>
       <div class="pmeta"><span class="tag ${p.custom?'own':'acc'}">${p.custom?'своя':p.meta}</span><span class="tag">${p.level}</span></div>
@@ -4069,8 +4062,8 @@ function renderProgress(){
 }
 
 /* ================== НАСТРОЙКИ ================== */
-const APP_VER ='1.6.1';
-const APP_BUILD = '25.09.2026';
+const APP_VER ='1.6.2';
+const APP_BUILD = '28.09.2026';
 /* открыть под-экран настроек так, чтобы «назад» возвращал в сами настройки */
 function openSub(fn){ fn(); ovStep = openSettings; }
 function openSettings(){
