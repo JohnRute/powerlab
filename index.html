@@ -4062,8 +4062,8 @@ function renderProgress(){
 }
 
 /* ================== НАСТРОЙКИ ================== */
-const APP_VER ='1.6.2';
-const APP_BUILD = '28.09.2026';
+const APP_VER ='1.6.3';
+const APP_BUILD = '05.10.2026';
 /* открыть под-экран настроек так, чтобы «назад» возвращал в сами настройки */
 function openSub(fn){ fn(); ovStep = openSettings; }
 function openSettings(){
@@ -4288,7 +4288,7 @@ function renderOnboarding(){
        </div>
      </div>
      <div class="card" style="margin-top:11px">
-       ${[['age','Возраст',1,'лет',1],['height','Рост',1,'см',0],['weight','Вес',0.5,'кг',1]]
+        ${[['age','Возраст',1,'лет',1],['height','Рост',1,'см',0],['weight','Вес',0.5,'кг',0]]
          .map(x=>`<div class="spread" style="padding:11px 0;border-bottom:1px solid var(--line)">
            <span>${x[1]}</span><div class="row" style="gap:8px">
              <button class="icon-btn sm" onclick="obStep('${x[0]}',${-x[2]},${x[4]})">−</button>
@@ -4327,10 +4327,11 @@ function obSet(k, v){ ob.sex = v; renderOnboarding(); }
 function obGoal(v){ ob.goal = v; renderOnboarding(); }
 function obActivity(v){ ob.activity = v; renderOnboarding(); }
 function obStep(k, d, isInt){
-  let v = Math.round((ob[k] + d) * 10) / 10;
-  v = Math.max(k === 'weight' ? 30 : (k === 'height' ? 120 : 10), v);
-  v = Math.min(k === 'weight' ? 300 : (k === 'height' ? 230 : 99), v);
-  ob[k] = isInt ? Math.round(v) : v;
+  const min = {age:10, height:120, weight:30}[k] || 0;
+  const max = {age:99, height:230, weight:300}[k] || 999;
+  let v = ob[k] + d;
+  v = Math.max(min, Math.min(max, v));
+  ob[k] = isInt ? Math.round(v) : Math.round(v * 10) / 10;
   renderOnboarding();
 }
 function finishOnboarding(){
