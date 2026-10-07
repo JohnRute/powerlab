@@ -3041,7 +3041,10 @@ const LITE_ART = {
   'assets/act-stretch.png':'assets/lite/act-stretch.png'
 };
 function art(p){
-  return state.theme === 'light' ? (LITE_ART[p] || p) : p;
+  /* метка версии в адресе картинки: иначе телефон держит в кэше старую картинку
+     с тем же именем, даже когда на сайте уже лежит новая */
+  const v = '?v=' + APP_VER;
+  return state.theme === 'light' ? (LITE_ART[p] || p) + v : p + v;
 }
 function renderMuscles(){
   document.getElementById('muscleGrid').innerHTML = MUSCLES.map(m=>`
@@ -4062,8 +4065,8 @@ function renderProgress(){
 }
 
 /* ================== НАСТРОЙКИ ================== */
-const APP_VER ='1.6.3';
-const APP_BUILD = '05.10.2026';
+const APP_VER ='1.6.4';
+const APP_BUILD = '07.10.2026';
 /* открыть под-экран настроек так, чтобы «назад» возвращал в сами настройки */
 function openSub(fn){ fn(); ovStep = openSettings; }
 function openSettings(){
@@ -4479,6 +4482,9 @@ checkFresh();
   const SPLASH_MS = 4000;
   const sp = document.getElementById('splash');
   if(!sp) return;
+  /* фото обложки тоже помечаем версией — по той же причине, что и картинки */
+  const spb = sp.querySelector('.splash-bg');
+  if(spb) spb.style.backgroundImage = "url('assets/splash.jpg?v=" + APP_VER + "')";
   /* смену языка делаем через перезагрузку — обложку в этом случае не показываем,
      иначе человек будет ждать её четыре секунды на ровном месте */
   try{
